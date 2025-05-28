@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # Specify environment for prod branch
-    environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
+    #environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
 
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

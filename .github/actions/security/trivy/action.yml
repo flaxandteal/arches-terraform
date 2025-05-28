@@ -1,0 +1,57 @@
+name: trivy
+description: Run Trivy to scan Terraform code for security issues
+
+inputs:
+  github_token:
+    description: 'GitHub token for Trivy'
+    required: true
+  severity:
+    description: 'Severity levels to scan for (e.g., HIGH,CRITICAL)'
+    default: 'HIGH,CRITICAL'
+    required: false
+  tf_plan_file:
+    description: 'Path to Terraform plan JSON file (optional)'
+    default: ''
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Get Terraform Version
+      uses: ./.github/actions/terraform/version
+
+    # Set up Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+    
+    - name: Terraform Plan
+      shell: bash
+      run: |
+        terraform plan -out=tf.plan
+        terraform show -json tf.plan > tfplan.json
+        
+    - name: Install Trivy
+      shell: bash
+      run: |
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.58.1
+
+    - name: Run Trivy on Terraform configuration
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        trivy config --severity ${{ inputs.severity }} --config .trivy.yml .
+
+    - name: Run Trivy on Terraform plan (if provided)
+      shell: bash
+      if: inputs.tf_plan_file != ''
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        trivy config --severity ${{ inputs.severity }} --config .trivy.yml ${{ inputs.tf_plan_file }}
