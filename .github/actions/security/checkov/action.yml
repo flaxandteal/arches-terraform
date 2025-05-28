@@ -30,7 +30,7 @@ runs:
       shell: bash
       id: check_severity
       run: |
-        count=$(jq '[.results.failed_checks[] | select(.severity=="HIGH" or .severity=="CRITICAL")] | length' checkov.json)
+        count=$(jq '[.results.failed_checks[] | select(.severity=="HIGH" or .severity=="CRITICAL")] | length' checkov-results.json)
         echo "HIGH+CRITICAL issues found: $count"
         if [ "$count" -gt 0 ]; then
           exit 1
@@ -95,6 +95,6 @@ runs:
       if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: checkov.sarif
+        sarif_file: checkov-results.sarif
 
 # this produces an sbom?! what should we do with it?        
