@@ -9,10 +9,15 @@ severity:
   - CRITICAL
   - HIGH
 
-# Skip these directories (if you use Terraform modules or vendor directories)
+# Skip these directories (we use Terraform modules)
 skip-dirs:
   - .terraform
-  - vendor
+
+ignore-unfixed: false
+
+vuln-type:
+  - config    # Terraform config scanning
+  - misconfig # Generic misconfiguration detection
 
 # Enable Terraform-specific configuration scanning
 config:
@@ -34,6 +39,3 @@ exit-code: 1
 
 # Format of the report
 format: table  # or json, sarif, etc.
-
-# Output file (optional)
-# output: trivy-results.txt
