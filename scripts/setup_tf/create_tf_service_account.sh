@@ -59,11 +59,11 @@ fi
 gcloud config set project "$PROJECT_ID"
 
 #Create the service account
-echo "Creating service account ${TF_SA_NAME}..."
-gcloud iam service-accounts create "${TF_SA_NAME}" \
-  --display-name="${TF_SA_DISPLAY_NAME}" \
-  --project="${PROJECT_ID}" \
-  --description="Service account for Terraform"
+# echo "Creating service account ${TF_SA_NAME}..."
+# gcloud iam service-accounts create "${TF_SA_NAME}" \
+#   --display-name="${TF_SA_DISPLAY_NAME}" \
+#   --project="${PROJECT_ID}" \
+#   --description="Service account for Terraform"
 
 # Delay to ensure the service account is created before assigning roles
 #without this the assign roles command fails
