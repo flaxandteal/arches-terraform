@@ -17,13 +17,25 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GOOGLE_CREDENTIALS: ${{ secrets.TF_SA }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
+      - name: Authenticate with GCP
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}' 
+          export_environment_variables: true
+                    
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: SAST Scan using trivy
         uses: ./.github/actions/security/trivy
