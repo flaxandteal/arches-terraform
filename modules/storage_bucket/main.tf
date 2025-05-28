@@ -6,7 +6,12 @@ resource "google_storage_bucket" "bucket" {
   storage_class               = var.storage_class
   force_destroy               = var.force_destroy
   public_access_prevention    = var.public_access_prevention
-  uniform_bucket_level_access = var.uniform_bucket_level_access
+
+  #security settings
+  uniform_bucket_level_access = true #CKV_GCP_29
+  versioning {
+    enabled = true #CKV_GCP_78
+  }
 
   dynamic "cors" {
     for_each = var.cors != null && length(var.cors) > 0 ? var.cors : []

@@ -16,4 +16,12 @@ resource "google_compute_subnetwork" "subnetwork" {
       ip_cidr_range = secondary_ip_range.value.ip_cidr_range
     }
   }
+
+  #security settings #sji todo - is this too much will it be £££?
+  #enable vpc flow logs
+  log_config {
+    aggregation_interval = "INTERVAL_10_MIN"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
 }
