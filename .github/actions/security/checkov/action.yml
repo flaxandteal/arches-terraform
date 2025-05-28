@@ -23,7 +23,9 @@ runs:
       shell: bash
       continue-on-error: true
       run: |
-        checkov -d . --framework terraform --output json --output sarif --output spdx --output-file-path checkov-results
+        checkov -d . --framework terraform \
+          --output json --output sarif --output spdx \
+          --output-file-path checkov-results.json::checkov-results.sarif::checkov-results.spdx.json
       #checkov -d . --framework terraform --output github_failed_only
 
     - name: Check for HIGH or CRITICAL findings
