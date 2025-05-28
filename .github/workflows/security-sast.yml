@@ -39,11 +39,9 @@ jobs:
 
       - name: SAST Scan using trivy
         uses: ./.github/actions/security/trivy
-        continue-on-error: true
 
       - name: SAST Scan using Checkov
-        uses: ./.github/actions/security/checkov
-        continue-on-error: true
+        uses: ./.github/actions/security/checkov        
 
         #sji continue-on-error: true not suitable long term - maybe send alerts to something like this: 
   #         - name: Notify Rocket.Chat

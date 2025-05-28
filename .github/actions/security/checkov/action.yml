@@ -21,6 +21,7 @@ runs:
 
     - name: Run full Checkov scan (JSON + SARIF + SBOM)
       shell: bash
+      continue-on-error: true
       run: |
         checkov -d . --framework terraform --output json --output sarif --output spdx --output-file-path checkov-results
       #checkov -d . --framework terraform --output github_failed_only
@@ -48,10 +49,10 @@ runs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: checkov.sarif
-
+#can't decide which way i want to report these issues - either as a comment on the PR or as a GitHub Code Scanning Alert...sji take to QA team meet
     - name: Summarize HIGH/CRITICAL Checkov issues and comment on PR
       shell: bash
-      #if: github.event_name == 'pull_request' #sji - speed an issue?? anything else?
+      if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
       run: |
         echo "Parsing Checkov results for HIGH/CRITICAL findings..."
         summary=$(jq -r '

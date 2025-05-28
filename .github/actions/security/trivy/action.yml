@@ -57,6 +57,7 @@ runs:
 
     - name: Run Trivy on Terraform configuration
       shell: bash
+      continue-on-error: true
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
@@ -64,6 +65,7 @@ runs:
 
     - name: Run Trivy on Terraform plan (if provided)
       shell: bash
+      continue-on-error: true
       if: inputs.tf_plan_file != ''
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
