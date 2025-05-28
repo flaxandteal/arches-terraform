@@ -9,6 +9,8 @@ Scope should be as follows:
 
 2. Create the new GCP project
 3. Enable billing for the new project
+4. Enable the Cloud Key Management Service (KMS) API for the project. 
+Note: I have tried doing this in my script but it failed so manual for now
 4. You must have the following installed locally to bootstrap this:
         GitHub CLI (gh --version to check)
         GCP CLI (gcloud version to check)

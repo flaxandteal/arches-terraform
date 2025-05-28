@@ -26,13 +26,12 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
           
-      - name: Enable IAM API # sji todo - hmmm - probs need elsewhere
+      - name: Enable IAM API # sji todo - hmmm - move to terraform modules?
         run: |
           gcloud services enable iam.googleapis.com
           gcloud services enable cloudresourcemanager.googleapis.com
           gcloud services enable artifactregistry.googleapis.com
           gcloud services enable compute.googleapis.com
-          gcloud services enable keymanagement.googleapis.com
           gcloud services enable container.googleapis.com 
           gcloud services enable compute.googleapis.com
           sleep 60  # Wait 60 seconds for propagation

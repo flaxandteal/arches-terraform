@@ -32,6 +32,10 @@ for VAR in "${REQUIRED_VARS[@]}"; do
   fi
 done
 
+# Set the project
+echo "Setting project to ${PROJECT_ID}..."
+gcloud config set project "${PROJECT_ID}"
+
 # Define roles to assign
 ROLES=(
   "roles/iam.serviceAccountAdmin" # to create service accounts
@@ -39,7 +43,6 @@ ROLES=(
   "roles/storage.admin" # to create a storage bucket
   "roles/serviceusage.serviceUsageAdmin" # to enable APIs
   "roles/resourcemanager.projectIamAdmin" # to set IAM policies
- 
 )
 #sji tidy!
 #"roles/iam.serviceAccountKeyViewer" # to view service account keys - sji remove? not strictly needed
@@ -63,10 +66,6 @@ if ! command -v gcloud &> /dev/null; then
   echo "Error: gcloud CLI is not installed. Please install the Google Cloud SDK."
   exit 1
 fi
-
-# Set the project
-echo "Setting project to ${PROJECT_ID}..."
-gcloud config set project "${PROJECT_ID}"
 
 # Create the service account
 echo "Creating service account ${BOOTSTRAP_SA_NAME}..."
