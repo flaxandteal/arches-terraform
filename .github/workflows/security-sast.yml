@@ -39,8 +39,6 @@ jobs:
 
       - name: SAST Scan using trivy
         uses: ./.github/actions/security/trivy
-        with:
-          terraform_version: ${{ steps.tf-version.outputs.version }}
         continue-on-error: true
 
       - name: SAST Scan using Checkov

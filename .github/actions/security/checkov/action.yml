@@ -80,3 +80,19 @@ runs:
           -H "Content-Type: application/json" \
           -d "$(jq -n --arg body "$comment" '{body: $body}')" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+
+    - name: Upload Checkov Results Artifact
+      if: github.event_name != 'schedule' || github.ref != 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkov-results
+        path: |
+          checkov-results.json
+          checkov-results.sarif
+          checkov-results.xml
+
+    - name: Upload SARIF to GitHub Code Scanning
+      if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: checkov.sarif
