@@ -45,7 +45,7 @@ jobs:
   #         scripts/setup_tf/create_tf_service_account.sh
           
   setup-bucket:
-    needs: setup-service-account
+    #needs: setup-service-account
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
