@@ -57,30 +57,30 @@ fi
 #Set the project
 gcloud config set project "$PROJECT_ID"
 
-# #Create the service account
-# echo "Creating service account ${TF_SA_NAME}..."
-# gcloud iam service-accounts create "${TF_SA_NAME}" \
-#   --display-name="${TF_SA_DISPLAY_NAME}" \
-#   --project="${PROJECT_ID}" \
-#   --description="Service account for Terraform"
+#Create the service account
+echo "Creating service account ${TF_SA_NAME}..."
+gcloud iam service-accounts create "${TF_SA_NAME}" \
+  --display-name="${TF_SA_DISPLAY_NAME}" \
+  --project="${PROJECT_ID}" \
+  --description="Service account for Terraform"
 
-# # Delay to ensure the service account is created before assigning roles
-# #without this the assign roles command fails
-# sleep 10
+# Delay to ensure the service account is created before assigning roles
+#without this the assign roles command fails
+sleep 10
 
-# # Check if the service account was created successfully
-# if ! gcloud iam service-accounts list --project="${PROJECT_ID}" | grep -q "${TF_SA_NAME}"; then
-#   echo "Error: Service account '${TF_SA_NAME}' was not created successfully."
-#   exit 1
-# fi
+# Check if the service account was created successfully
+if ! gcloud iam service-accounts list --project="${PROJECT_ID}" | grep -q "${TF_SA_NAME}"; then
+  echo "Error: Service account '${TF_SA_NAME}' was not created successfully."
+  exit 1
+fi
 
-# # Assign roles to the service account
-# for ROLE in "${ROLES[@]}"; do
-#   echo "Assigning role ${ROLE} to service account..."
-#   gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#     --member="serviceAccount:${TF_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#     --role="${ROLE}"
-# done
+# Assign roles to the service account
+for ROLE in "${ROLES[@]}"; do
+  echo "Assigning role ${ROLE} to service account..."
+  gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="serviceAccount:${TF_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+    --role="${ROLE}"
+done
 
 # Create and download the service account key
 echo "Generating service account key..."
@@ -93,10 +93,6 @@ echo "Setting GOOGLE_APPLICATION_CREDENTIALS to ${TF_KEY_FILE}..."
 export GOOGLE_APPLICATION_CREDENTIALS="${TF_KEY_FILE}"
 
 # Create required secrets
-ls -la
-pwd
-ls -la scripts/
-ls -la $GITHUB_WORKSPACE/scripts/
 chmod +x scripts/add_github_secret.sh
 scripts/add_github_secret.sh ${TF_SA_SECRET} ${TF_KEY_FILE}
 

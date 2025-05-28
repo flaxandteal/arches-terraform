@@ -7,42 +7,42 @@ on:
   workflow_dispatch:  # Manual trigger for initial setup
 #todo! backup state bucket somewhere using bootstrap account and schedule  it sji 
 jobs:
-  setup-service-account:
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout repo
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # setup-service-account:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # Checkout repo
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
+  #     - name: Authenticate GitHub CLI
+  #       run: |
+  #         echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
 
-      - name: Authenticate with GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.TF_BOOTSTRAP_SA }}'  # Key from script
+  #     - name: Authenticate with GCP
+  #       uses: google-github-actions/auth@v2
+  #       with:
+  #         credentials_json: '${{ secrets.TF_BOOTSTRAP_SA }}'  # Key from script
          
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
+  #     - name: Set up gcloud CLI
+  #       uses: google-github-actions/setup-gcloud@v2
           
-      - name: Enable IAM API # sji todo - hmmm - move to terraform modules?
-        run: |
-          gcloud services enable iam.googleapis.com
-          gcloud services enable cloudresourcemanager.googleapis.com
-          gcloud services enable artifactregistry.googleapis.com
-          gcloud services enable compute.googleapis.com
-          gcloud services enable container.googleapis.com 
-          gcloud services enable compute.googleapis.com
-          sleep 60  # Wait 60 seconds for propagation
+  #     - name: Enable IAM API # sji todo - hmmm - move to terraform modules?
+  #       run: |
+  #         gcloud services enable iam.googleapis.com
+  #         gcloud services enable cloudresourcemanager.googleapis.com
+  #         gcloud services enable artifactregistry.googleapis.com
+  #         gcloud services enable compute.googleapis.com
+  #         gcloud services enable container.googleapis.com 
+  #         gcloud services enable compute.googleapis.com
+  #         sleep 60  # Wait 60 seconds for propagation
 
-      # Run sa creation script
-      - name: Create Terraform Service Account
-        run: |
-          chmod +x scripts/setup_tf/create_tf_service_account.sh
-          scripts/setup_tf/create_tf_service_account.sh
+  #     # Run sa creation script
+  #     - name: Create Terraform Service Account
+  #       run: |
+  #         chmod +x scripts/setup_tf/create_tf_service_account.sh
+  #         scripts/setup_tf/create_tf_service_account.sh
           
   setup-bucket:
     needs: setup-service-account
