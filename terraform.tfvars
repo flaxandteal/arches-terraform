@@ -1,3 +1,8 @@
+common_labels = {
+  project     = "coral-hed"
+  environment = "production"
+}
+
 project_id = "coral-hed"
 location   = "europe-west2"
 region     = "europe-west2"

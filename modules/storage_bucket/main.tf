@@ -1,11 +1,13 @@
 resource "google_storage_bucket" "bucket" {
-  provider                    = google
-  project                     = var.project_id
-  name                        = var.name
-  location                    = var.location
-  storage_class               = var.storage_class
-  force_destroy               = var.force_destroy
-  public_access_prevention    = var.public_access_prevention
+  provider                 = google
+  project                  = var.project_id
+  name                     = var.name
+  location                 = var.location
+  storage_class            = var.storage_class
+  force_destroy            = var.force_destroy
+  public_access_prevention = var.public_access_prevention
+
+  labels = var.common_labels
 
   #security settings
   uniform_bucket_level_access = true #CKV_GCP_29

@@ -160,19 +160,19 @@ resource "google_container_cluster" "cluster" {
   }
 
 
-    # sji todo
+  # sji todo
   # security settings
   # authenticator_groups_config {
   #   security_group = "group@example.com" # CKV_GCP_65
   # }
-  
+
   node_config {
     shielded_instance_config {
-      enable_secure_boot = true #CKV_GCP_68
+      enable_secure_boot          = true #CKV_GCP_68
       enable_integrity_monitoring = true #CKV_GCP_72
     }
   }
-  
+
 
   depends_on = [var.depends_on_container_api]
 }

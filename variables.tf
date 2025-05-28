@@ -1,3 +1,8 @@
+variable "common_labels" {
+  description = "Common labels to apply to resources"
+  type        = map(string)
+}
+
 variable "project_id" {
   description = "The project ID to deploy resources"
   type        = string
