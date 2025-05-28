@@ -166,7 +166,12 @@ resource "google_container_cluster" "cluster" {
   #   security_group = "group@example.com" # CKV_GCP_65
   # }
 
+  enable_intranode_visibility = true #CKV_GCP_61
+
   node_config {
+    metadata = {
+      enable = true #CKV_GCP_69
+    }
     shielded_instance_config {
       enable_secure_boot          = true #CKV_GCP_68
       enable_integrity_monitoring = true #CKV_GCP_72

@@ -46,7 +46,7 @@ module "compute_firewall" {
 module "storage_bucket" {
   for_each                    = var.buckets
   source                      = "./modules/storage_bucket"
-  common_labels  = var.common_labels
+  common_labels               = var.common_labels
   project_id                  = var.project_id
   name                        = each.value.name
   location                    = each.value.location
