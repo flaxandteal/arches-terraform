@@ -6,8 +6,10 @@ Scope should be as follows:
         workflow
         write:org
         admin:repo_hook
-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
-2. You must have the following installed locally to bootstrap this:
+
+2. Create the new GCP project
+3. Enable billing for the new project
+4. You must have the following installed locally to bootstrap this:
         GitHub CLI (gh --version to check)
         GCP CLI (gcloud version to check)
 Authenticate to both.
@@ -17,6 +19,8 @@ Set the project
         gcloud config set project PROJECT_ID
 Check the current project
         gcloud config get-value project 
+5. Enable googleapis for the new GCP project
+        gcloud services enable iam.googleapis.com
 
 ## Bootstrap Terraform
 1. Update the /scrips/setup_tf/config.env file with correct values
@@ -26,6 +30,13 @@ Store the resultant bootstrap json somewhere sensible. Normally stores to /home/
 
 ### Environment Setup
 Manually run Setup Terraform State (.github/workflows/setup-tf-state.yml) GitHub Action. This will create the service account needed for Terraform as well as the state bucket.
+Note: The run will stop expecting authentication with the following message: 
+        ! First copy your one-time code: 00E5-F620
+        Open this URL to continue in your web browser: https://github.com/login/device
+        failed to authenticate via web browser: context deadline exceeded
+        Error: Process completed with exit code 1.
+Follow instructions and the run will continue or rerun if it has stopped
+
 
 # Terraform
 ## Project Structure
