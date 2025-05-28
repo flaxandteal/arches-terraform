@@ -167,7 +167,7 @@ firewalls = {
 
 buckets = {
   data_store_prd = {
-    name                        = "sjicrl-data-store-prd-eu-west-2-flax"
+    name                        = "crl-hed-data-store-prd-eu-west-2-flax"
     location                    = "EUROPE-WEST2"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -178,7 +178,7 @@ buckets = {
     logging                     = null
   },
   data_store_uat_prd = {
-    name                        = "sjicrl-data-store-uat-eu-west-2-prd"
+    name                        = "crl-hed-data-store-uat-eu-west-2-prd"
     location                    = "EUROPE-WEST2"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -195,11 +195,11 @@ buckets = {
     }
     logging = {
       log_bucket        = "log-store-eu-west-2"
-      log_object_prefix = "sji.crl-data-store-uat-eu-west-2-prd"
+      log_object_prefix = "crl-hed-data-store-uat-eu-west-2-prd"
     }
   },
   data_store_uat = {
-    name                        = "sjicrl-data-store-uat-eu-west-2"
+    name                        = "crl-hed-data-store-uat-eu-west-2"
     location                    = "EUROPE-WEST2"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -216,11 +216,11 @@ buckets = {
     }
     logging = {
       log_bucket        = "log-store-eu-west-2"
-      log_object_prefix = "sji.crl-data-store-uat-eu-west-2"
+      log_object_prefix = "crl-hed-data-store-uat-eu-west-2"
     }
   },
   log_store_prd = {
-    name                        = "sjicrl-log-store-eu-west-2-prd"
+    name                        = "crl-hed-log-store-eu-west-2-prd"
     location                    = "EUROPE-WEST2"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -231,7 +231,7 @@ buckets = {
     logging                     = null
   },
   log_store = {
-    name                        = "sjicrl-log-store-eu-west-2"
+    name                        = "crl-hed-log-store-eu-west-2"
     location                    = "EUROPE-WEST2"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -242,7 +242,7 @@ buckets = {
     logging                     = null
   },
   artifacts_us = {
-    name                        = "sjiartifacts-coral-hed-appspot-com"
+    name                        = "artifacts-crl-hed-appspot-com"
     location                    = "US"
     storage_class               = "STANDARD"
     force_destroy               = false
@@ -253,7 +253,7 @@ buckets = {
     logging                     = null
   },
   artifacts_eu = {
-    name                        = "sjieu-artifacts-coral-hed-appspot-com"
+    name                        = "eu-artifacts-crl-hed-appspot-com"
     location                    = "EU"
     storage_class               = "STANDARD"
     force_destroy               = false
