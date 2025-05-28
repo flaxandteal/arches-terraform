@@ -1,18 +1,11 @@
 name: Terraform Deployment
-
+# on:
+#   workflow_run:
+#       workflows: ["Security Scan"]
+#       types:
+#         - completed
 on:
-  workflow_run:
-      workflows: ["Security Scan"]
-      types:
-        - completed
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - dev
-    #   - uat
-    #   - prod
-    # paths:
-    #   - 'terraform/**'
+  workflow_dispatch: #change based on env todo sji
 
 permissions:
   contents: write
@@ -56,8 +49,6 @@ jobs:
         uses: ./.github/actions/terraform/quality
         with:
           terraform_version: ${{ steps.tf-version.outputs.version }}
-
-          # or here?
 
       - name: Terraform Build
         uses: ./.github/actions/terraform/build

@@ -44,7 +44,7 @@ runs:
       shell: bash
 
     - name: Terraform Init
-      run: terraform init -upgrade
+      run: terraform init -backend-config=backend.hcl -upgrade 
       shell: bash
       #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
 
