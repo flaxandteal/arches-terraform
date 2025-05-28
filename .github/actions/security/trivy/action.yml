@@ -50,7 +50,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
-        trivy config --severity ${{ inputs.severity }} --config .trivy.yml .
+        trivy config --severity ${{ inputs.severity }} --config "${{ github.action_path }}/.trivy.yml" .
 
     - name: Run Trivy on Terraform plan (if provided)
       shell: bash
@@ -58,4 +58,4 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
-        trivy config --severity ${{ inputs.severity }} --config .trivy.yml ${{ inputs.tf_plan_file }}
+        trivy config --severity ${{ inputs.severity }} --config "${{ github.action_path }}/.trivy.yml" ${{ inputs.tf_plan_file }}

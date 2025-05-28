@@ -1,0 +1,39 @@
+# .trivy.yml
+
+# Only include these scan types
+scanners:
+  - config
+
+# Severity levels to report
+severity:
+  - CRITICAL
+  - HIGH
+
+# Skip these directories (if you use Terraform modules or vendor directories)
+skip-dirs:
+  - .terraform
+  - vendor
+
+# Enable Terraform-specific configuration scanning
+config:
+  terraform:
+    enabled: true
+
+# Include policies from Rego (optional; only if using OPA/Custom policies)
+# policy:
+#   paths:
+#     - ./policy
+#   namespaces:
+#     - user
+
+# Optional: ignore specific results
+# ignorefile: .trivyignore
+
+# Exit with non-zero code if vulnerabilities are found
+exit-code: 1
+
+# Format of the report
+format: table  # or json, sarif, etc.
+
+# Output file (optional)
+# output: trivy-results.txt
