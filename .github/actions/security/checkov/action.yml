@@ -89,7 +89,6 @@ runs:
         name: checkov-results
         path: |
           checkov-results.json
-          checkov-results.sarif
           checkov-results.xml
 
     - name: Upload SARIF to GitHub Code Scanning
@@ -97,3 +96,5 @@ runs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: checkov.sarif
+
+# this produces an sbom?! what should we do with it?        

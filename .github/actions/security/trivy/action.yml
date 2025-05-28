@@ -83,10 +83,10 @@ runs:
         sarif_file: trivy-results.sarif
         category: trivy
     
-    # Upload JSON artifact on all other runs
-    - name: Upload Trivy JSON Artifact
-      if: github.event_name != 'schedule' || github.ref != 'refs/heads/main'
-      uses: actions/upload-artifact@v4
-      with:
-        name: trivy-json-report
-        path: trivy-results.json
+    # # Upload JSON artifact on all other runs
+    # - name: Upload Trivy JSON Artifact
+    #   if: github.event_name != 'schedule' || github.ref != 'refs/heads/main'
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: trivy-json-report
+    #     path: trivy-results.json
