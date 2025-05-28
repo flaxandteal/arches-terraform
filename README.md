@@ -11,7 +11,10 @@ Scope should be as follows:
 3. Enable billing for the new project
 4. Enable the Cloud Key Management Service (KMS) API for the project. 
 Note: I have tried doing this in my script but it failed so manual for now
-4. You must have the following installed locally to bootstrap this:
+
+The above are the only tasks that you need to execute manually in the GCP console. 
+Please try and stick to automation for everything else from now on - we don't want drift!
+5. You must have the following installed locally to bootstrap this:
         GitHub CLI (gh --version to check)
         GCP CLI (gcloud version to check)
 Authenticate to both.
@@ -21,7 +24,7 @@ Set the project
         gcloud config set project PROJECT_ID
 Check the current project
         gcloud config get-value project 
-5. Enable googleapis for the new GCP project
+6. Enable googleapis for the new GCP project
         gcloud services enable iam.googleapis.com
 
 ## Bootstrap Terraform
