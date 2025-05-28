@@ -1,0 +1,51 @@
+name: Terraform Drift Detection
+
+on:
+  push:
+    branches:
+      - '**'  # Run on push to any branch
+
+#  schedule:
+#    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GOOGLE_CREDENTIALS: ${{ secrets.TF_SA }}
+
+jobs:
+  terraform-drift:
+    runs-on: ubuntu-latest
+    name: Terraform Drift Check
+
+    # 👇 Only allow schedule to run on 'main', allow everything else unconditionally 
+    if: github.event_name != 'schedule' || github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}'
+          export_environment_variables: true
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Get Terraform Version
+        uses: ./.github/actions/terraform/version
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ steps.tf-version.outputs.version }}
+
+      - name: Terraform Drift Check
+        uses: ./.github/actions/terraform/drift
+        with:
+          terraform_version: ${{ steps.tf-version.outputs.version }}

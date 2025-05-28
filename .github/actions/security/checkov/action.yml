@@ -1,0 +1,82 @@
+# name: Terraform Security Scan
+name: Terraform Security Scan
+description: Run Checkov to scan Terraform code for security issues
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Checkov + jq
+      shell: bash
+      run: |
+        pip install checkov
+        sudo apt-get update && sudo apt-get install -y jq
+
+    - name: Checkov Version
+      shell: bash
+      run: checkov --version
+
+    - name: Run full Checkov scan (JSON + SARIF + SBOM)
+      shell: bash
+      run: |
+        checkov -d . --framework terraform --output json --output sarif --output spdx --output-file-path checkov-results
+      #checkov -d . --framework terraform --output github_failed_only
+
+    - name: Check for HIGH or CRITICAL findings
+      shell: bash
+      id: check_severity
+      run: |
+        count=$(jq '[.results.failed_checks[] | select(.severity=="HIGH" or .severity=="CRITICAL")] | length' checkov.json)
+        echo "HIGH+CRITICAL issues found: $count"
+        if [ "$count" -gt 0 ]; then
+          exit 1
+        fi
+
+    - name: Upload Checkov Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkov-results
+        path: |
+          checkov-results.json
+          checkov-results.sarif
+          checkov-results.xml
+
+    - name: Upload SARIF to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: checkov.sarif
+
+    - name: Summarize HIGH/CRITICAL Checkov issues and comment on PR
+      shell: bash
+      #if: github.event_name == 'pull_request' #sji - speed an issue?? anything else?
+      run: |
+        echo "Parsing Checkov results for HIGH/CRITICAL findings..."
+        summary=$(jq -r '
+          [.results.failed_checks[] 
+            | select(.severity == "HIGH" or .severity == "CRITICAL") 
+            | "- [" + .severity + "] " + .check_id + ": " + .check_name 
+            + " (`" + .file_path + "`, line " + (.file_line_range[0]|tostring) + ")"
+          ] | .[]' checkov.json)
+
+        if [ -z "$summary" ]; then
+          echo "✅ No HIGH or CRITICAL Checkov issues found."
+          exit 0
+        fi
+
+        echo "🛑 HIGH/CRITICAL Checkov issues found:"
+        echo "$summary"
+
+        comment="### 🚨 Checkov Security Issues Found
+        The following **HIGH** or **CRITICAL** severity issues were detected in this PR:
+
+        $summary
+
+        _This report was generated automatically by Checkov in CI._"
+
+        curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "$(jq -n --arg body "$comment" '{body: $body}')" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"

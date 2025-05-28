@@ -1,0 +1,79 @@
+name: ReturnEndpoints
+description: ReturnEndpoints
+
+inputs:
+  service_account:
+    description: Service account to use
+    required: true
+  project_id:
+    description: GCP Project ID
+    required: true
+  terraform_version:
+    description: Terraform version to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # Set up Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        
+    - name: Terraform Version
+      run: terraform version
+      shell: bash
+
+    - name: Terraform Init
+      run: terraform init -upgrade
+      shell: bash
+
+    - name: Generate Terraform Plan
+      shell: bash
+      run: terraform plan -out=tfplan.binary
+
+    - name: Show Terraform Plan in JSON
+      shell: bash
+      run: terraform show -json tfplan.binary > tfplan.json
+
+    - name: Extract Endpoints
+      id: extract
+      shell: bash
+      run: |
+        echo "Scanning tfplan.json for endpoints..."
+
+        # Basic extraction for strings that look like IPs or URLs
+        grep -Eo 'https?://[a-zA-Z0-9./:_-]+' tfplan.json > endpoints_raw.txt
+        grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' tfplan.json >> endpoints_raw.txt
+
+        # Deduplicate and clean
+        sort -u endpoints_raw.txt > endpoints.txt
+
+        echo "Endpoints found:"
+        cat endpoints.txt
+
+        # Convert to JSON array manually
+        json="["
+        first=1
+        while IFS= read -r line; do
+          [[ -z "$line" ]] && continue
+          if [ $first -eq 1 ]; then
+            json+="\"$line\""
+            first=0
+          else
+            json+=",\"$line\""
+          fi
+        done < endpoints.txt
+        json+="]"
+
+        echo "endpoints_json=$json" >> $GITHUB_OUTPUT
+
+    - name: Upload Endpoint List
+      uses: actions/upload-artifact@v3
+      with:
+        name: endpoints
+        path: endpoints.txt

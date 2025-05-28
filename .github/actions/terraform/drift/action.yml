@@ -1,0 +1,47 @@
+name: DriftCheck
+description: DriftCheck
+
+inputs:
+  service_account:
+    description: Service account to use
+    required: true
+  project_id:
+    description: GCP Project ID
+    required: true
+  terraform_version:
+    description: Terraform version to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # Set up Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        
+    - name: Terraform Version
+      run: terraform version
+      shell: bash
+
+    - name: Terraform Init
+      run: terraform init -upgrade
+      shell: bash
+
+    - name: Terraform Plan
+      run: terraform plan -detailed-exitcode
+      shell: bash
+    #sji todo email/rocketchat or whatever but flag to team somehow
+    - name: Handle Drift Exit Code
+      shell: bash
+      run: |
+        if [[ "${{ steps.tf-plan.outcome }}" == "success" && "${{ steps.tf-plan.conclusion }}" == "success" ]]; then
+          echo "✅ No drift detected."
+        else
+          echo "⚠️ Drift detected or error occurred."
+          exit 1 
+        fi

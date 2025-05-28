@@ -1,0 +1,57 @@
+name: Enable APIs
+
+# on: sji!
+#     workflow_run:
+#       workflows: ["Security Scan"] sonar?!
+#       types:
+#         - completed
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+# iif: == 'success' sji! }}
+  enable-apis:
+    name: Enable APIs
+    # This job enables the required APIs
+    runs-on: ubuntu-latest
+    
+    # Specify environment for prod branch
+    environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
+
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GOOGLE_CREDENTIALS: ${{ secrets.TF_BOOTSTRAP_SA }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_BOOTSTRAP_SA }}'  # Key from script
+         
+      - name: Enable IAM API
+        run: |
+          gcloud services enable pubsub.googleapis.com
+          gcloud services enable iam.googleapis.com
+          gcloud services enable cloudresourcemanager.googleapis.com
+          gcloud services enable artifactregistry.googleapis.com
+          gcloud services enable compute.googleapis.com
+          gcloud services enable kubernetesengine.googleapis.com
+          gcloud services enable keymanagement.googleapis.com
+
+    #sji todo - this is ridiculous - hasn't been enabled before issue!!
+    # billing enabled? or does user not have permissions??
+    
+ #   resource "google_project_service" "service_usage" {
+ # project = "912122748943"
+ # service = "serviceusage.googleapis.com"
+#}

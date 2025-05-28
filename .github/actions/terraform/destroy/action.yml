@@ -1,0 +1,49 @@
+name: Continuous Integration - Validate Terraform
+description: Runs terraform init, validate, fmt, and plan
+
+inputs:
+  terraform_version:
+    description: Terraform version to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # Set up Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+    #sji todo - environments
+    # Determine environment based on branch
+    - name: Set environment
+      id: set-env
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "dev" ]]; then
+          echo "environment=dev" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref_name }}" == "uat" ]]; then
+          echo "environment=uat" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          echo "environment=prod" >> $GITHUB_OUTPUT
+        else
+          echo "environment=dev" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Terraform Version
+      run: terraform version
+      shell: bash
+
+    - name: Terraform Init
+      run: terraform init
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
+
+    # Apply
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}

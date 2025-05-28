@@ -1,0 +1,100 @@
+name: Continuous Integration - Validate Terraform
+description: Runs terraform init, validate and plan
+
+inputs:
+  service_account:
+    description: Service account to use
+    required: true
+  project_id:
+    description: GCP Project ID
+    required: true
+  terraform_version:
+    description: Terraform version to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # Set up Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+    #sji todo - environments
+    # Determine environment based on branch?
+    - name: Set environment
+      id: set-env
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "dev" ]]; then
+          echo "environment=dev" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref_name }}" == "uat" ]]; then
+          echo "environment=uat" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+          echo "environment=prod" >> $GITHUB_OUTPUT
+        else
+          echo "environment=dev" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Terraform Version
+      run: terraform version
+      shell: bash
+
+    - name: Terraform Init
+      run: terraform init -upgrade
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
+
+    - name: CHECK 
+      run: echo "✅ Got here..."
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
+    # - name: Confirm Credential File
+    #   shell: bash
+    #   run: |
+    #     echo "Credential file: $GOOGLE_APPLICATION_CREDENTIALS"
+    #     if [ ! -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+    #       echo "❌ Credentials file does not exist."
+    #       exit 1
+    #     fi
+
+    # - name: List Key Rings
+    #   shell: bash
+    #   run: |
+    #     gcloud kms keyrings list --location=${{ inputs.location }} --project=${{ inputs.project_id }}
+    #   env:
+    #     GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS
+
+    #genericise this - maybe allow injection of actions?
+    # - name: Clean up stale IAM bindings for deleted service accounts
+    #   uses: ./.github/actions/terraform/gcp/cleanup_iam_bindings
+    #   with:
+    #     service_account: ${{ inputs.service_account }}
+    #     project_id: ${{ inputs.project_id }}
+    #     dry_run: false
+
+    - name: Import existing KMS key rings
+      uses: ./.github/actions/terraform/gcp/import-kms-keyrings
+      with:
+        service_account: ${{ inputs.service_account }}
+        project_id: ${{ inputs.project_id }}
+        location: europe-west2
+
+    - name: Terraform Validate
+      run: terraform validate
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
+
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}
+
+    # Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      shell: bash
+      #working-directory: ./environments/${{ steps.set-env.outputs.environment }}

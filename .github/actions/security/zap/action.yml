@@ -1,0 +1,83 @@
+name: ZAP Security Scan
+description: Run ZAP scan against one endpoint 
+
+inputs:
+  target:
+    description: The URL to scan
+    required: true
+  fail_level:
+    description: Minimum alert level that causes failure (e.g., INFO, WARN, FAIL)
+    required: false
+    default: WARN
+  timeout:
+    description: Max scan time in minutes
+    required: false
+    default: "10"
+  scan_type:
+    description: Type of ZAP scan (baseline, full, or api)
+    required: false
+    default: baseline 
+   
+runs:
+  using: "composite"
+  steps:
+    - name: Validate scan_type since we cannot restrict inputs
+      shell: bash
+      run: |
+        case "${{ inputs.scan_type }}" in
+          baseline|full|api)
+            echo "Scan type '${{ inputs.scan_type }}' is valid."
+            ;;
+          *)
+            echo "❌ Invalid scan_type '${{ inputs.scan_type }}'. Must be one of: baseline, full, api."
+            exit 1
+            ;;
+        esac
+
+    - name: Run ZAP ${{ inputs.scan_type }} Scan
+      shell: bash
+      run: |
+        echo "Starting ZAP ${{ inputs.scan_type }} scan on ${{ inputs.target }}"
+
+        # Set config path based on scan type
+        CONFIG_PATH=".github/actions/zap/config/zap-${{ inputs.scan_type }}.conf"
+        if [[ ! -f "$CONFIG_PATH" ]]; then
+          echo "❌ Configuration file $CONFIG_PATH not found."
+          exit 1
+        fi
+        echo "Using configuration file: $CONFIG_PATH"
+        if [[ "${{ inputs.scan_type }}" == "full" ]]; then
+          SCAN_CMD="zap-full-scan.py -t \"${{ inputs.target }}\" -c $CONFIG_PATH"
+        elif [[ "${{ inputs.scan_type }}" == "api" ]]; then
+          SCAN_CMD="zap-api-scan.py -t \"${{ inputs.target }}\" -c $CONFIG_PATH"
+        else
+          SCAN_CMD="zap-baseline.py -t \"${{ inputs.target }}\" -c $CONFIG_PATH"
+        fi
+
+        docker run --rm -v $(pwd):/zap/wrk/:rw \
+          -t ghcr.io/zaproxy/zaproxy:stable \
+          bash -c "$SCAN_CMD -g gen.conf -r zap_report.html -w zap_report.md -x zap_report.json || true"
+        echo "ZAP scan completed."    
+
+    - name: Upload ZAP HTML Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap-html-report
+        path: zap_report.html
+
+    - name: Upload ZAP JSON Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap-json-report
+        path: zap_report.json
+
+    - name: Convert ZAP JSON to SARIF
+      run: |
+        python3 .github/scripts/zap_to_sarif.py
+
+    - name: Upload SARIF to GitHub
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: zap_report.sarif
+
+

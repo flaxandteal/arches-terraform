@@ -1,0 +1,26 @@
+# Checkov Configuration for Terraform Security Scanning (GCP)
+# Maintainer Notes:
+# - This config is tailored for GCP Terraform projects.
+# - To skip checks: add to `skip_check` (e.g., CKV_GCP_30 for GCS bucket uniform access).
+# - To exclude files/folders: add to `skip_path` (e.g., .github/, modules/legacy/).
+# - CI filters HIGH/CRITICAL issues separately — do not add severity filtering here.
+# - Use in-line suppressions for specific resources: "checkov:skip=<check_id>:<reason>".
+# - Common GCP checks to consider skipping (if needed):
+#   - CKV_GCP_18: Public IP on Compute Engine (if public IPs are intentional).
+#   - CKV_GCP_66: Default service account usage (if legacy workflows require it).
+
+skip_check:
+  - CKV_GCP_30        # GCS bucket should have uniform bucket-level access enabled
+  # Optional additional skips (uncomment if needed):
+  # - CKV_GCP_18      # Ensure Compute Engine instances do not have public IP
+  # - CKV_GCP_66      # Avoid default service account for GKE/Compute Engine
+
+skip_path:
+  - .github/          # Exclude GitHub Actions workflows
+
+# Enable in-line suppressions in .tf files
+suppress_comment: "checkov:skip=<check_id>:<reason>"
+
+# Optional: Restrict to Terraform framework (recommended for clarity)
+framework:
+  - terraform

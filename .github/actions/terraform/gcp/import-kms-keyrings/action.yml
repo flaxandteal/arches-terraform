@@ -1,0 +1,186 @@
+name: "Import GCP KMS Key Rings"
+description: "Checks for existing GCP KMS key rings and imports them into Terraform if found."
+
+inputs:
+  project_id:
+    description: "Project ID"
+    required: true
+  location:
+    description: "KMS location (e.g. europe-west2)"
+    required: false
+    default: "europe-west2"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: CHECK 
+      run: echo "✅✅ now here..."
+      shell: bash
+
+    # Authenticate to GCP
+    - name: Authenticate with GCP
+      id: auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ inputs.service_account }}
+        export_environment_variables: true
+        
+    - name: Set up Google Cloud
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ inputs.project_id }}
+
+    - name: Import existing key rings from terraform.tfvars
+      shell: bash
+      run: |
+        echo "🐍 Installing python-hcl2..."
+        pip install python-hcl2 --quiet
+
+        echo "📦 Running import logic..."
+        python <<EOF
+        import hcl2
+        import subprocess
+        from pathlib import Path
+
+        LOCATION = "${{ inputs.location }}"
+        PROJECT_ID = "${{ inputs.project_id }}"
+
+        # Load terraform.tfvars
+        try:
+            with open("terraform.tfvars", "r") as f:
+                tfvars = hcl2.load(f)
+        except Exception as e:
+            print(f"❌ Failed to load terraform.tfvars: {e}")
+            exit(1)
+
+        kms_key_rings = tfvars.get("kms_key_rings", {})
+
+        for map_key, config in kms_key_rings.items():
+            key_ring_name = config.get("name")
+            tf_resource = f'module.kms_key_ring["{map_key}"].google_kms_key_ring.key_ring'
+            gcp_resource = f'projects/{PROJECT_ID}/locations/{LOCATION}/keyRings/{key_ring_name}'
+
+            print(f"🔍 Checking Terraform state for key ring '{key_ring_name}' (resource: {tf_resource})...")
+            check_state_command = f'terraform state list'
+            result = subprocess.run(check_state_command, shell=True, capture_output=True, text=True)
+            print(f"Debug: terraform state list output:\n{result.stdout}")
+
+            if result.returncode == 0 and tf_resource in result.stdout.splitlines():
+                print(f"✅ Key ring '{key_ring_name}' already in state. Proceeding to crypto keys.")
+            else:
+                print(f"🔍 Key ring '{key_ring_name}' not in state. Checking if it exists in GCP...")
+                result = subprocess.run(
+                    [
+                        "gcloud", "kms", "keyrings", "describe",
+                        key_ring_name,
+                        f"--location={LOCATION}",
+                        f"--project={PROJECT_ID}"
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+
+                if result.returncode == 0:
+                    print(f"✅ Key ring found in GCP. Importing as: {tf_resource}")
+                    try:
+                        import_result = subprocess.run(
+                            ["terraform", "import", tf_resource, gcp_resource],
+                            check=True,
+                            capture_output=True,
+                            text=True
+                        )
+                        print(f"✅ Successfully imported key ring '{key_ring_name}'")
+                        print(f"Debug: Import stdout: {import_result.stdout}")
+                    except subprocess.CalledProcessError as e:
+                        print(f"❌ Failed to import key ring '{key_ring_name}': {e.stderr}")
+                        print(f"⚠️ Manual import command: terraform import '{tf_resource}' '{gcp_resource}'")
+                        if "Resource already managed by Terraform" in e.stderr:
+                            print(f"✅ Key ring '{key_ring_name}' is already managed. Proceeding to crypto keys.")
+                        else:
+                            continue
+                else:
+                    print(f"⚠️ Key ring '{key_ring_name}' not found in GCP: {result.stderr}")
+                    continue
+
+            # Handle crypto keys
+            crypto_keys = config.get("crypto_keys", {})
+            for crypto_key_key, crypto_key_conf in crypto_keys.items():
+                crypto_key_name = crypto_key_conf.get("name")
+                tf_crypto_resource = f'module.kms_key_ring["{map_key}"].google_kms_crypto_key.crypto_key["{crypto_key_key}"]'
+                gcp_crypto_resource = f'projects/{PROJECT_ID}/locations/{LOCATION}/keyRings/{key_ring_name}/cryptoKeys/{crypto_key_name}'
+
+                print(f"🔍 Checking Terraform state for crypto key '{crypto_key_name}' (resource: {tf_crypto_resource})...")
+                check_crypto_state_command = f'terraform state list'
+                crypto_result = subprocess.run(check_crypto_state_command, shell=True, capture_output=True, text=True)
+                print(f"Debug: terraform state list output for crypto key:\n{crypto_result.stdout}")
+
+                if crypto_result.returncode == 0 and tf_crypto_resource in crypto_result.stdout.splitlines():
+                    print(f"✅ Crypto key '{crypto_key_name}' already in state. Skipping import.")
+                    continue
+
+                print(f"🔍 Checking if crypto key '{crypto_key_name}' exists in GCP...")
+                crypto_check = subprocess.run(
+                    [
+                        "gcloud", "kms", "keys", "describe",
+                        crypto_key_name,
+                        f"--keyring={key_ring_name}",
+                        f"--location={LOCATION}",
+                        f"--project={PROJECT_ID}"
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+
+                if crypto_check.returncode == 0:
+                    print(f"✅ Crypto key found. Importing as: {tf_crypto_resource}")
+                    try:
+                        import_result = subprocess.run(
+                            ["terraform", "import", tf_crypto_resource, gcp_crypto_resource],
+                            check=True,
+                            capture_output=True,
+                            text=True
+                        )
+                        print(f"✅ Successfully imported crypto key '{crypto_key_name}'")
+                        print(f"Debug: Import stdout: {import_result.stdout}")
+                    except subprocess.CalledProcessError as e:
+                        print(f"❌ Failed to import crypto key '{crypto_key_name}': {e.stderr}")
+                        print(f"⚠️ Manual import command: terraform import '{tf_crypto_resource}' '{gcp_crypto_resource}'")
+                        continue
+                else:
+                    print(f"⚠️ Crypto key '{crypto_key_name}' not found in GCP: {crypto_check.stderr}")
+                    continue
+
+                # Handle IAM roles for Key Ring
+                iam_roles = config.get("iam_roles", [])
+                for iam_role in iam_roles:
+                    role = iam_role.get("role")
+                    member = iam_role.get("member")
+
+                    tf_iam_resource = f"google_project_iam_member.{map_key}_{role.replace('/', '_')}_{member.replace(':', '_').replace('@', '_')}"
+                    gcp_iam_resource = f"projects/{PROJECT_ID}/members/{member}"
+
+                    print(f"🔍 Importing IAM role '{role}' for key ring '{key_ring_name}' to member '{member}'")
+                    subprocess.run(["terraform", "import", tf_iam_resource, gcp_iam_resource], check=True)
+
+                # Handle IAM roles for Crypto Keys
+                crypto_keys = config.get("crypto_keys", {})
+                for crypto_key_key, crypto_key_conf in crypto_keys.items():
+                    crypto_key_name = crypto_key_conf.get("name")
+                    crypto_iam_roles = crypto_key_conf.get("iam_roles", [])
+                    
+                    for iam_role in crypto_iam_roles:
+                        role = iam_role.get("role")
+                        member = iam_role.get("member")
+
+                        tf_crypto_iam_resource = f"google_project_iam_member.{map_key}_{crypto_key_key}_{role.replace('/', '_')}_{member.replace(':', '_').replace('@', '_')}"
+                        gcp_crypto_iam_resource = f"projects/{PROJECT_ID}/locations/{LOCATION}/keyRings/{key_ring_name}/cryptoKeys/{crypto_key_name}/members/{member}"
+
+                        print(f"🔍 Importing IAM role '{role}' for crypto key '{crypto_key_name}' to member '{member}'")
+                        subprocess.run(["terraform", "import", tf_crypto_iam_resource, gcp_crypto_iam_resource], check=True)
+
+
+        print("✅ All key rings and crypto keys processed successfully.")
+        EOF

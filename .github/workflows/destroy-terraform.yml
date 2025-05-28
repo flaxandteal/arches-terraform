@@ -1,0 +1,40 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  terraform-destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    
+    # Specify environment for prod branch
+    environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
+
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GOOGLE_CREDENTIALS: ${{ secrets.TF_SA }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}'  # Key from script
+         
+      - name: Terraform Destroy
+        uses: ./.github/actions/terraform/destroy
+
+      - name: Disable IAM API
+        run: |
+          gcloud services disable iam.googleapis.com
+          gcloud services disable cloudresourcemanager.googleapis.com
+          gcloud services disable artifactregistry.googleapis.com
+          gcloud services disable compute.googleapis.com
+          gcloud services disable keymanagement.googleapis.com
