@@ -118,11 +118,11 @@ module "kms_key_ring" {
 variable "clusters" {
   description = "Map of GKE clusters to create. Each cluster is an object containing cluster and node pool configs."
   type = map(object({
-    name                 = string
-    location             = string
-    network              = string
-    subnetwork           = string
-    min_master_version   = string
+    name               = string
+    location           = string
+    network            = string
+    subnetwork         = string
+    min_master_version = string
     ip_allocation_policy = object({
       cluster_secondary_range_name  = string
       services_secondary_range_name = string
@@ -135,11 +135,11 @@ variable "clusters" {
       })
     })
     addons_config = object({
-      dns_cache_config = object({ enabled = bool })
+      dns_cache_config                      = object({ enabled = bool })
       gce_persistent_disk_csi_driver_config = object({ enabled = bool })
-      horizontal_pod_autoscaling = object({ disabled = bool })
-      http_load_balancing = object({ disabled = bool })
-      network_policy_config = object({ disabled = bool })
+      horizontal_pod_autoscaling            = object({ disabled = bool })
+      http_load_balancing                   = object({ disabled = bool })
+      network_policy_config                 = object({ disabled = bool })
     })
     cluster_autoscaling = object({
       autoscaling_profile = string
@@ -149,7 +149,7 @@ variable "clusters" {
       key_name = string
     })
     default_max_pods_per_node = number
-    default_snat_status       = object({
+    default_snat_status = object({
       disabled = bool
     })
     description           = string
