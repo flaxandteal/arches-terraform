@@ -68,6 +68,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
+      # },
+      # {
+      #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+      #   ip_cidr_range = "10.196.0.0/14"
+      # },
+      # {
+      #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
+      #   ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -90,6 +98,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
+      # },
+      # {
+      #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+      #   ip_cidr_range = "10.196.0.0/14"
+      # },
+      # {
+      #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
+      #   ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -398,8 +414,8 @@ clusters = {
   prd = {
     name                     = "k8s-coral-prd"
     location                 = "europe-west2-a"
-    network                  = "projects/coral-hed/global/networks/coral-network-prd"
-    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+    network                  = "coral-network-prd"
+    subnetwork               = "coral-subnetwork-prd"
     node_version             = "1.31.7-gke.1265000"
     min_master_version       = "1.31.7-gke.1265000"
     initial_node_count       = 1
@@ -422,9 +438,7 @@ clusters = {
         "https://www.googleapis.com/auth/trace.append"
       ]
       service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
-      shielded_instance_config = {
-        enable_integrity_monitoring = true
-      }
+      shielded_instance_config = { enable_integrity_monitoring = true }
       workload_metadata_config = {
         mode = "GKE_METADATA"
       }
@@ -438,12 +452,8 @@ clusters = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
-      }
+      pod_cidr_overprovision_config = { disabled = false }
+      additional_pod_ranges_config   = { pod_range_names = [] }
     }
     addons_config = {
       dns_cache_config = {
@@ -606,11 +616,10 @@ clusters = {
   stg = {
     name                     = "k8s-coral-stg"
     location                 = "europe-west2-a"
-    network                  = "projects/coral-hed/global/networks/coral-network"
-    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
-    node_version             = "1.31.7-gke.1265000"
+    network                  = "coral-network"
+    subnetwork               = "coral-subnetwork"
+    node_version             = "1.31.7-gke.1265000" #sji todo
     min_master_version       = "1.31.7-gke.1265000"
-    initial_node_count       = 1
     remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
@@ -639,12 +648,8 @@ clusters = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
-      }
+      pod_cidr_overprovision_config = { disabled = false }
+      additional_pod_ranges_config   = { pod_range_names = [] }
     }
     addons_config = {
       dns_cache_config = {
