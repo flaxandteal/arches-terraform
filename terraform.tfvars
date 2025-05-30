@@ -547,7 +547,7 @@ clusters = {
     }
     node_pools = {
       prd = {
-        machine_type = "e2-standard-4" #"e2-standard-8"
+        machine_type    = "e2-standard-4" #"e2-standard-8"
         service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
         oauth_scopes = [
           "https://www.googleapis.com/auth/devstorage.read_only",
@@ -748,7 +748,7 @@ clusters = {
       stg = {
         machine_type       = "e2-standard-4"
         service_account    = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
-        oauth_scopes       = ["https://www.googleapis.com/auth/cloud-platform"]        
+        oauth_scopes       = ["https://www.googleapis.com/auth/cloud-platform"]
         disk_size_gb       = 50
         disk_type          = "pd-standard"
         image_type         = "COS_CONTAINERD"

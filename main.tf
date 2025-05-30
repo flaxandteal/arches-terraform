@@ -163,9 +163,9 @@ module "container_node_pools" {
   cluster_name = each.value.name
   location     = each.value.location
 
-  node_pools               = each.value.node_pools
-  default_network_tags     = ["gke-cluster"]
-  depends_on_container_api = [google_project_service.container_api]
+  node_pools                     = each.value.node_pools
+  default_network_tags           = ["gke-cluster"]
+  depends_on_container_api       = [google_project_service.container_api]
   depends_on_container_resources = [module.container_cluster[each.key]]
 }
 

@@ -20,7 +20,7 @@ variable "node_pools" {
     labels             = map(string)
     tags               = list(string)
     metadata           = map(string)
-    node_taints        = list(object({
+    node_taints = list(object({
       key    = string
       value  = string
       effect = string

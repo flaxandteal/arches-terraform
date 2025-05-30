@@ -176,11 +176,11 @@ variable "clusters" {
     })
 
     addons_config = object({
-      dns_cache_config = object({ enabled = bool })
+      dns_cache_config                      = object({ enabled = bool })
       gce_persistent_disk_csi_driver_config = object({ enabled = bool })
-      horizontal_pod_autoscaling = object({ disabled = bool })
-      http_load_balancing        = object({ disabled = bool })
-      network_policy_config      = object({ disabled = bool })
+      horizontal_pod_autoscaling            = object({ disabled = bool })
+      http_load_balancing                   = object({ disabled = bool })
+      network_policy_config                 = object({ disabled = bool })
     })
 
     cluster_autoscaling = object({
@@ -311,7 +311,7 @@ variable "clusters" {
       labels             = map(string)
       tags               = list(string)
       metadata           = map(string)
-      node_taints        = list(object({
+      node_taints = list(object({
         key    = string
         value  = string
         effect = string
