@@ -68,14 +68,6 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-      },
-      {
-        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        ip_cidr_range = "10.196.0.0/14"
-      },
-      {
-        range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -98,14 +90,6 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-      },
-      {
-        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        ip_cidr_range = "10.196.0.0/14"
-      },
-      {
-        range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -114,7 +98,7 @@ subnetworks = {
 firewalls = {
   letsencrpt_egress = {
     name               = "letsencrpt-egress"
-    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    network            = module.compute_network["coral_network_stg"].network
     direction          = "EGRESS"
     priority           = 1000
     destination_ranges = ["0.0.0.0/0"]
@@ -129,7 +113,7 @@ firewalls = {
   k8s_fw = {
     name               = "k8s-fw"
     description        = "Kubernetes traffic"
-    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    network            = module.compute_network["coral_network_stg"].network
     direction          = "INGRESS"
     priority           = 1000
     destination_ranges = ["34.89.106.198"]
@@ -142,7 +126,7 @@ firewalls = {
   },
   coral_prd = {
     name          = "allow-ingress-coral-prd"
-    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
+    network       = module.compute_network["coral_network_prd"].network
     direction     = "INGRESS"
     priority      = 1000
     source_ranges = ["172.16.0.0/28"]
@@ -156,7 +140,7 @@ firewalls = {
   },
   coral_stg = {
     name          = "allow-ingress-coral-stg"
-    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    network       = module.compute_network["coral_network_stg"].network
     direction     = "INGRESS"
     priority      = 1000
     source_ranges = ["172.16.0.0/28"]
