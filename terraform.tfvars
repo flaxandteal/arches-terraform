@@ -624,7 +624,6 @@ clusters = {
     subnetwork         = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
     node_version       = "1.31.7-gke.1265000"
     min_master_version = "1.31.7-gke.1265000"
-    initial_node_count = 1
     node_config = {
       disk_size_gb    = 50
       disk_type       = "pd-standard"

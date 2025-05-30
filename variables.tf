@@ -163,7 +163,6 @@ variable "clusters" {
     min_master_version = string
     network            = string
     subnetwork         = string
-    initial_node_count = number
     node_config = object({
       disk_size_gb    = number
       disk_type       = string
