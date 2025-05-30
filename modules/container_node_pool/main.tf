@@ -70,9 +70,9 @@ resource "google_container_node_pool" "node_pool" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [initial_node_count]
-  }
+  # lifecycle {
+  #   ignore_changes = [initial_node_count]
+  # }
 
   depends_on = [var.depends_on_container_api, var.depends_on_container_resources]
 }

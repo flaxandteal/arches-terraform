@@ -157,14 +157,12 @@ variable "kms_key_rings" {
 variable "clusters" {
   description = "Map of GKE cluster configurations for different environments"
   type = map(object({
-    name                     = string
-    location                 = string
-    node_version             = string
-    min_master_version       = string
-    network                  = string
-    subnetwork               = string
-    initial_node_count       = number
-    remove_default_node_pool = bool
+    name               = string
+    location           = string
+    node_version       = string
+    min_master_version = string
+    network            = string
+    subnetwork         = string
     node_config = object({
       disk_size_gb    = number
       disk_type       = string
