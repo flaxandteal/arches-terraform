@@ -7,18 +7,14 @@ resource "google_container_cluster" "cluster" {
   network                  = var.network
   subnetwork               = var.subnetwork
   min_master_version       = var.min_master_version
-  remove_default_node_pool = var.remove_default_node_pool
+  remove_default_node_pool = true #var.remove_default_node_pool
 
   deletion_protection = false
 
-  # Empty node_pool block to ensure default pool is removed
-  node_pool {
-    name       = "default-pool"
-    node_count = 0
-  }
-
   ip_allocation_policy {
+    cluster_ipv4_cidr_block       = var.ip_allocation_policy.cluster_ipv4_cidr_block
     cluster_secondary_range_name  = var.ip_allocation_policy.cluster_secondary_range_name
+    services_ipv4_cidr_block      = var.ip_allocation_policy.services_ipv4_cidr_block
     services_secondary_range_name = var.ip_allocation_policy.services_secondary_range_name
     stack_type                    = var.ip_allocation_policy.stack_type
     pod_cidr_overprovision_config {

@@ -61,22 +61,22 @@ subnetworks = {
     network                    = "coral-network" # matches key in `networks`
 
     secondary_ip_ranges = [
-      # {
-      #   range_name    = "services-range"
-      #   ip_cidr_range = "192.168.0.0/20"
-      # },
-      # {
-      #   range_name    = "pod-ranges"
-      #   ip_cidr_range = "192.168.64.0/20"
-      # },
-      # {
-      #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-      #   ip_cidr_range = "10.196.0.0/14"
-      # },
-      # {
-      #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
-      #   ip_cidr_range = "10.200.0.0/20"
-      # }
+      {
+        range_name    = "services-range"
+        ip_cidr_range = "192.168.0.0/20"
+      },
+      {
+        range_name    = "pod-ranges"
+        ip_cidr_range = "192.168.64.0/20"
+      },
+      {
+        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+        ip_cidr_range = "10.196.0.0/14"
+      },
+      {
+        range_name    = "gke-coral-cluster-services-f3c8dd1b"
+        ip_cidr_range = "10.200.0.0/20"
+      }
     ]
   }
   subnet_prd = {
@@ -91,22 +91,22 @@ subnetworks = {
     network                    = "coral-network-prd" # matches key in `networks`
 
     secondary_ip_ranges = [
-      # {
-      #   range_name    = "services-range"
-      #   ip_cidr_range = "192.168.0.0/20"
-      # },
-      # {
-      # range_name    = "pod-ranges"
-      # ip_cidr_range = "192.168.64.0/20"
-      # },
-      # {
-      #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-      #   ip_cidr_range = "10.196.0.0/14"
-      # },
-      # {
-      #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
-      #   ip_cidr_range = "10.200.0.0/20"
-      # }
+      {
+        range_name    = "services-range"
+        ip_cidr_range = "192.168.0.0/20"
+      },
+      {
+      range_name    = "pod-ranges"
+      ip_cidr_range = "192.168.64.0/20"
+      },
+      {
+        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+        ip_cidr_range = "10.196.0.0/14"
+      },
+      {
+        range_name    = "gke-coral-cluster-services-f3c8dd1b"
+        ip_cidr_range = "10.200.0.0/20"
+      }
     ]
   }
 }
@@ -357,7 +357,7 @@ service_accounts = {
     roles           = ["artifactregistry.writer"]
   }
 }
-
+# routers
 routers = {
   prd = {
     name       = "coral-network-router-prd"
@@ -370,7 +370,7 @@ routers = {
     subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
   }
 }
-
+# KMS
 kms_key_rings = {
   data_store_prd = {
     name       = "data-store-keyring-uat-prd"
@@ -409,17 +409,17 @@ kms_key_rings = {
     }
   }
 }
-
+# Clusters
 clusters = {
   prd = {
-    name                     = "k8s-coral-prd"
-    location                 = "europe-west2-a"
-    network                  = "coral-network-prd"
-    subnetwork               = "coral-subnetwork-prd"
-    node_version             = "1.31.7-gke.1265000"
-    min_master_version       = "1.31.7-gke.1265000"
-    initial_node_count       = 1
-    remove_default_node_pool = true
+    name               = "k8s-coral-prd"
+    location           = "europe-west2-a"
+    network            = "coral-network-prd"
+    subnetwork         = "coral-subnetwork-prd"
+    node_version       = "1.31.7-gke.1265000"
+    min_master_version = "1.31.7-gke.1265000"
+    # initial_node_count       = 1
+    # remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
       disk_type       = "pd-balanced"
@@ -439,9 +439,7 @@ clusters = {
       ]
       service_account          = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
       shielded_instance_config = { enable_integrity_monitoring = true }
-      workload_metadata_config = {
-        mode = "GKE_METADATA"
-      }
+      workload_metadata_config = { mode = "GKE_METADATA" }
       labels = {
         TF_used_by  = "k8s-coral-prd"
         TF_used_for = "gke"
@@ -449,35 +447,35 @@ clusters = {
       tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
     }
     ip_allocation_policy = {
-      cluster_secondary_range_name  = "pod-ranges"
+      # cluster_secondary_range_name  = "pod-ranges"
+      # services_secondary_range_name = "services-range"
+      # stack_type                    = "IPV4"
+      # pod_cidr_overprovision_config = { disabled = false }
+      # additional_pod_ranges_config  = { pod_range_names = [] }
+      additional_pod_ranges_config = {
+        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
+      }
+
+      cluster_ipv4_cidr_block      = "192.168.64.0/20"
+      cluster_secondary_range_name = "pod-ranges"
+
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
+
+      services_ipv4_cidr_block      = "192.168.0.0/20"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config  = { pod_range_names = [] }
     }
     addons_config = {
-      dns_cache_config = {
-        enabled = true
-      }
-      gce_persistent_disk_csi_driver_config = {
-        enabled = true
-      }
-      horizontal_pod_autoscaling = {
-        disabled = false
-      }
-      http_load_balancing = {
-        disabled = false
-      }
-      network_policy_config = {
-        disabled = true
-      }
+      dns_cache_config                      = { enabled = true }
+      gce_persistent_disk_csi_driver_config = { enabled = true }
+      horizontal_pod_autoscaling            = { disabled = false }
+      http_load_balancing                   = { disabled = false }
+      network_policy_config                 = { disabled = true }
     }
-    cluster_autoscaling = {
-      autoscaling_profile = "BALANCED"
-    }
-    cluster_telemetry = {
-      type = "ENABLED"
-    }
+    cluster_autoscaling = { autoscaling_profile = "BALANCED" }
+    cluster_telemetry   = { type = "ENABLED" }
     database_encryption = {
       state    = "DECRYPTED"
       key_name = ""
@@ -545,9 +543,7 @@ clusters = {
         enabled = false
       }
     }
-    pod_security_policy_config = {
-      enabled = false
-    }
+    pod_security_policy_config = { enabled = false }
     private_cluster_config = {
       enable_private_nodes   = true
       master_ipv4_cidr_block = "172.16.0.0/28"
@@ -560,22 +556,16 @@ clusters = {
         audit_mode = "DISABLED"
       }
     }
-    release_channel = {
-      channel = "REGULAR"
-    }
+    release_channel = { channel = "REGULAR" }
     security_posture_config = {
       mode               = "BASIC"
       vulnerability_mode = "VULNERABILITY_DISABLED"
     }
-    service_external_ips_config = {
-      enabled = false
-    }
+    service_external_ips_config = { enabled = false }
     vertical_pod_autoscaling = {
       enabled = false
     }
-    workload_identity_config = {
-      workload_pool = "coral-hed.svc.id.goog"
-    }
+    workload_identity_config = { workload_pool = "coral-hed.svc.id.goog" }
     node_pools = {
       prd = {
         machine_type       = "e2-standard-4" #"e2-standard-8"

@@ -31,7 +31,9 @@ variable "remove_default_node_pool" {
 variable "ip_allocation_policy" {
   description = "IP allocation policy for the cluster"
   type = object({
+    cluster_ipv4_cidr_block       = string
     cluster_secondary_range_name  = string
+    services_ipv4_cidr_block      = string
     services_secondary_range_name = string
     stack_type                    = string
     pod_cidr_overprovision_config = object({
