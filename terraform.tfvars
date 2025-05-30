@@ -96,8 +96,8 @@ subnetworks = {
       #   ip_cidr_range = "192.168.0.0/20"
       # },
       # {
-        # range_name    = "pod-ranges"
-        # ip_cidr_range = "192.168.64.0/20"
+      # range_name    = "pod-ranges"
+      # ip_cidr_range = "192.168.64.0/20"
       # },
       # {
       #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
@@ -112,62 +112,62 @@ subnetworks = {
 }
 
 firewalls = {
-  letsencrpt_egress = {
-    name               = "letsencrpt-egress"
-    network            = module.compute_network["coral_network_stg"].network
-    direction          = "EGRESS"
-    priority           = 1000
-    destination_ranges = ["0.0.0.0/0"]
-    source_ranges      = []
-    allow = [{
-      ports    = ["443"]
-      protocol = "tcp"
-    }]
-    description = "Encrypt egress"
-    target_tags = []
-  },
-  k8s_fw = {
-    name               = "k8s-fw"
-    description        = "Kubernetes traffic"
-    network            = module.compute_network["coral_network_stg"].network
-    direction          = "INGRESS"
-    priority           = 1000
-    destination_ranges = ["34.89.106.198"]
-    source_ranges      = ["0.0.0.0/0"]
-    target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
-    allow = [{
-      ports    = ["80", "443", "15021"]
-      protocol = "tcp"
-    }]
-  },
-  coral_prd = {
-    name          = "allow-ingress-coral-prd"
-    network       = module.compute_network["coral_network_prd"].network
-    direction     = "INGRESS"
-    priority      = 1000
-    source_ranges = ["172.16.0.0/28"]
-    target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
-    allow = [{
-      protocol = "tcp"
-      ports    = ["10250", "443", "15017", "8080", "15000"]
-    }]
-    description        = "Allow ingress for Coral production GKE cluster"
-    destination_ranges = []
-  },
-  coral_stg = {
-    name          = "allow-ingress-coral-stg"
-    network       = module.compute_network["coral_network_stg"].network
-    direction     = "INGRESS"
-    priority      = 1000
-    source_ranges = ["172.16.0.0/28"]
-    target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
-    allow = [{
-      protocol = "tcp"
-      ports    = ["10250", "443", "15017", "8080", "15000"]
-    }]
-    description        = "Allow ingress for Coral staging GKE cluster"
-    destination_ranges = []
-  },
+  # letsencrpt_egress = {
+  #   name               = "letsencrpt-egress"
+  #   network            = module.compute_network["coral_network_stg"].network
+  #   direction          = "EGRESS"
+  #   priority           = 1000
+  #   destination_ranges = ["0.0.0.0/0"]
+  #   source_ranges      = []
+  #   allow = [{
+  #     ports    = ["443"]
+  #     protocol = "tcp"
+  #   }]
+  #   description = "Encrypt egress"
+  #   target_tags = []
+  # },
+  # k8s_fw = {
+  #   name               = "k8s-fw"
+  #   description        = "Kubernetes traffic"
+  #   network            = module.compute_network["coral_network_stg"].network
+  #   direction          = "INGRESS"
+  #   priority           = 1000
+  #   destination_ranges = ["34.89.106.198"]
+  #   source_ranges      = ["0.0.0.0/0"]
+  #   target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
+  #   allow = [{
+  #     ports    = ["80", "443", "15021"]
+  #     protocol = "tcp"
+  #   }]
+  # },
+  # coral_prd = {
+  #   name          = "allow-ingress-coral-prd"
+  #   network       = module.compute_network["coral_network_prd"].network
+  #   direction     = "INGRESS"
+  #   priority      = 1000
+  #   source_ranges = ["172.16.0.0/28"]
+  #   target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
+  #   allow = [{
+  #     protocol = "tcp"
+  #     ports    = ["10250", "443", "15017", "8080", "15000"]
+  #   }]
+  #   description        = "Allow ingress for Coral production GKE cluster"
+  #   destination_ranges = []
+  # },
+  # coral_stg = {
+  #   name          = "allow-ingress-coral-stg"
+  #   network       = module.compute_network["coral_network_stg"].network
+  #   direction     = "INGRESS"
+  #   priority      = 1000
+  #   source_ranges = ["172.16.0.0/28"]
+  #   target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
+  #   allow = [{
+  #     protocol = "tcp"
+  #     ports    = ["10250", "443", "15017", "8080", "15000"]
+  #   }]
+  #   description        = "Allow ingress for Coral staging GKE cluster"
+  #   destination_ranges = []
+  # },
 }
 
 buckets = {
@@ -437,7 +437,7 @@ clusters = {
         "https://www.googleapis.com/auth/servicecontrol",
         "https://www.googleapis.com/auth/trace.append"
       ]
-      service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
+      service_account          = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
       shielded_instance_config = { enable_integrity_monitoring = true }
       workload_metadata_config = {
         mode = "GKE_METADATA"
@@ -453,7 +453,7 @@ clusters = {
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
       pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config   = { pod_range_names = [] }
+      additional_pod_ranges_config  = { pod_range_names = [] }
     }
     addons_config = {
       dns_cache_config = {
@@ -649,7 +649,7 @@ clusters = {
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
       pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config   = { pod_range_names = [] }
+      additional_pod_ranges_config  = { pod_range_names = [] }
     }
     addons_config = {
       dns_cache_config = {
