@@ -3,7 +3,7 @@ name: Security Scanning
 on:
   push:
     branches: 
-      - '**' 
+      - main'
       #sji todo - turn on!
   #schedule:
   #  - cron: '0 2 * * *'  # Nightly at 2 AM UTC
