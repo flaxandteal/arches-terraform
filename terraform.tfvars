@@ -61,13 +61,13 @@ subnetworks = {
     network                    = "coral-network" # matches key in `networks`
 
     secondary_ip_ranges = [
-      {
-        range_name    = "services-range"
-        ip_cidr_range = "192.168.0.0/20"
-      },
-      {
-        range_name    = "pod-ranges"
-        ip_cidr_range = "192.168.64.0/20"
+      # {
+      #   range_name    = "services-range"
+      #   ip_cidr_range = "192.168.0.0/20"
+      # },
+      # {
+      #   range_name    = "pod-ranges"
+      #   ip_cidr_range = "192.168.64.0/20"
       # },
       # {
       #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
@@ -76,7 +76,7 @@ subnetworks = {
       # {
       #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
       #   ip_cidr_range = "10.200.0.0/20"
-      }
+      # }
     ]
   }
   subnet_prd = {
@@ -91,13 +91,13 @@ subnetworks = {
     network                    = "coral-network-prd" # matches key in `networks`
 
     secondary_ip_ranges = [
-      {
-        range_name    = "services-range"
-        ip_cidr_range = "192.168.0.0/20"
-      },
-      {
-        range_name    = "pod-ranges"
-        ip_cidr_range = "192.168.64.0/20"
+      # {
+      #   range_name    = "services-range"
+      #   ip_cidr_range = "192.168.0.0/20"
+      # },
+      # {
+        # range_name    = "pod-ranges"
+        # ip_cidr_range = "192.168.64.0/20"
       # },
       # {
       #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
@@ -106,7 +106,7 @@ subnetworks = {
       # {
       #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
       #   ip_cidr_range = "10.200.0.0/20"
-      }
+      # }
     ]
   }
 }
