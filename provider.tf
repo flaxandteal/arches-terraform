@@ -17,7 +17,7 @@ terraform {
   }
   backend "gcs" {
     bucket = "coral-hed-state-store"
-    #prefix = "crl-state-store" #sji todo
+    # backend "gcs" {} # Partial configuration using backend.hcl
     #prefix = "terraform/state/${var.environment}"
   }
 }
