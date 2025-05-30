@@ -16,8 +16,8 @@ jobs:
     name: Terraform Validate
     runs-on: ubuntu-latest
     
-    # Specify environment for prod branch
-    #environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
+    # Specify environment for prod branch - sji todo
+    environment: ${{ github.ref_name == 'prod' && 'prod' || '' }}
 
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -55,6 +55,7 @@ jobs:
         with:
           terraform_version: ${{ steps.tf-version.outputs.version }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account: ${{ secrets.TF_SA }}
             
   render-terraform-docs:      
     name: Terraform Docs
