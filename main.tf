@@ -115,59 +115,178 @@ module "kms_key_ring" {
 }
 
 # Root module to manage GKE clusters and node pools for multiple environments
-module "container_cluster" {
-  source     = "./modules/container_cluster"
-  depends_on = [module.compute_subnetwork, module.compute_network, module.compute_router]
+variable "clusters" {
+  description = "Map of GKE clusters to create. Each cluster is an object containing cluster and node pool configs."
+  type = map(object({
+    name                 = string
+    location             = string
+    network              = string
+    subnetwork           = string
+    min_master_version   = string
+    ip_allocation_policy = object({
+      cluster_secondary_range_name  = string
+      services_secondary_range_name = string
+      stack_type                    = string
+      pod_cidr_overprovision_config = object({
+        disabled = bool
+      })
+      additional_pod_ranges_config = object({
+        pod_range_names = list(string)
+      })
+    })
+    addons_config = object({
+      dns_cache_config = object({ enabled = bool })
+      gce_persistent_disk_csi_driver_config = object({ enabled = bool })
+      horizontal_pod_autoscaling = object({ disabled = bool })
+      http_load_balancing = object({ disabled = bool })
+      network_policy_config = object({ disabled = bool })
+    })
+    cluster_autoscaling = object({
+      autoscaling_profile = string
+    })
+    database_encryption = object({
+      state    = string
+      key_name = string
+    })
+    default_max_pods_per_node = number
+    default_snat_status       = object({
+      disabled = bool
+    })
+    description           = string
+    enable_shielded_nodes = bool
+    logging_config = object({
+      enable_components = list(string)
+    })
+    maintenance_policy = object({
+      recurring_window = object({
+        end_time   = string
+        recurrence = string
+        start_time = string
+      })
+    })
+    master_auth = object({
+      client_certificate_config = object({
+        issue_client_certificate = bool
+      })
+    })
+    master_authorized_networks_config = object({
+      cidr_blocks = list(object({
+        cidr_block   = string
+        display_name = string
+      }))
+    })
+    monitoring_config = object({
+      advanced_datapath_observability_config = object({
+        enable_metrics = bool
+        enable_relay   = bool
+      })
+      enable_components = list(string)
+    })
+    network_policy = object({
+      enabled  = bool
+      provider = string
+    })
+    networking_mode = string
+    notification_config = object({
+      pubsub = object({ enabled = bool })
+    })
+    pod_security_policy_config = object({
+      enabled = bool
+    })
+    private_cluster_config = object({
+      enable_private_nodes   = bool
+      master_ipv4_cidr_block = string
+      master_global_access_config = object({
+        enabled = bool
+      })
+    })
+    protect_config = object({
+      workload_config = object({
+        audit_mode = string
+      })
+    })
+    release_channel = object({
+      channel = string
+    })
+    security_posture_config = object({
+      mode               = string
+      vulnerability_mode = string
+    })
+    service_external_ips_config = object({
+      enabled = bool
+    })
+    vertical_pod_autoscaling = object({
+      enabled = bool
+    })
+    workload_identity_config = object({
+      workload_pool = string
+    })
+    node_pools = map(object({
+      initial_node_count = number
+      max_pods_per_node  = number
 
-  for_each = var.clusters
+      min_node_count  = number
+      max_node_count  = number
+      location_policy = string
 
-  name                 = each.value.name
-  location             = each.value.location
-  network              = each.value.network
-  subnetwork           = each.value.subnetwork
-  min_master_version   = each.value.min_master_version
-  ip_allocation_policy = each.value.ip_allocation_policy
-  addons_config        = each.value.addons_config
-  cluster_autoscaling  = each.value.cluster_autoscaling
-  # cluster_telemetry                 = each.value.cluster_telemetry
-  database_encryption               = each.value.database_encryption
-  default_max_pods_per_node         = each.value.default_max_pods_per_node
-  default_snat_status               = each.value.default_snat_status
-  description                       = each.value.description
-  enable_shielded_nodes             = each.value.enable_shielded_nodes
-  logging_config                    = each.value.logging_config
-  maintenance_policy                = each.value.maintenance_policy
-  master_auth                       = each.value.master_auth
-  master_authorized_networks_config = each.value.master_authorized_networks_config
-  monitoring_config                 = each.value.monitoring_config
-  network_policy                    = each.value.network_policy
-  networking_mode                   = each.value.networking_mode
-  notification_config               = each.value.notification_config
-  pod_security_policy_config        = each.value.pod_security_policy_config
-  private_cluster_config            = each.value.private_cluster_config
-  protect_config                    = each.value.protect_config
-  release_channel                   = each.value.release_channel
-  security_posture_config           = each.value.security_posture_config
-  service_external_ips_config       = each.value.service_external_ips_config
-  vertical_pod_autoscaling          = each.value.vertical_pod_autoscaling
-  workload_identity_config          = each.value.workload_identity_config
+      auto_repair  = bool
+      auto_upgrade = bool
 
-  depends_on_container_api = [google_project_service.container_api]
+      max_surge       = number
+      max_unavailable = number
+
+      machine_type = string
+      disk_size_gb = number
+      disk_type    = string
+      image_type   = string
+      preemptible  = bool
+      spot         = bool
+
+      service_account = string
+      oauth_scopes    = list(string)
+
+      labels   = map(string)
+      tags     = list(string)
+      metadata = map(string)
+
+      node_taints = list(object({
+        key    = string
+        value  = string
+        effect = string
+      }))
+
+      gpu_type = object({
+        type  = string
+        count = number
+      })
+
+      shielded_instance_config = object({
+        enable_secure_boot          = bool
+        enable_integrity_monitoring = bool
+      })
+
+      workload_metadata_config = object({
+        mode = string
+      })
+    }))
+  }))
 }
 
-module "container_node_pools" {
-  source = "./modules/container_node_pool"
 
-  for_each = var.clusters
 
-  cluster_name = each.value.name
-  location     = each.value.location
+# module "container_node_pools" {
+#   source = "./modules/container_node_pool"
 
-  node_pools                     = each.value.node_pools
-  default_network_tags           = ["gke-cluster"]
-  depends_on_container_api       = [google_project_service.container_api]
-  depends_on_container_resources = [module.container_cluster[each.key]]
-}
+#   for_each = var.clusters
+
+#   cluster_name = each.value.name
+#   location     = each.value.location
+
+#   node_pools                     = each.value.node_pools
+#   default_network_tags           = ["gke-cluster"]
+#   depends_on_container_api       = [google_project_service.container_api]
+#   depends_on_container_resources = [module.container_cluster[each.key]]
+# }
 
 
 # Enable the container API
