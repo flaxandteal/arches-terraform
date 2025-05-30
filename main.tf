@@ -121,15 +121,14 @@ module "container_cluster" {
 
   for_each = var.clusters
 
-  name                     = each.value.name
-  location                 = each.value.location
-  network                  = each.value.network
-  subnetwork               = each.value.subnetwork
-  min_master_version       = each.value.min_master_version
-  remove_default_node_pool = each.value.remove_default_node_pool
-  ip_allocation_policy     = each.value.ip_allocation_policy
-  addons_config            = each.value.addons_config
-  cluster_autoscaling      = each.value.cluster_autoscaling
+  name                 = each.value.name
+  location             = each.value.location
+  network              = each.value.network
+  subnetwork           = each.value.subnetwork
+  min_master_version   = each.value.min_master_version
+  ip_allocation_policy = each.value.ip_allocation_policy
+  addons_config        = each.value.addons_config
+  cluster_autoscaling  = each.value.cluster_autoscaling
   # cluster_telemetry                 = each.value.cluster_telemetry
   database_encryption               = each.value.database_encryption
   default_max_pods_per_node         = each.value.default_max_pods_per_node

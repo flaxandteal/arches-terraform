@@ -7,7 +7,8 @@ resource "google_container_cluster" "cluster" {
   network                  = var.network
   subnetwork               = var.subnetwork
   min_master_version       = var.min_master_version
-  remove_default_node_pool = var.remove_default_node_pool
+  remove_default_node_pool = true #best practice for production clusters to have full control over node configurations
+  initial_node_count       = 0    # Set to 0 since we are using a custom node pool
 
   deletion_protection = false
 
