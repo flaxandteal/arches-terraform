@@ -539,11 +539,6 @@ clusters = {
       provider = "PROVIDER_UNSPECIFIED"
     }
     networking_mode = "VPC_NATIVE"
-    node_pool_defaults = {
-      node_config_defaults = {
-        logging_variant = "DEFAULT"
-      }
-    }
     notification_config = {
       pubsub = {
         enabled = false
@@ -734,11 +729,6 @@ clusters = {
       provider = "PROVIDER_UNSPECIFIED"
     }
     networking_mode = "VPC_NATIVE"
-    node_pool_defaults = {
-      node_config_defaults = {
-        logging_variant = "DEFAULT"
-      }
-    }
     notification_config = {
       pubsub = {
         enabled = false

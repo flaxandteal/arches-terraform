@@ -157,15 +157,6 @@ variable "networking_mode" {
   type        = string
 }
 
-variable "node_pool_defaults" {
-  description = "Node pool defaults configuration"
-  type = object({
-    node_config_defaults = object({
-      logging_variant = string
-    })
-  })
-}
-
 variable "notification_config" {
   description = "Notification configuration"
   type = object({
