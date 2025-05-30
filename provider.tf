@@ -15,5 +15,9 @@ terraform {
       version = "~> 5.0"
     }
   }
-  backend "gcs" {} # Partial configuration
+  backend "gcs" {
+    bucket = "crl-state-store"
+    #prefix = "crl-state-store" #sji todo
+    #prefix = "terraform/state/${var.environment}"
+  }
 }
