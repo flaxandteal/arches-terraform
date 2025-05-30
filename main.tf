@@ -155,7 +155,7 @@ module "container_cluster" {
   depends_on_container_api = [google_project_service.container_api]
 }
 
-module "gke_node_pools" {
+module "container_node_pools" {
   source = "./modules/container_node_pool"
 
   for_each = var.clusters
