@@ -23,6 +23,11 @@ variable "min_master_version" {
   type        = string
 }
 
+variable "remove_default_node_pool" {
+  description = "Whether to remove the default node pool"
+  type        = bool
+}
+
 variable "ip_allocation_policy" {
   description = "IP allocation policy for the cluster"
   type = object({
@@ -155,6 +160,15 @@ variable "network_policy" {
 variable "networking_mode" {
   description = "Networking mode for the cluster"
   type        = string
+}
+
+variable "node_pool_defaults" {
+  description = "Node pool defaults configuration"
+  type = object({
+    node_config_defaults = object({
+      logging_variant = string
+    })
+  })
 }
 
 variable "notification_config" {

@@ -412,12 +412,44 @@ kms_key_rings = {
 
 clusters = {
   prd = {
-    name               = "k8s-coral-prd"
-    location           = "europe-west2-a"
-    network            = "projects/coral-hed/global/networks/coral-network-prd"
-    subnetwork         = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
-    node_version       = "1.31.7-gke.1265000"
-    min_master_version = "1.31.7-gke.1265000"
+    name                     = "k8s-coral-prd"
+    location                 = "europe-west2-a"
+    network                  = "projects/coral-hed/global/networks/coral-network-prd"
+    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+    node_version             = "1.31.7-gke.1265000"
+    min_master_version       = "1.31.7-gke.1265000"
+    initial_node_count       = 1
+    remove_default_node_pool = true
+    node_config = {
+      disk_size_gb    = 50
+      disk_type       = "pd-balanced"
+      image_type      = "COS_CONTAINERD"
+      logging_variant = "DEFAULT"
+      machine_type    = "e2-standard-4"
+      metadata = {
+        disable-legacy-endpoints = "true"
+      }
+      oauth_scopes = [
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring",
+        "https://www.googleapis.com/auth/service.management.readonly",
+        "https://www.googleapis.com/auth/servicecontrol",
+        "https://www.googleapis.com/auth/trace.append"
+      ]
+      service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
+      shielded_instance_config = {
+        enable_integrity_monitoring = true
+      }
+      workload_metadata_config = {
+        mode = "GKE_METADATA"
+      }
+      labels = {
+        TF_used_by  = "k8s-coral-prd"
+        TF_used_for = "gke"
+      }
+      tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
+    }
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
@@ -509,6 +541,11 @@ clusters = {
       provider = "PROVIDER_UNSPECIFIED"
     }
     networking_mode = "VPC_NATIVE"
+    node_pool_defaults = {
+      node_config_defaults = {
+        logging_variant = "DEFAULT"
+      }
+    }
     notification_config = {
       pubsub = {
         enabled = false
@@ -547,16 +584,7 @@ clusters = {
     }
     node_pools = {
       prd = {
-        machine_type    = "e2-standard-4" #"e2-standard-8"
-        service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
-        oauth_scopes = [
-          "https://www.googleapis.com/auth/devstorage.read_only",
-          "https://www.googleapis.com/auth/logging.write",
-          "https://www.googleapis.com/auth/monitoring",
-          "https://www.googleapis.com/auth/service.management.readonly",
-          "https://www.googleapis.com/auth/servicecontrol",
-          "https://www.googleapis.com/auth/trace.append"
-        ]
+        machine_type       = "e2-standard-4" #"e2-standard-8"
         disk_size_gb       = 50
         disk_type          = "pd-balanced"
         image_type         = "COS_CONTAINERD"
@@ -592,35 +620,37 @@ clusters = {
     }
   },
   stg = {
-    name               = "k8s-coral-stg"
-    location           = "europe-west2-a"
-    network            = "projects/coral-hed/global/networks/coral-network"
-    subnetwork         = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
-    node_version       = "1.31.7-gke.1265000"
-    min_master_version = "1.31.7-gke.1265000"
-    # node_config = {
-    #   disk_size_gb    = 50
-    #   disk_type       = "pd-standard"
-    #   image_type      = "COS_CONTAINERD"
-    #   logging_variant = "DEFAULT"
-    #   machine_type    = "e2-standard-4"
-    #   metadata = {
-    #     disable-legacy-endpoints = "true"
-    #   }
-    #   oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    #   service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
-    #   shielded_instance_config = {
-    #     enable_integrity_monitoring = true
-    #   }
-    #   workload_metadata_config = {
-    #     mode = "GKE_METADATA"
-    #   }
-    #   labels = {
-    #     TF_used_by  = "k8s-coral-stg"
-    #     TF_used_for = "gke"
-    #   }
-    #   tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
-    # }
+    name                     = "k8s-coral-stg"
+    location                 = "europe-west2-a"
+    network                  = "projects/coral-hed/global/networks/coral-network"
+    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
+    node_version             = "1.31.7-gke.1265000"
+    min_master_version       = "1.31.7-gke.1265000"
+    initial_node_count       = 1
+    remove_default_node_pool = true
+    node_config = {
+      disk_size_gb    = 50
+      disk_type       = "pd-standard"
+      image_type      = "COS_CONTAINERD"
+      logging_variant = "DEFAULT"
+      machine_type    = "e2-standard-4"
+      metadata = {
+        disable-legacy-endpoints = "true"
+      }
+      oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+      service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
+      shielded_instance_config = {
+        enable_integrity_monitoring = true
+      }
+      workload_metadata_config = {
+        mode = "GKE_METADATA"
+      }
+      labels = {
+        TF_used_by  = "k8s-coral-stg"
+        TF_used_for = "gke"
+      }
+      tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
+    }
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
@@ -708,6 +738,11 @@ clusters = {
       provider = "PROVIDER_UNSPECIFIED"
     }
     networking_mode = "VPC_NATIVE"
+    node_pool_defaults = {
+      node_config_defaults = {
+        logging_variant = "DEFAULT"
+      }
+    }
     notification_config = {
       pubsub = {
         enabled = false
@@ -747,8 +782,6 @@ clusters = {
     node_pools = {
       stg = {
         machine_type       = "e2-standard-4"
-        service_account    = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
-        oauth_scopes       = ["https://www.googleapis.com/auth/cloud-platform"]
         disk_size_gb       = 50
         disk_type          = "pd-standard"
         image_type         = "COS_CONTAINERD"

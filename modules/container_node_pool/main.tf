@@ -1,12 +1,11 @@
+# Defining GKE node pools for a given cluster
 resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
-  provider = google-beta
-
-  name     = "${each.key}-pool"
-  cluster  = var.cluster_name
-  location = var.location
-
+  provider           = google-beta
+  name               = "${each.key}-pool"
+  cluster            = var.cluster_name
+  location           = var.location
   initial_node_count = each.value.initial_node_count
   max_pods_per_node  = each.value.max_pods_per_node
 
@@ -34,14 +33,13 @@ resource "google_container_node_pool" "node_pool" {
     preemptible  = each.value.preemptible
     spot         = each.value.spot
 
-    service_account = each.value.service_account
-    oauth_scopes    = each.value.oauth_scopes
+    service_account = var.service_account
+    oauth_scopes    = var.oauth_scopes
 
     labels = merge(
-      { TF_used_for = "gke", TF_used_by = var.cluster_name },
+      { "TF_used_for" = "gke", "TF_used_by" = var.cluster_name },
       each.value.labels
     )
-
     tags     = distinct(concat(var.default_network_tags, each.value.tags))
     metadata = each.value.metadata
 

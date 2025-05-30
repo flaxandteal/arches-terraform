@@ -7,9 +7,15 @@ resource "google_container_cluster" "cluster" {
   network                  = var.network
   subnetwork               = var.subnetwork
   min_master_version       = var.min_master_version
-  remove_default_node_pool = true #best practice for production clusters to have full control over node configurations
+  remove_default_node_pool = var.remove_default_node_pool
 
   deletion_protection = false
+
+  # Empty node_pool block to ensure default pool is removed
+  node_pool {
+    name       = "default-pool"
+    node_count = 0
+  }
 
   ip_allocation_policy {
     cluster_secondary_range_name  = var.ip_allocation_policy.cluster_secondary_range_name
@@ -102,6 +108,12 @@ resource "google_container_cluster" "cluster" {
 
   networking_mode = var.networking_mode
 
+  node_pool_defaults {
+    node_config_defaults {
+      logging_variant = var.node_pool_defaults.node_config_defaults.logging_variant
+    }
+  }
+
   notification_config {
     pubsub {
       enabled = var.notification_config.pubsub.enabled
@@ -146,26 +158,6 @@ resource "google_container_cluster" "cluster" {
   workload_identity_config {
     workload_pool = var.workload_identity_config.workload_pool
   }
-
-
-  # sji todo
-  # security settings
-  # authenticator_groups_config {
-  #   security_group = "group@example.com" # CKV_GCP_65
-  # }
-
-  enable_intranode_visibility = true #CKV_GCP_61
-
-  # node_config {
-  #   metadata = {
-  #     enable = true #CKV_GCP_69
-  #   }
-  #   shielded_instance_config {
-  #     enable_secure_boot          = true #CKV_GCP_68
-  #     enable_integrity_monitoring = true #CKV_GCP_72
-  #   }
-  # }
-
 
   depends_on = [var.depends_on_container_api]
 }
