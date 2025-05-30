@@ -418,8 +418,6 @@ clusters = {
     subnetwork         = "coral-subnetwork-prd"
     node_version       = "1.31.7-gke.1265000"
     min_master_version = "1.31.7-gke.1265000"
-    # initial_node_count       = 1
-    # remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
       disk_type       = "pd-balanced"
@@ -634,11 +632,25 @@ clusters = {
       tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
     }
     ip_allocation_policy = {
-      cluster_secondary_range_name  = "pod-ranges"
+      # cluster_secondary_range_name  = "pod-ranges"
+      # services_secondary_range_name = "services-range"
+      # stack_type                    = "IPV4"
+      # pod_cidr_overprovision_config = { disabled = false }
+      # additional_pod_ranges_config  = { pod_range_names = [] }
+      additional_pod_ranges_config = {
+        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
+      }
+
+      cluster_ipv4_cidr_block      = "192.168.64.0/20"
+      cluster_secondary_range_name = "pod-ranges"
+
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
+
+      services_ipv4_cidr_block      = "192.168.0.0/20"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config  = { pod_range_names = [] }
     }
     addons_config = {
       dns_cache_config = {
