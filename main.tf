@@ -142,7 +142,6 @@ module "container_cluster" {
   monitoring_config                 = each.value.monitoring_config
   network_policy                    = each.value.network_policy
   networking_mode                   = each.value.networking_mode
-  node_pool_defaults                = each.value.node_pool_defaults
   notification_config               = each.value.notification_config
   pod_security_policy_config        = each.value.pod_security_policy_config
   private_cluster_config            = each.value.private_cluster_config
