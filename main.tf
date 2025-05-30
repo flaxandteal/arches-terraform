@@ -160,21 +160,15 @@ module "container_node_pools" {
 
   for_each = var.clusters
 
-  cluster_name         = each.value.name
-  location             = each.value.location
-  node_version         = each.value.node_version
-  service_account      = each.value.node_config.service_account
-  oauth_scopes         = each.value.node_config.oauth_scopes
-  workload_pool        = each.value.workload_identity_config.workload_pool
-  network              = each.value.network
-  subnetwork           = each.value.subnetwork
-  default_network_tags = ["gke-cluster"]
+  cluster_name = each.value.name
+  location     = each.value.location
 
-  depends_on_container_api       = [google_project_service.container_api]
+  node_pools               = each.value.node_pools
+  default_network_tags     = ["gke-cluster"]
+  depends_on_container_api = [google_project_service.container_api]
   depends_on_container_resources = [module.container_cluster[each.key]]
-
-  node_pools = each.value.node_pools
 }
+
 
 # Enable the container API
 resource "google_project_service" "container_api" {
