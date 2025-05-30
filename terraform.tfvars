@@ -418,36 +418,6 @@ clusters = {
     subnetwork         = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
     node_version       = "1.31.7-gke.1265000"
     min_master_version = "1.31.7-gke.1265000"
-    # node_config = {
-    #   disk_size_gb    = 50
-    #   disk_type       = "pd-balanced"
-    #   image_type      = "COS_CONTAINERD"
-    #   logging_variant = "DEFAULT"
-    #   machine_type    = "e2-standard-4"
-    #   metadata = {
-    #     disable-legacy-endpoints = "true"
-    #   }
-    #   oauth_scopes = [
-    #     "https://www.googleapis.com/auth/devstorage.read_only",
-    #     "https://www.googleapis.com/auth/logging.write",
-    #     "https://www.googleapis.com/auth/monitoring",
-    #     "https://www.googleapis.com/auth/service.management.readonly",
-    #     "https://www.googleapis.com/auth/servicecontrol",
-    #     "https://www.googleapis.com/auth/trace.append"
-    #   ]
-    #   service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
-    #   shielded_instance_config = {
-    #     enable_integrity_monitoring = true
-    #   }
-    #   workload_metadata_config = {
-    #     mode = "GKE_METADATA"
-    #   }
-    #   labels = {
-    #     TF_used_by  = "k8s-coral-prd"
-    #     TF_used_for = "gke"
-    #   }
-    #   tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
-    # }
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"

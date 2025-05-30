@@ -155,32 +155,14 @@ variable "kms_key_rings" {
 }
 
 variable "clusters" {
-  description = "Map of GKE cluster configurations for different environments"
   type = map(object({
     name               = string
     location           = string
-    node_version       = string
-    min_master_version = string
     network            = string
     subnetwork         = string
-    # node_config = object({
-    #   disk_size_gb    = number
-    #   disk_type       = string
-    #   image_type      = string
-    #   logging_variant = string
-    #   machine_type    = string
-    #   metadata        = map(string)
-    #   oauth_scopes    = list(string)
-    #   service_account = string
-    #   shielded_instance_config = object({
-    #     enable_integrity_monitoring = bool
-    #   })
-    #   workload_metadata_config = object({
-    #     mode = string
-    #   })
-    #   labels = map(string)
-    #   tags   = list(string)
-    # })
+    node_version       = string
+    min_master_version = string
+
     ip_allocation_policy = object({
       cluster_secondary_range_name  = string
       services_secondary_range_name = string
@@ -192,42 +174,41 @@ variable "clusters" {
         pod_range_names = list(string)
       })
     })
+
     addons_config = object({
-      dns_cache_config = object({
-        enabled = bool
-      })
-      gce_persistent_disk_csi_driver_config = object({
-        enabled = bool
-      })
-      horizontal_pod_autoscaling = object({
-        disabled = bool
-      })
-      http_load_balancing = object({
-        disabled = bool
-      })
-      network_policy_config = object({
-        disabled = bool
-      })
+      dns_cache_config = object({ enabled = bool })
+      gce_persistent_disk_csi_driver_config = object({ enabled = bool })
+      horizontal_pod_autoscaling = object({ disabled = bool })
+      http_load_balancing        = object({ disabled = bool })
+      network_policy_config      = object({ disabled = bool })
     })
+
     cluster_autoscaling = object({
       autoscaling_profile = string
     })
+
     cluster_telemetry = object({
       type = string
     })
+
     database_encryption = object({
       state    = string
       key_name = string
     })
+
     default_max_pods_per_node = number
+
     default_snat_status = object({
       disabled = bool
     })
+
     description           = string
     enable_shielded_nodes = bool
+
     logging_config = object({
       enable_components = list(string)
     })
+
     maintenance_policy = object({
       recurring_window = object({
         end_time   = string
@@ -235,17 +216,20 @@ variable "clusters" {
         start_time = string
       })
     })
+
     master_auth = object({
       client_certificate_config = object({
         issue_client_certificate = bool
       })
     })
+
     master_authorized_networks_config = object({
       cidr_blocks = list(object({
         cidr_block   = string
         display_name = string
       }))
     })
+
     monitoring_config = object({
       advanced_datapath_observability_config = object({
         enable_metrics = bool
@@ -253,19 +237,24 @@ variable "clusters" {
       })
       enable_components = list(string)
     })
+
     network_policy = object({
       enabled  = bool
       provider = string
     })
+
     networking_mode = string
+
     notification_config = object({
       pubsub = object({
         enabled = bool
       })
     })
+
     pod_security_policy_config = object({
       enabled = bool
     })
+
     private_cluster_config = object({
       enable_private_nodes   = bool
       master_ipv4_cidr_block = string
@@ -273,29 +262,38 @@ variable "clusters" {
         enabled = bool
       })
     })
+
     protect_config = object({
       workload_config = object({
         audit_mode = string
       })
     })
+
     release_channel = object({
       channel = string
     })
+
     security_posture_config = object({
       mode               = string
       vulnerability_mode = string
     })
+
     service_external_ips_config = object({
       enabled = bool
     })
+
     vertical_pod_autoscaling = object({
       enabled = bool
     })
+
     workload_identity_config = object({
       workload_pool = string
     })
+
     node_pools = map(object({
       machine_type       = string
+      service_account    = string
+      oauth_scopes       = list(string)
       disk_size_gb       = number
       disk_type          = string
       image_type         = string
@@ -313,24 +311,24 @@ variable "clusters" {
       labels             = map(string)
       tags               = list(string)
       metadata           = map(string)
-      node_taints = list(object({
+      node_taints        = list(object({
         key    = string
         value  = string
         effect = string
       }))
-      gpu_type = object({
-        type  = string
-        count = number
-      })
+      gpu_type = any # null or object
+
       shielded_instance_config = object({
         enable_secure_boot          = bool
         enable_integrity_monitoring = bool
       })
+
       workload_metadata_config = object({
         mode = string
       })
     }))
   }))
+  description = "Map of cluster configurations keyed by environment"
 }
 
 variable "snapshot_policies" {
