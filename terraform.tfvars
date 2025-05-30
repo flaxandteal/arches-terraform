@@ -96,8 +96,8 @@ subnetworks = {
         ip_cidr_range = "192.168.0.0/20"
       },
       {
-      range_name    = "pod-ranges"
-      ip_cidr_range = "192.168.64.0/20"
+        range_name    = "pod-ranges"
+        ip_cidr_range = "192.168.64.0/20"
       },
       {
         range_name    = "gke-coral-cluster-pods-f3c8dd1b"
