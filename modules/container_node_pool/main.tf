@@ -2,11 +2,11 @@
 resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
-  provider           = google-beta
-  name               = "${each.key}-pool"
-  cluster            = var.cluster_name
-  location           = var.location
-  max_pods_per_node  = each.value.max_pods_per_node
+  provider          = google-beta
+  name              = "${each.key}-pool"
+  cluster           = var.cluster_name
+  location          = var.location
+  max_pods_per_node = each.value.max_pods_per_node
 
   autoscaling {
     min_node_count  = each.value.min_node_count
