@@ -68,14 +68,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-      },
-      {
-        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        ip_cidr_range = "10.196.0.0/14"
-      },
-      {
-        range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        ip_cidr_range = "10.200.0.0/20"
+        # },
+        # {
+        #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+        #   ip_cidr_range = "10.196.0.0/14"
+        # },
+        # {
+        #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
+        #   ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -98,14 +98,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-      },
-      {
-        range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        ip_cidr_range = "10.196.0.0/14"
-      },
-      {
-        range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        ip_cidr_range = "10.200.0.0/20"
+        # },
+        # {
+        #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+        #   ip_cidr_range = "10.196.0.0/14"
+        # },
+        # {
+        #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
+        #   ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -453,13 +453,13 @@ clusters = {
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
-      stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = []
-      }
+      # stack_type                    = "IPV4"
+      # pod_cidr_overprovision_config = {
+      #   disabled = false
+      # }
+      # additional_pod_ranges_config = {
+      #   pod_range_names = []
+      # }
     }
     addons_config = {
       dns_cache_config = {
@@ -654,13 +654,13 @@ clusters = {
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
-      stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = []
-      }
+      # stack_type                    = "IPV4"
+      # pod_cidr_overprovision_config = {
+      #   disabled = false
+      # }
+      # additional_pod_ranges_config = {
+      #   pod_range_names = []
+      # }
     }
     addons_config = {
       dns_cache_config = {
