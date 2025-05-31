@@ -103,7 +103,6 @@ module "compute_router" {
   project_id = var.project_id
   name       = each.value.name
   network    = each.value.network
-  subnetwork = each.value.subnetwork
   region     = var.region
 }
 
