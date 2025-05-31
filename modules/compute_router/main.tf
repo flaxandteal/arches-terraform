@@ -6,19 +6,11 @@ resource "google_compute_router" "router" {
 }
 
 resource "google_compute_router_nat" "nat" {
-  name    = "${var.name}-nat"
-  router  = google_compute_router.router.name
-  region  = var.region
-  project = var.project_id
-
-  nat_ip_allocate_option = "AUTO_ONLY"
-
-  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
-
-  subnetwork {
-    name                    = var.subnetwork
-    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
-  }
-
-  min_ports_per_vm = 64
+  count                          = var.nat != null ? 1 : 0
+  project                        = var.project_id
+  router                         = google_compute_router.router.name
+  region                         = var.region
+  name                           = var.nat.name
+  nat_ip_allocate_option         = var.nat.nat_ip_allocate_option
+  source_subnetwork_ip_ranges_to_nat = var.nat.source_subnetwork_ip_ranges_to_nat
 }

@@ -363,11 +363,21 @@ routers = {
     name       = "coral-network-router-prd"
     network    = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
     subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+    nat = {
+      name                          = "coral-network-router-prd-Nat"
+      nat_ip_allocate_option        = "AUTO_ONLY"
+      source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+    }
   },
   stg = {
     name       = "coral-network-router"
     network    = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
     subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
+    nat = {
+      name                          = "coral-network-router-Nat"
+      nat_ip_allocate_option        = "AUTO_ONLY"
+      source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+    }
   }
 }
 
