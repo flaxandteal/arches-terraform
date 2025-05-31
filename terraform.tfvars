@@ -112,62 +112,62 @@ subnetworks = {
 }
 
 firewalls = {
-  # letsencrpt_egress = {
-  #   name               = "letsencrpt-egress"
-  #   network            = module.compute_network["coral_network_stg"].network
-  #   direction          = "EGRESS"
-  #   priority           = 1000
-  #   destination_ranges = ["0.0.0.0/0"]
-  #   source_ranges      = []
-  #   allow = [{
-  #     ports    = ["443"]
-  #     protocol = "tcp"
-  #   }]
-  #   description = "Encrypt egress"
-  #   target_tags = []
-  # },
-  # k8s_fw = {
-  #   name               = "k8s-fw"
-  #   description        = "Kubernetes traffic"
-  #   network            = module.compute_network["coral_network_stg"].network
-  #   direction          = "INGRESS"
-  #   priority           = 1000
-  #   destination_ranges = ["34.89.106.198"]
-  #   source_ranges      = ["0.0.0.0/0"]
-  #   target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
-  #   allow = [{
-  #     ports    = ["80", "443", "15021"]
-  #     protocol = "tcp"
-  #   }]
-  # },
-  # coral_prd = {
-  #   name          = "allow-ingress-coral-prd"
-  #   network       = module.compute_network["coral_network_prd"].network
-  #   direction     = "INGRESS"
-  #   priority      = 1000
-  #   source_ranges = ["172.16.0.0/28"]
-  #   target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
-  #   allow = [{
-  #     protocol = "tcp"
-  #     ports    = ["10250", "443", "15017", "8080", "15000"]
-  #   }]
-  #   description        = "Allow ingress for Coral production GKE cluster"
-  #   destination_ranges = []
-  # },
-  # coral_stg = {
-  #   name          = "allow-ingress-coral-stg"
-  #   network       = module.compute_network["coral_network_stg"].network
-  #   direction     = "INGRESS"
-  #   priority      = 1000
-  #   source_ranges = ["172.16.0.0/28"]
-  #   target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
-  #   allow = [{
-  #     protocol = "tcp"
-  #     ports    = ["10250", "443", "15017", "8080", "15000"]
-  #   }]
-  #   description        = "Allow ingress for Coral staging GKE cluster"
-  #   destination_ranges = []
-  # },
+  letsencrpt_egress = {
+    name               = "letsencrpt-egress"
+    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction          = "EGRESS"
+    priority           = 1000
+    destination_ranges = ["0.0.0.0/0"]
+    source_ranges      = []
+    allow = [{
+      ports    = ["443"]
+      protocol = "tcp"
+    }]
+    description = "Encrypt egress"
+    target_tags = []
+  },
+  k8s_fw = {
+    name               = "k8s-fw"
+    description        = "Kubernetes traffic"
+    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction          = "INGRESS"
+    priority           = 1000
+    destination_ranges = ["34.89.106.198"]
+    source_ranges      = ["0.0.0.0/0"]
+    target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
+    allow = [{
+      ports    = ["80", "443", "15021"]
+      protocol = "tcp"
+    }]
+  },
+  coral_prd = {
+    name          = "allow-ingress-coral-prd"
+    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
+    direction     = "INGRESS"
+    priority      = 1000
+    source_ranges = ["172.16.0.0/28"]
+    target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["10250", "443", "15017", "8080", "15000"]
+    }]
+    description        = "Allow ingress for Coral production GKE cluster"
+    destination_ranges = []
+  },
+  coral_stg = {
+    name          = "allow-ingress-coral-stg"
+    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction     = "INGRESS"
+    priority      = 1000
+    source_ranges = ["172.16.0.0/28"]
+    target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["10250", "443", "15017", "8080", "15000"]
+    }]
+    description        = "Allow ingress for Coral staging GKE cluster"
+    destination_ranges = []
+  },
 }
 
 buckets = {
@@ -252,7 +252,7 @@ buckets = {
     storage_class               = "STANDARD"
     force_destroy               = false
     public_access_prevention    = "inherited"
-    uniform_bucket_level_access = true
+    uniform_bucket_level_access = false
     encryption                  = null
     cors                        = []
     logging                     = null
@@ -263,7 +263,7 @@ buckets = {
     storage_class               = "STANDARD"
     force_destroy               = false
     public_access_prevention    = "inherited"
-    uniform_bucket_level_access = true
+    uniform_bucket_level_access = false
     encryption                  = null
     cors                        = []
     logging                     = null
@@ -357,7 +357,7 @@ service_accounts = {
     roles           = ["artifactregistry.writer"]
   }
 }
-# routers
+
 routers = {
   prd = {
     name       = "coral-network-router-prd"
@@ -370,7 +370,7 @@ routers = {
     subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
   }
 }
-# KMS
+
 kms_key_rings = {
   data_store_prd = {
     name       = "data-store-keyring-uat-prd"
@@ -409,17 +409,17 @@ kms_key_rings = {
     }
   }
 }
-# Clusters
+
 clusters = {
   prd = {
     name                     = "k8s-coral-prd"
     location                 = "europe-west2-a"
-    network                  = "coral-network-prd"
-    subnetwork               = "coral-subnetwork-prd"
-    initial_node_count       = 1    # Add to satisfy variable schema
-    remove_default_node_pool = true # Add to satisfy variable schema
+    network                  = "projects/coral-hed/global/networks/coral-network-prd"
+    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
     node_version             = "1.31.7-gke.1265000"
     min_master_version       = "1.31.7-gke.1265000"
+    initial_node_count       = 1
+    remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
       disk_type       = "pd-balanced"
@@ -437,9 +437,13 @@ clusters = {
         "https://www.googleapis.com/auth/servicecontrol",
         "https://www.googleapis.com/auth/trace.append"
       ]
-      service_account          = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
-      shielded_instance_config = { enable_integrity_monitoring = true }
-      workload_metadata_config = { mode = "GKE_METADATA" }
+      service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
+      shielded_instance_config = {
+        enable_integrity_monitoring = true
+      }
+      workload_metadata_config = {
+        mode = "GKE_METADATA"
+      }
       labels = {
         TF_used_by  = "k8s-coral-prd"
         TF_used_for = "gke"
@@ -450,21 +454,36 @@ clusters = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config  = { pod_range_names = [] }
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
       additional_pod_ranges_config = {
         pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
       }
     }
     addons_config = {
-      dns_cache_config                      = { enabled = true }
-      gce_persistent_disk_csi_driver_config = { enabled = true }
-      horizontal_pod_autoscaling            = { disabled = false }
-      http_load_balancing                   = { disabled = false }
-      network_policy_config                 = { disabled = true }
+      dns_cache_config = {
+        enabled = true
+      }
+      gce_persistent_disk_csi_driver_config = {
+        enabled = true
+      }
+      horizontal_pod_autoscaling = {
+        disabled = false
+      }
+      http_load_balancing = {
+        disabled = false
+      }
+      network_policy_config = {
+        disabled = true
+      }
     }
-    cluster_autoscaling = { autoscaling_profile = "BALANCED" }
-    cluster_telemetry   = { type = "ENABLED" }
+    cluster_autoscaling = {
+      autoscaling_profile = "BALANCED"
+    }
+    cluster_telemetry = {
+      type = "ENABLED"
+    }
     database_encryption = {
       state    = "DECRYPTED"
       key_name = ""
@@ -532,7 +551,9 @@ clusters = {
         enabled = false
       }
     }
-    pod_security_policy_config = { enabled = false }
+    pod_security_policy_config = {
+      enabled = false
+    }
     private_cluster_config = {
       enable_private_nodes   = true
       master_ipv4_cidr_block = "172.16.0.0/28"
@@ -545,16 +566,22 @@ clusters = {
         audit_mode = "DISABLED"
       }
     }
-    release_channel = { channel = "REGULAR" }
+    release_channel = {
+      channel = "REGULAR"
+    }
     security_posture_config = {
       mode               = "BASIC"
       vulnerability_mode = "VULNERABILITY_DISABLED"
     }
-    service_external_ips_config = { enabled = false }
+    service_external_ips_config = {
+      enabled = false
+    }
     vertical_pod_autoscaling = {
       enabled = false
     }
-    workload_identity_config = { workload_pool = "coral-hed.svc.id.goog" }
+    workload_identity_config = {
+      workload_pool = "coral-hed.svc.id.goog"
+    }
     node_pools = {
       prd = {
         machine_type       = "e2-standard-4" #"e2-standard-8"
@@ -595,12 +622,12 @@ clusters = {
   stg = {
     name                     = "k8s-coral-stg"
     location                 = "europe-west2-a"
-    network                  = "coral-network"
-    subnetwork               = "coral-subnetwork"
-    node_version             = "1.31.7-gke.1265000" #sji todo
+    network                  = "projects/coral-hed/global/networks/coral-network"
+    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
+    node_version             = "1.31.7-gke.1265000"
     min_master_version       = "1.31.7-gke.1265000"
-    initial_node_count       = 1    # Add to satisfy variable schema
-    remove_default_node_pool = true # Add to satisfy variable schema
+    initial_node_count       = 1
+    remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
       disk_type       = "pd-standard"
@@ -628,8 +655,9 @@ clusters = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config  = { pod_range_names = [] }
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
       additional_pod_ranges_config = {
         pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
       }

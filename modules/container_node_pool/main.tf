@@ -2,11 +2,12 @@
 resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
-  provider          = google-beta
-  name              = "${each.key}-pool"
-  cluster           = var.cluster_name
-  location          = var.location
-  max_pods_per_node = each.value.max_pods_per_node
+  provider           = google-beta
+  name               = "${each.key}-pool"
+  cluster            = var.cluster_name
+  location           = var.location
+  initial_node_count = each.value.initial_node_count
+  max_pods_per_node  = each.value.max_pods_per_node
 
   autoscaling {
     min_node_count  = each.value.min_node_count
@@ -69,9 +70,9 @@ resource "google_container_node_pool" "node_pool" {
     }
   }
 
-  # lifecycle {
-  #   ignore_changes = [initial_node_count]
-  # }
+  lifecycle {
+    ignore_changes = [initial_node_count]
+  }
 
   depends_on = [var.depends_on_container_api, var.depends_on_container_resources]
 }
