@@ -12,9 +12,7 @@ resource "google_container_cluster" "cluster" {
   deletion_protection = false
 
   ip_allocation_policy {
-    cluster_ipv4_cidr_block       = var.ip_allocation_policy.cluster_ipv4_cidr_block
     cluster_secondary_range_name  = var.ip_allocation_policy.cluster_secondary_range_name
-    services_ipv4_cidr_block      = var.ip_allocation_policy.services_ipv4_cidr_block
     services_secondary_range_name = var.ip_allocation_policy.services_secondary_range_name
     stack_type                    = var.ip_allocation_policy.stack_type
     pod_cidr_overprovision_config {
