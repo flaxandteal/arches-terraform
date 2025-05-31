@@ -87,7 +87,7 @@ module "compute_subnetwork" {
   project_id                 = var.project_id
   name                       = each.value.name
   region                     = var.region
-  network                    = module.compute_network[each.value.network].self_link # Assumes each.value.network is a key to var.networks
+  network                    = module.compute_network[each.value.network].network.self_link
   ip_cidr_range              = each.value.ip_cidr_range
   private_ip_google_access   = each.value.private_ip_google_access
   private_ipv6_google_access = each.value.private_ipv6_google_access
