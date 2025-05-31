@@ -458,7 +458,7 @@ clusters = {
         disabled = false
       }
       additional_pod_ranges_config = {
-        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
+        pod_range_names = []
       }
     }
     addons_config = {
@@ -659,7 +659,7 @@ clusters = {
         disabled = false
       }
       additional_pod_ranges_config = {
-        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
+        pod_range_names = []
       }
     }
     addons_config = {
