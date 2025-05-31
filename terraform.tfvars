@@ -455,17 +455,6 @@ clusters = {
       additional_pod_ranges_config = {
         pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
       }
-
-      # cluster_ipv4_cidr_block      = "192.168.64.0/20"
-      #cluster_secondary_range_name = "pod-ranges"
-
-      # pod_cidr_overprovision_config = {
-      #   disabled = false
-      # }
-
-      # services_ipv4_cidr_block      = "192.168.0.0/20"
-      #services_secondary_range_name = "services-range"
-      # stack_type                    = "IPV4"
     }
     addons_config = {
       dns_cache_config                      = { enabled = true }
@@ -644,17 +633,6 @@ clusters = {
       additional_pod_ranges_config = {
         pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
       }
-
-      # cluster_ipv4_cidr_block      = "192.168.64.0/20"
-      #cluster_secondary_range_name = "pod-ranges"
-
-      # pod_cidr_overprovision_config = {
-      #   disabled = false
-      # }
-
-      # services_ipv4_cidr_block      = "192.168.0.0/20"
-      #services_secondary_range_name = "services-range"
-      # stack_type                    = "IPV4"
     }
     addons_config = {
       dns_cache_config = {
