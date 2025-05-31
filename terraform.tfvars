@@ -453,13 +453,13 @@ clusters = {
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
-      # stack_type                    = "IPV4"
-      # pod_cidr_overprovision_config = {
-      #   disabled = false
-      # }
-      # additional_pod_ranges_config = {
-      #   pod_range_names = []
-      # }
+      stack_type                    = "IPV4"
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
+      additional_pod_ranges_config = {
+        pod_range_names = []
+      }
     }
     addons_config = {
       dns_cache_config = {
@@ -654,13 +654,13 @@ clusters = {
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
-      # stack_type                    = "IPV4"
-      # pod_cidr_overprovision_config = {
-      #   disabled = false
-      # }
-      # additional_pod_ranges_config = {
-      #   pod_range_names = []
-      # }
+      stack_type                    = "IPV4"
+      pod_cidr_overprovision_config = {
+        disabled = false
+      }
+      additional_pod_ranges_config = {
+        pod_range_names = []
+      }
     }
     addons_config = {
       dns_cache_config = {
