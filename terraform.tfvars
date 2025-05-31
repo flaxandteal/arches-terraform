@@ -58,7 +58,7 @@ subnetworks = {
     private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
     purpose                    = "PRIVATE"
     stack_type                 = "IPV4_ONLY"
-    network                    = "coral-network" # matches key in `networks`
+    network                    = "coral_network_stg" # Use the key from the 'networks' map
 
     secondary_ip_ranges = [
       {
@@ -88,7 +88,7 @@ subnetworks = {
     private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
     purpose                    = "PRIVATE"
     stack_type                 = "IPV4_ONLY"
-    network                    = "coral-network-prd" # matches key in `networks`
+    network                    = "coral_network_prd" # Use the key from the 'networks' map
 
     secondary_ip_ranges = [
       {
