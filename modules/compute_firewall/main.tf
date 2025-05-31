@@ -18,4 +18,6 @@ resource "google_compute_firewall" "firewall" {
       ports    = length(allow.value.ports) > 0 ? allow.value.ports : null
     }
   }
+  #depends_on = [ google_compute_subnetwork.subnetwork ]
+  #depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
 }
