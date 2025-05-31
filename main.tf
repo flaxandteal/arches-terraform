@@ -102,7 +102,7 @@ module "compute_router" {
   source     = "./modules/compute_router"
   project_id = var.project_id
   name       = each.value.name
-  network    = module.compute_network[each.value.network_key].self_link # Assumes each.value.network_key exists and maps to var.networks
+  network    = module.compute_network[each.value.network_key].self_link  # Assumes each.value.network_key exists and maps to var.networks
   subnetwork = module.compute_subnetwork[each.value.subnetwork_key].name # Assumes each.value.subnetwork_key exists and maps to var.subnetworks, and router module needs subnetwork name
   region     = var.region
 }
@@ -121,7 +121,7 @@ module "kms_key_ring" {
 
 # Root module to manage GKE clusters and node pools for multiple environments
 module "container_cluster" {
-  source     = "./modules/container_cluster"
+  source = "./modules/container_cluster"
   depends_on = [
     module.compute_subnetwork,
     module.compute_router, # Routers (esp. with NAT) should exist before clusters that might use them.
@@ -197,38 +197,38 @@ resource "google_project_service" "container_api" {
 }
 
 resource "google_project_service" "compute_api" {
-  project = var.project_id
-  service = "compute.googleapis.com"
+  project            = var.project_id
+  service            = "compute.googleapis.com"
   disable_on_destroy = false
 }
 
 resource "google_project_service" "kms_api" {
-  project = var.project_id
-  service = "cloudkms.googleapis.com"
+  project            = var.project_id
+  service            = "cloudkms.googleapis.com"
   disable_on_destroy = false
 }
 
 resource "google_project_service" "iam_api" {
-  project = var.project_id
-  service = "iam.googleapis.com"
+  project            = var.project_id
+  service            = "iam.googleapis.com"
   disable_on_destroy = false
 }
 
 resource "google_project_service" "artifactregistry_api" {
-  project = var.project_id
-  service = "artifactregistry.googleapis.com"
+  project            = var.project_id
+  service            = "artifactregistry.googleapis.com"
   disable_on_destroy = false
 }
 
 resource "google_project_service" "storage_api" {
-  project = var.project_id
-  service = "storage.googleapis.com"
+  project            = var.project_id
+  service            = "storage.googleapis.com"
   disable_on_destroy = false
 }
 
 module "snapshot_policy" {
-  source   = "./modules/compute_resource_policy"
-  for_each = var.snapshot_policies
+  source     = "./modules/compute_resource_policy"
+  for_each   = var.snapshot_policies
   depends_on = [google_project_service.compute_api]
 
   project_id               = var.project_id
