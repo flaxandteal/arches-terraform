@@ -23,10 +23,10 @@ variable "min_master_version" {
   type        = string
 }
 
-# variable "remove_default_node_pool" {
-#   description = "Whether to remove the default node pool"
-#   type        = bool
-# }
+variable "remove_default_node_pool" {
+  description = "Whether to remove the default node pool"
+  type        = bool
+}
 
 variable "ip_allocation_policy" {
   description = "IP allocation policy for the cluster"

@@ -126,7 +126,7 @@ module "container_cluster" {
   network            = each.value.network
   subnetwork         = each.value.subnetwork
   min_master_version = each.value.min_master_version
-  # remove_default_node_pool = each.value.remove_default_node_pool
+  remove_default_node_pool = each.value.remove_default_node_pool
   ip_allocation_policy = each.value.ip_allocation_policy
   addons_config        = each.value.addons_config
   cluster_autoscaling  = each.value.cluster_autoscaling
