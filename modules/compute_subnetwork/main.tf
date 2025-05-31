@@ -19,9 +19,18 @@ resource "google_compute_subnetwork" "subnetwork" {
 
   #security settings #sji todo - is this too much will it be £££?
   #enable vpc flow logs
-  log_config {
-    aggregation_interval = "INTERVAL_10_MIN"
-    flow_sampling        = 0.1
-    metadata             = "EXCLUDE_ALL_METADATA"
+  # log_config {
+  #   aggregation_interval = "INTERVAL_10_MIN"
+  #   flow_sampling        = 0.1
+  #   metadata             = "EXCLUDE_ALL_METADATA"
+  # }
+  lifecycle {
+    ignore_changes = [
+      secondary_ip_ranges,
+      private_ip_google_access,
+      private_ipv6_google_access,
+      purpose,
+      stack_type,
+    ]
   }
 }
