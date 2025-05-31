@@ -44,17 +44,17 @@ variable "default_network_tags" {
   default     = []
 }
 
-variable "depends_on_container_api" {
-  description = "Dependency on the container API enablement"
-  type        = any
-  default     = []
-}
+# variable "depends_on_container_api" {
+#   description = "Dependency on the container API enablement"
+#   type        = any
+#   default     = []
+# }
 
-variable "depends_on_container_resources" {
-  description = "Dependency on the GKE cluster resources"
-  type        = any
-  default     = []
-}
+# variable "depends_on_container_resources" {
+#   description = "Dependency on the GKE cluster resources"
+#   type        = any
+#   default     = []
+# }
 
 variable "node_pools" {
   description = "Map of node pool configurations"

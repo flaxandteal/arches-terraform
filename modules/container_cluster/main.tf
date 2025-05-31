@@ -162,5 +162,5 @@ resource "google_container_cluster" "cluster" {
     workload_pool = var.workload_identity_config.workload_pool
   }
 
-  depends_on = [var.depends_on_container_api]
+  #depends_on = [var.depends_on_container_api]
 }

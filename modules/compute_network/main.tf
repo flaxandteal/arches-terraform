@@ -4,4 +4,5 @@ resource "google_compute_network" "network" {
   auto_create_subnetworks                   = var.auto_create_subnetworks
   routing_mode                              = var.routing_mode
   network_firewall_policy_enforcement_order = var.network_firewall_policy_enforcement_order
+  #depends_on = [ google_project_service.service_accounts ]
 }
