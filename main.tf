@@ -102,8 +102,8 @@ module "compute_router" {
   source     = "./modules/compute_router"
   project_id = var.project_id
   name       = each.value.name
-  network    = module.compute_network[each.value.network_key].self_link  # Assumes each.value.network_key exists and maps to var.networks
-  subnetwork = module.compute_subnetwork[each.value.subnetwork_key].name # Assumes each.value.subnetwork_key exists and maps to var.subnetworks, and router module needs subnetwork name
+  network    = each.value.network
+  subnetwork = each.value.subnetwork
   region     = var.region
 }
 
