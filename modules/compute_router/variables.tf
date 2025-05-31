@@ -20,8 +20,8 @@ variable "region" {
 
 variable "nat" {
   type = object({
-    name                          = string
-    nat_ip_allocate_option        = string
+    name                               = string
+    nat_ip_allocate_option             = string
     source_subnetwork_ip_ranges_to_nat = string
   })
   default = null
