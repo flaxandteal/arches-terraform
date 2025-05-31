@@ -67,7 +67,6 @@ variable "node_pools" {
     auto_upgrade       = bool
     min_node_count     = number
     max_node_count     = number
-    initial_node_count = number
     max_pods_per_node  = number
     location_policy    = string
     max_surge          = number

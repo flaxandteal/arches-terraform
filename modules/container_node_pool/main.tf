@@ -6,7 +6,6 @@ resource "google_container_node_pool" "node_pool" {
   name               = "${each.key}-pool"
   cluster            = var.cluster_name
   location           = var.location
-  initial_node_count = each.value.initial_node_count
   max_pods_per_node  = each.value.max_pods_per_node
 
   autoscaling {
