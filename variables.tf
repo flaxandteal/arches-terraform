@@ -160,6 +160,8 @@ variable "clusters" {
     name               = string
     location           = string
     node_version       = string
+    initial_node_count = optional(number) # Make initial_node_count optional
+    remove_default_node_pool = optional(bool, true) # Make optional, defaults to true if not provided
     min_master_version = string
     network            = string
     subnetwork         = string
@@ -378,4 +380,3 @@ variable "snapshot_policies" {
     error_message = "Each snapshot policy must specify exactly one of daily_schedule, hourly_schedule, or weekly_schedule."
   }
 }
-
