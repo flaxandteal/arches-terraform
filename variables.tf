@@ -160,8 +160,8 @@ variable "clusters" {
     name                     = string
     location                 = string
     node_version             = string
-    initial_node_count       = optional(number)     # Make initial_node_count optional
-    remove_default_node_pool = optional(bool, true) # Make optional, defaults to true if not provided
+    initial_node_count       = number
+    remove_default_node_pool = bool
     min_master_version       = string
     network                  = string
     subnetwork               = string
