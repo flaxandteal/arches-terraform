@@ -265,14 +265,7 @@ variable "clusters" {
       provider = string
     })
     networking_mode = string
-    network_config = object({
-      enable_private_nodes = bool
-      pod_ipv4_cidr_block  = string
-      pod_range            = string
-      # enable_private_endpoint = bool
-      # enable_private_endpoint_public_access = bool
-      # network_firewall_policy_enforcement_order = string
-    })
+    
     node_pool_defaults = object({
       node_config_defaults = object({
         logging_variant = string
@@ -349,6 +342,11 @@ variable "clusters" {
       })
       workload_metadata_config = object({
         mode = string
+      })
+      network_config = object({
+        enable_private_nodes = bool
+        pod_ipv4_cidr_block  = string
+        pod_range            = string
       })
     }))
   }))
