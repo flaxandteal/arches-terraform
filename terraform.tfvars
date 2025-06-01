@@ -114,62 +114,62 @@ subnetworks = {
 }
 
 firewalls = {
-  # letsencrpt_egress = {
-  #   name               = "letsencrpt-egress"
-  #   network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-  #   direction          = "EGRESS"
-  #   priority           = 1000
-  #   destination_ranges = ["0.0.0.0/0"]
-  #   source_ranges      = []
-  #   allow = [{
-  #     ports    = ["443"]
-  #     protocol = "tcp"
-  #   }]
-  #   description = "Encrypt egress"
-  #   target_tags = []
-  # },
-  # k8s_fw = {
-  #   name               = "k8s-fw"
-  #   description        = "Kubernetes traffic"
-  #   network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-  #   direction          = "INGRESS"
-  #   priority           = 1000
-  #   destination_ranges = ["34.89.106.198"]
-  #   source_ranges      = ["0.0.0.0/0"]
-  #   target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
-  #   allow = [{
-  #     ports    = ["80", "443", "15021"]
-  #     protocol = "tcp"
-  #   }]
-  # },
-  # coral_prd = {
-  #   name          = "allow-ingress-coral-prd"
-  #   network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
-  #   direction     = "INGRESS"
-  #   priority      = 1000
-  #   source_ranges = ["172.16.0.0/28"]
-  #   target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
-  #   allow = [{
-  #     protocol = "tcp"
-  #     ports    = ["10250", "443", "15017", "8080", "15000"]
-  #   }]
-  #   description        = "Allow ingress for Coral production GKE cluster"
-  #   destination_ranges = []
-  # },
-  # coral_stg = {
-  #   name          = "allow-ingress-coral-stg"
-  #   network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-  #   direction     = "INGRESS"
-  #   priority      = 1000
-  #   source_ranges = ["172.16.0.0/28"]
-  #   target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
-  #   allow = [{
-  #     protocol = "tcp"
-  #     ports    = ["10250", "443", "15017", "8080", "15000"]
-  #   }]
-  #   description        = "Allow ingress for Coral staging GKE cluster"
-  #   destination_ranges = []
-  # },
+  letsencrpt_egress = {
+    name               = "letsencrpt-egress"
+    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction          = "EGRESS"
+    priority           = 1000
+    destination_ranges = ["0.0.0.0/0"]
+    source_ranges      = []
+    allow = [{
+      ports    = ["443"]
+      protocol = "tcp"
+    }]
+    description = "Encrypt egress"
+    target_tags = []
+  },
+  k8s_fw = {
+    name               = "k8s-fw"
+    description        = "Kubernetes traffic"
+    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction          = "INGRESS"
+    priority           = 1000
+    destination_ranges = ["34.89.106.198"]
+    source_ranges      = ["0.0.0.0/0"]
+    target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
+    allow = [{
+      ports    = ["80", "443", "15021"]
+      protocol = "tcp"
+    }]
+  },
+  coral_prd = {
+    name          = "allow-ingress-coral-prd"
+    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
+    direction     = "INGRESS"
+    priority      = 1000
+    source_ranges = ["172.16.0.0/28"]
+    target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["10250", "443", "15017", "8080", "15000"]
+    }]
+    description        = "Allow ingress for Coral production GKE cluster"
+    destination_ranges = []
+  },
+  coral_stg = {
+    name          = "allow-ingress-coral-stg"
+    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+    direction     = "INGRESS"
+    priority      = 1000
+    source_ranges = ["172.16.0.0/28"]
+    target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["10250", "443", "15017", "8080", "15000"]
+    }]
+    description        = "Allow ingress for Coral staging GKE cluster"
+    destination_ranges = []
+  },
 }
 
 buckets = {
