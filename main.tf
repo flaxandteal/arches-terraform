@@ -134,7 +134,7 @@ module "container_cluster" {
   location                 = each.value.location
   network                  = each.value.network
   subnetwork               = each.value.subnetwork
-  min_master_version       = each.value.min_master_version
+  min_master_version = lookup(each.value, "min_master_version", var.gke_version)  
   remove_default_node_pool = each.value.remove_default_node_pool
   ip_allocation_policy     = each.value.ip_allocation_policy
   addons_config            = each.value.addons_config
@@ -177,7 +177,7 @@ module "gke_node_pools" {
 
   cluster_name         = module.container_cluster[each.key].cluster_name # Use output from cluster module
   location             = each.value.location
-  node_version         = each.value.node_version
+  node_version         = lookup(each.value, "node_version", var.gke_version)
   service_account      = each.value.node_config.service_account
   oauth_scopes         = each.value.node_config.oauth_scopes
   workload_pool        = each.value.workload_identity_config.workload_pool

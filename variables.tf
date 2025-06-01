@@ -3,6 +3,11 @@ variable "common_labels" {
   type        = map(string)
 }
 
+variable "gke_version" {
+  description = "GKE version to use for clusters"
+  type        = string    
+}
+
 variable "project_id" {
   description = "The project ID to deploy resources"
   type        = string

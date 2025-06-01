@@ -3,6 +3,8 @@ common_labels = {
   environment = "production"
 }
 
+gke_version = "1.32.3-gke.1927009"
+
 project_id = "coral-hed"
 location   = "europe-west2"
 region     = "europe-west2"
@@ -68,14 +70,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-        # },
-        # {
-        #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        #   ip_cidr_range = "10.196.0.0/14"
-        # },
-        # {
-        #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        #   ip_cidr_range = "10.200.0.0/20"
+        },
+        {
+          range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+          ip_cidr_range = "10.196.0.0/14"
+        },
+        {
+          range_name    = "gke-coral-cluster-services-f3c8dd1b"
+          ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -98,14 +100,14 @@ subnetworks = {
       {
         range_name    = "pod-ranges"
         ip_cidr_range = "192.168.64.0/20"
-        # },
-        # {
-        #   range_name    = "gke-coral-cluster-pods-f3c8dd1b"
-        #   ip_cidr_range = "10.196.0.0/14"
-        # },
-        # {
-        #   range_name    = "gke-coral-cluster-services-f3c8dd1b"
-        #   ip_cidr_range = "10.200.0.0/20"
+        },
+        {
+          range_name    = "gke-coral-cluster-pods-f3c8dd1b"
+          ip_cidr_range = "10.196.0.0/14"
+        },
+        {
+          range_name    = "gke-coral-cluster-services-f3c8dd1b"
+          ip_cidr_range = "10.200.0.0/20"
       }
     ]
   }
@@ -426,8 +428,6 @@ clusters = {
     location                 = "europe-west2-a"
     network                  = "projects/coral-hed/global/networks/coral-network-prd"
     subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
-    node_version             = "1.31.7-gke.1265000"
-    min_master_version       = "1.31.7-gke.1265000"
     initial_node_count       = 1
     remove_default_node_pool = true
     node_config = {
@@ -634,8 +634,6 @@ clusters = {
     location                 = "europe-west2-a"
     network                  = "projects/coral-hed/global/networks/coral-network"
     subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
-    node_version             = "1.31.7-gke.1265000"
-    min_master_version       = "1.31.7-gke.1265000"
     initial_node_count       = 1
     remove_default_node_pool = true
     node_config = {
