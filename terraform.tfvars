@@ -509,9 +509,9 @@ clusters = {
     }
     maintenance_policy = {
       recurring_window = {
-        start_time = "19:00"
-        end_time   = "07:00"
+        end_time   = "2025-05-11T07:00:00Z"
         recurrence = "FREQ=WEEKLY;BYDAY=FR"
+        start_time = "2025-05-10T19:00:00Z"
       }
     }
     master_auth = {
@@ -708,9 +708,9 @@ clusters = {
     }
     maintenance_policy = {
       recurring_window = {
-        start_time = "23:00"
-        end_time   = "00:00"
-        recurrence = "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+        end_time   = "2025-05-11T07:00:00Z"
+        recurrence = "FREQ=WEEKLY;BYDAY=FR"
+        start_time = "2025-05-10T19:00:00Z"
       }
     }
     master_auth = {
