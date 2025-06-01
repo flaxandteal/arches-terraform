@@ -24,12 +24,12 @@ resource "google_container_cluster" "cluster" {
     pod_cidr_overprovision_config {
       disabled = var.ip_allocation_policy.pod_cidr_overprovision_config.disabled
     }
-    dynamic "additional_pod_ranges_config" {
-      for_each = length(var.ip_allocation_policy.additional_pod_ranges_config.pod_range_names) > 0 ? [var.ip_allocation_policy.additional_pod_ranges_config] : []
-      content {
-        pod_range_names = additional_pod_ranges_config.value.pod_range_names
-      }
-    }
+    # dynamic "additional_pod_ranges_config" {
+    #   for_each = length(var.ip_allocation_policy.additional_pod_ranges_config.pod_range_names) > 0 ? [var.ip_allocation_policy.additional_pod_ranges_config] : []
+    #   content {
+    #     pod_range_names = additional_pod_ranges_config.value.pod_range_names
+    #   }
+    # }
   }
 
   addons_config {

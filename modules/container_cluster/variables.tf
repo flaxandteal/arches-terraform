@@ -37,9 +37,9 @@ variable "ip_allocation_policy" {
     pod_cidr_overprovision_config = object({
       disabled = bool
     })
-    additional_pod_ranges_config = object({
-      pod_range_names = list(string)
-    })
+    # additional_pod_ranges_config = object({
+    #   pod_range_names = list(string)
+    # })
   })
 }
 
