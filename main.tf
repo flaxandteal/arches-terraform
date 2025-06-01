@@ -181,7 +181,6 @@ module "node_pools" {
   oauth_scopes    = each.value.node_config.oauth_scopes
   workload_pool   = each.value.workload_identity_config.workload_pool
   network         = each.value.network
-  network_config  = each.value.network_config
 
   subnetwork           = each.value.subnetwork
   default_network_tags = ["gke-cluster"]

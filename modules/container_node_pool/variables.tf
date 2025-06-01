@@ -44,14 +44,14 @@ variable "default_network_tags" {
   default     = []
 }
 
-variable "network_config" {
-  description = "Network configuration for the node pool"
-  type = object({
-    enable_private_nodes = bool
-    pod_ipv4_cidr_block  = string
-    pod_range            = string
-  })
-}
+# variable "network_config" {
+#   description = "Network configuration for the node pool"
+#   type = object({
+#     enable_private_nodes = bool
+#     pod_ipv4_cidr_block  = string
+#     pod_range            = string
+#   })
+# }
 
 variable "node_pools" {
   description = "Map of node pool configurations"
