@@ -6,9 +6,6 @@ name: Enable APIs
 #       types:
 #         - completed
 on:
-  push:
-    branches:
-      - dev
   workflow_dispatch:
 
 permissions:

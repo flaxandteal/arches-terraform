@@ -134,7 +134,7 @@ module "container_cluster" {
   location                 = each.value.location
   network                  = each.value.network
   subnetwork               = each.value.subnetwork
-  min_master_version = lookup(each.value, "min_master_version", var.gke_version)  
+  min_master_version       = lookup(each.value, "min_master_version", var.gke_version)
   remove_default_node_pool = each.value.remove_default_node_pool
   ip_allocation_policy     = each.value.ip_allocation_policy
   addons_config            = each.value.addons_config

@@ -5,7 +5,7 @@ variable "common_labels" {
 
 variable "gke_version" {
   description = "GKE version to use for clusters"
-  type        = string    
+  type        = string
 }
 
 variable "project_id" {
