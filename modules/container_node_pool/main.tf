@@ -26,9 +26,9 @@ resource "google_container_node_pool" "node_pool" {
   }
 
   network_config {
-    enable_private_nodes = each.value.enable_private_nodes
-    pod_ipv4_cidr_block  = each.value.pod_ipv4_cidr_block
-    pod_range            = each.value.pod_range
+    enable_private_nodes = each.value.network_config.enable_private_nodes
+    pod_ipv4_cidr_block  = each.value.network_config.pod_ipv4_cidr_block
+    pod_range            = each.value.network_config.pod_range
   }
 
   node_config {
