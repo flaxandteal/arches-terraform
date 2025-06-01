@@ -166,15 +166,14 @@ module "container_cluster" {
   # depends_on_container_api = [google_project_service.container_api]
 }
 
-module "gke_node_pools" {
+module "node_pools" {
   source = "./modules/container_node_pool"
   depends_on = [
     module.container_cluster,
     module.service_accounts # Because node_config.service_account is passed
   ]
 
-  for_each = var.clusters
-
+  for_each             = var.clusters
   cluster_name         = module.container_cluster[each.key].cluster_name # Use output from cluster module
   location             = each.value.location
   node_version         = lookup(each.value, "node_version", var.gke_version)
@@ -184,7 +183,6 @@ module "gke_node_pools" {
   network              = each.value.network
   subnetwork           = each.value.subnetwork
   default_network_tags = ["gke-cluster"]
-
 
   node_pools = each.value.node_pools
 }
