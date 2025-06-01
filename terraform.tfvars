@@ -114,62 +114,62 @@ subnetworks = {
 }
 
 firewalls = {
-  letsencrpt_egress = {
-    name               = "letsencrpt-egress"
-    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-    direction          = "EGRESS"
-    priority           = 1000
-    destination_ranges = ["0.0.0.0/0"]
-    source_ranges      = []
-    allow = [{
-      ports    = ["443"]
-      protocol = "tcp"
-    }]
-    description = "Encrypt egress"
-    target_tags = []
-  },
-  k8s_fw = {
-    name               = "k8s-fw"
-    description        = "Kubernetes traffic"
-    network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-    direction          = "INGRESS"
-    priority           = 1000
-    destination_ranges = ["34.89.106.198"]
-    source_ranges      = ["0.0.0.0/0"]
-    target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
-    allow = [{
-      ports    = ["80", "443", "15021"]
-      protocol = "tcp"
-    }]
-  },
-  coral_prd = {
-    name          = "allow-ingress-coral-prd"
-    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
-    direction     = "INGRESS"
-    priority      = 1000
-    source_ranges = ["172.16.0.0/28"]
-    target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
-    allow = [{
-      protocol = "tcp"
-      ports    = ["10250", "443", "15017", "8080", "15000"]
-    }]
-    description        = "Allow ingress for Coral production GKE cluster"
-    destination_ranges = []
-  },
-  coral_stg = {
-    name          = "allow-ingress-coral-stg"
-    network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-    direction     = "INGRESS"
-    priority      = 1000
-    source_ranges = ["172.16.0.0/28"]
-    target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
-    allow = [{
-      protocol = "tcp"
-      ports    = ["10250", "443", "15017", "8080", "15000"]
-    }]
-    description        = "Allow ingress for Coral staging GKE cluster"
-    destination_ranges = []
-  },
+  # letsencrpt_egress = {
+  #   name               = "letsencrpt-egress"
+  #   network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+  #   direction          = "EGRESS"
+  #   priority           = 1000
+  #   destination_ranges = ["0.0.0.0/0"]
+  #   source_ranges      = []
+  #   allow = [{
+  #     ports    = ["443"]
+  #     protocol = "tcp"
+  #   }]
+  #   description = "Encrypt egress"
+  #   target_tags = []
+  # },
+  # k8s_fw = {
+  #   name               = "k8s-fw"
+  #   description        = "Kubernetes traffic"
+  #   network            = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+  #   direction          = "INGRESS"
+  #   priority           = 1000
+  #   destination_ranges = ["34.89.106.198"]
+  #   source_ranges      = ["0.0.0.0/0"]
+  #   target_tags        = ["gke-k8s-coral-stg-4b674dca-node"]
+  #   allow = [{
+  #     ports    = ["80", "443", "15021"]
+  #     protocol = "tcp"
+  #   }]
+  # },
+  # coral_prd = {
+  #   name          = "allow-ingress-coral-prd"
+  #   network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
+  #   direction     = "INGRESS"
+  #   priority      = 1000
+  #   source_ranges = ["172.16.0.0/28"]
+  #   target_tags   = ["gke-k8s-coral-prd-np-tf-8r35wt"]
+  #   allow = [{
+  #     protocol = "tcp"
+  #     ports    = ["10250", "443", "15017", "8080", "15000"]
+  #   }]
+  #   description        = "Allow ingress for Coral production GKE cluster"
+  #   destination_ranges = []
+  # },
+  # coral_stg = {
+  #   name          = "allow-ingress-coral-stg"
+  #   network       = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
+  #   direction     = "INGRESS"
+  #   priority      = 1000
+  #   source_ranges = ["172.16.0.0/28"]
+  #   target_tags   = ["gke-k8s-coral-stg-np-tf-cejctx"]
+  #   allow = [{
+  #     protocol = "tcp"
+  #     ports    = ["10250", "443", "15017", "8080", "15000"]
+  #   }]
+  #   description        = "Allow ingress for Coral staging GKE cluster"
+  #   destination_ranges = []
+  # },
 }
 
 buckets = {
@@ -423,411 +423,411 @@ kms_key_rings = {
 }
 
 clusters = {
-  prd = {
-    name                     = "k8s-coral-prd"
-    location                 = "europe-west2-a"
-    network                  = "projects/coral-hed/global/networks/coral-network-prd"
-    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
-    initial_node_count       = 1
-    remove_default_node_pool = true
-    node_config = {
-      disk_size_gb    = 50
-      disk_type       = "pd-balanced"
-      image_type      = "COS_CONTAINERD"
-      logging_variant = "DEFAULT"
-      machine_type    = "e2-standard-4"
-      metadata = {
-        disable-legacy-endpoints = "true"
-      }
-      oauth_scopes = [
-        "https://www.googleapis.com/auth/devstorage.read_only",
-        "https://www.googleapis.com/auth/logging.write",
-        "https://www.googleapis.com/auth/monitoring",
-        "https://www.googleapis.com/auth/service.management.readonly",
-        "https://www.googleapis.com/auth/servicecontrol",
-        "https://www.googleapis.com/auth/trace.append"
-      ]
-      service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
-      shielded_instance_config = {
-        enable_integrity_monitoring = true
-      }
-      workload_metadata_config = {
-        mode = "GKE_METADATA"
-      }
-      labels = {
-        TF_used_by  = "k8s-coral-prd"
-        TF_used_for = "gke"
-      }
-      tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
-    }
-    ip_allocation_policy = {
-      cluster_secondary_range_name  = "pod-ranges"
-      services_secondary_range_name = "services-range"
-      stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = []
-      }
-    }
-    addons_config = {
-      dns_cache_config = {
-        enabled = true
-      }
-      gce_persistent_disk_csi_driver_config = {
-        enabled = true
-      }
-      horizontal_pod_autoscaling = {
-        disabled = false
-      }
-      http_load_balancing = {
-        disabled = false
-      }
-      network_policy_config = {
-        disabled = true
-      }
-    }
-    cluster_autoscaling = {
-      autoscaling_profile = "BALANCED"
-    }
-    cluster_telemetry = {
-      type = "ENABLED"
-    }
-    database_encryption = {
-      state    = "DECRYPTED"
-      key_name = ""
-    }
-    default_max_pods_per_node = 8
-    default_snat_status = {
-      disabled = false
-    }
-    description           = "Generated by Terraform"
-    enable_shielded_nodes = true
-    logging_config = {
-      enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
-    }
-    maintenance_policy = {
-      recurring_window = {
-        end_time   = "2025-05-11T07:00:00Z"
-        recurrence = "FREQ=WEEKLY;BYDAY=FR"
-        start_time = "2025-05-10T19:00:00Z"
-      }
-    }
-    master_auth = {
-      client_certificate_config = {
-        issue_client_certificate = false
-      }
-    }
-    master_authorized_networks_config = {
-      cidr_blocks = [
-        {
-          cidr_block   = "31.51.55.181/32"
-          display_name = "F&T VPN"
-        },
-        {
-          cidr_block   = "80.177.36.11/32"
-          display_name = "PTW1"
-        },
-        {
-          cidr_block   = "31.94.66.14/32"
-          display_name = "Cloudshell"
-        },
-        {
-          cidr_block   = "35.214.39.113/32"
-          display_name = "F&T VPN"
-        }
-      ]
-    }
-    monitoring_config = {
-      advanced_datapath_observability_config = {
-        enable_metrics = false
-        enable_relay   = false
-      }
-      enable_components = ["SYSTEM_COMPONENTS"]
-    }
-    network_policy = {
-      enabled  = false
-      provider = "PROVIDER_UNSPECIFIED"
-    }
-    networking_mode = "VPC_NATIVE"
-    node_pool_defaults = {
-      node_config_defaults = {
-        logging_variant = "DEFAULT"
-      }
-    }
-    notification_config = {
-      pubsub = {
-        enabled = false
-      }
-    }
-    pod_security_policy_config = {
-      enabled = false
-    }
-    private_cluster_config = {
-      enable_private_nodes   = true
-      master_ipv4_cidr_block = "10.0.0.0/28"
-      master_global_access_config = {
-        enabled = false
-      }
-    }
-    protect_config = {
-      workload_config = {
-        audit_mode = "DISABLED"
-      }
-    }
-    release_channel = {
-      channel = "REGULAR"
-    }
-    security_posture_config = {
-      mode               = "BASIC"
-      vulnerability_mode = "VULNERABILITY_DISABLED"
-    }
-    service_external_ips_config = {
-      enabled = false
-    }
-    vertical_pod_autoscaling = {
-      enabled = false
-    }
-    workload_identity_config = {
-      workload_pool = "coral-hed.svc.id.goog"
-    }
-    node_pools = {
-      prd = {
-        machine_type       = "e2-standard-4" #"e2-standard-8"
-        disk_size_gb       = 50
-        disk_type          = "pd-balanced"
-        image_type         = "COS_CONTAINERD"
-        auto_repair        = true
-        auto_upgrade       = true
-        min_node_count     = 1
-        max_node_count     = 8
-        initial_node_count = 1 #7
-        max_pods_per_node  = 64
-        location_policy    = "ANY"
-        max_surge          = 1
-        max_unavailable    = 0
-        preemptible        = false
-        spot               = false
-        labels = {
-          "TF_used_by"  = "k8s-coral-prd"
-          "TF_used_for" = "gke"
-        }
-        tags = ["gke-node"]
-        metadata = {
-          "disable-legacy-endpoints" = "true"
-        }
-        node_taints = []
-        gpu_type    = null
-        shielded_instance_config = {
-          enable_secure_boot          = false
-          enable_integrity_monitoring = true
-        }
-        workload_metadata_config = {
-          mode = "GKE_METADATA"
-        }
-      }
-    }
-  },
-  stg = {
-    name                     = "k8s-coral-stg"
-    location                 = "europe-west2-a"
-    network                  = "projects/coral-hed/global/networks/coral-network"
-    subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
-    initial_node_count       = 1
-    remove_default_node_pool = true
-    node_config = {
-      disk_size_gb    = 50
-      disk_type       = "pd-standard"
-      image_type      = "COS_CONTAINERD"
-      logging_variant = "DEFAULT"
-      machine_type    = "e2-standard-4"
-      metadata = {
-        disable-legacy-endpoints = "true"
-      }
-      oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-      service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
-      shielded_instance_config = {
-        enable_integrity_monitoring = true
-      }
-      workload_metadata_config = {
-        mode = "GKE_METADATA"
-      }
-      labels = {
-        TF_used_by  = "k8s-coral-stg"
-        TF_used_for = "gke"
-      }
-      tags = ["gke-node"]
-    }
-    ip_allocation_policy = {
-      cluster_secondary_range_name  = "pod-ranges"
-      services_secondary_range_name = "services-range"
-      stack_type                    = "IPV4"
-      pod_cidr_overprovision_config = {
-        disabled = false
-      }
-      additional_pod_ranges_config = {
-        pod_range_names = []
-      }
-    }
-    addons_config = {
-      dns_cache_config = {
-        enabled = true
-      }
-      gce_persistent_disk_csi_driver_config = {
-        enabled = true
-      }
-      horizontal_pod_autoscaling = {
-        disabled = false
-      }
-      http_load_balancing = {
-        disabled = false
-      }
-      network_policy_config = {
-        disabled = true
-      }
-    }
-    cluster_autoscaling = {
-      autoscaling_profile = "BALANCED"
-    }
-    cluster_telemetry = {
-      type = "ENABLED"
-    }
-    database_encryption = {
-      state    = "DECRYPTED"
-      key_name = ""
-    }
-    default_max_pods_per_node = 8
-    default_snat_status = {
-      disabled = false
-    }
-    description           = "Generated by Terraform"
-    enable_shielded_nodes = true
-    logging_config = {
-      enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
-    }
-    maintenance_policy = {
-      recurring_window = {
-        end_time   = "2025-05-11T07:00:00Z"
-        recurrence = "FREQ=WEEKLY;BYDAY=FR"
-        start_time = "2025-05-10T19:00:00Z"
-      }
-    }
-    master_auth = {
-      client_certificate_config = {
-        issue_client_certificate = false
-      }
-    }
-    master_authorized_networks_config = {
-      cidr_blocks = [
-        {
-          cidr_block   = "31.94.20.141/32"
-          display_name = "PTW"
-        },
-        {
-          cidr_block   = "80.177.36.11/32"
-          display_name = "SMH"
-        },
-        {
-          cidr_block   = "35.214.39.113/32"
-          display_name = "F&T VPN"
-        },
-        {
-          cidr_block   = "31.94.39.13/32"
-          display_name = "F&T Office"
-        }
-      ]
-    }
-    monitoring_config = {
-      advanced_datapath_observability_config = {
-        enable_metrics = false
-        enable_relay   = false
-      }
-      enable_components = ["SYSTEM_COMPONENTS"]
-    }
-    network_policy = {
-      enabled  = false
-      provider = "PROVIDER_UNSPECIFIED"
-    }
-    networking_mode = "VPC_NATIVE"
-    node_pool_defaults = {
-      node_config_defaults = {
-        logging_variant = "DEFAULT"
-      }
-    }
-    notification_config = {
-      pubsub = {
-        enabled = false
-      }
-    }
-    pod_security_policy_config = {
-      enabled = false
-    }
-    private_cluster_config = {
-      enable_private_nodes   = true
-      master_ipv4_cidr_block = "172.16.0.0/28"
-      master_global_access_config = {
-        enabled = false
-      }
-    }
-    protect_config = {
-      workload_config = {
-        audit_mode = "DISABLED"
-      }
-    }
-    release_channel = {
-      channel = "REGULAR"
-    }
-    security_posture_config = {
-      mode               = "BASIC"
-      vulnerability_mode = "VULNERABILITY_DISABLED"
-    }
-    service_external_ips_config = {
-      enabled = false
-    }
-    vertical_pod_autoscaling = {
-      enabled = false
-    }
-    workload_identity_config = {
-      workload_pool = "coral-hed.svc.id.goog"
-    }
-    node_pools = {
-      stg = {
-        machine_type       = "e2-standard-4"
-        disk_size_gb       = 50
-        disk_type          = "pd-standard"
-        image_type         = "COS_CONTAINERD"
-        auto_repair        = true
-        auto_upgrade       = true
-        min_node_count     = 1
-        max_node_count     = 3
-        initial_node_count = 1
-        max_pods_per_node  = 8
-        location_policy    = "ANY"
-        max_surge          = 1
-        max_unavailable    = 0
-        preemptible        = true
-        spot               = false
-        labels = {
-          "TF_used_by"  = "k8s-coral-stg"
-          "TF_used_for" = "gke"
-        }
-        tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
-        metadata = {
-          "disable-legacy-endpoints" = "true"
-        }
-        node_taints = []
-        gpu_type    = null
-        shielded_instance_config = {
-          enable_secure_boot          = false
-          enable_integrity_monitoring = true
-        }
-        workload_metadata_config = {
-          mode = "GKE_METADATA"
-        }
-      }
-    }
-  }
+  # prd = {
+  #   name                     = "k8s-coral-prd"
+  #   location                 = "europe-west2-a"
+  #   network                  = "projects/coral-hed/global/networks/coral-network-prd"
+  #   subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+  #   initial_node_count       = 1
+  #   remove_default_node_pool = true
+  #   node_config = {
+  #     disk_size_gb    = 50
+  #     disk_type       = "pd-balanced"
+  #     image_type      = "COS_CONTAINERD"
+  #     logging_variant = "DEFAULT"
+  #     machine_type    = "e2-standard-4"
+  #     metadata = {
+  #       disable-legacy-endpoints = "true"
+  #     }
+  #     oauth_scopes = [
+  #       "https://www.googleapis.com/auth/devstorage.read_only",
+  #       "https://www.googleapis.com/auth/logging.write",
+  #       "https://www.googleapis.com/auth/monitoring",
+  #       "https://www.googleapis.com/auth/service.management.readonly",
+  #       "https://www.googleapis.com/auth/servicecontrol",
+  #       "https://www.googleapis.com/auth/trace.append"
+  #     ]
+  #     service_account = "coral-arches-k8s-coral-prd@coral-hed.iam.gserviceaccount.com"
+  #     shielded_instance_config = {
+  #       enable_integrity_monitoring = true
+  #     }
+  #     workload_metadata_config = {
+  #       mode = "GKE_METADATA"
+  #     }
+  #     labels = {
+  #       TF_used_by  = "k8s-coral-prd"
+  #       TF_used_for = "gke"
+  #     }
+  #     tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
+  #   }
+  #   ip_allocation_policy = {
+  #     cluster_secondary_range_name  = "pod-ranges"
+  #     services_secondary_range_name = "services-range"
+  #     stack_type                    = "IPV4"
+  #     pod_cidr_overprovision_config = {
+  #       disabled = false
+  #     }
+  #     additional_pod_ranges_config = {
+  #       pod_range_names = []
+  #     }
+  #   }
+  #   addons_config = {
+  #     dns_cache_config = {
+  #       enabled = true
+  #     }
+  #     gce_persistent_disk_csi_driver_config = {
+  #       enabled = true
+  #     }
+  #     horizontal_pod_autoscaling = {
+  #       disabled = false
+  #     }
+  #     http_load_balancing = {
+  #       disabled = false
+  #     }
+  #     network_policy_config = {
+  #       disabled = true
+  #     }
+  #   }
+  #   cluster_autoscaling = {
+  #     autoscaling_profile = "BALANCED"
+  #   }
+  #   cluster_telemetry = {
+  #     type = "ENABLED"
+  #   }
+  #   database_encryption = {
+  #     state    = "DECRYPTED"
+  #     key_name = ""
+  #   }
+  #   default_max_pods_per_node = 8
+  #   default_snat_status = {
+  #     disabled = false
+  #   }
+  #   description           = "Generated by Terraform"
+  #   enable_shielded_nodes = true
+  #   logging_config = {
+  #     enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  #   }
+  #   maintenance_policy = {
+  #     recurring_window = {
+  #       end_time   = "2025-05-11T07:00:00Z"
+  #       recurrence = "FREQ=WEEKLY;BYDAY=FR"
+  #       start_time = "2025-05-10T19:00:00Z"
+  #     }
+  #   }
+  #   master_auth = {
+  #     client_certificate_config = {
+  #       issue_client_certificate = false
+  #     }
+  #   }
+  #   master_authorized_networks_config = {
+  #     cidr_blocks = [
+  #       {
+  #         cidr_block   = "31.51.55.181/32"
+  #         display_name = "F&T VPN"
+  #       },
+  #       {
+  #         cidr_block   = "80.177.36.11/32"
+  #         display_name = "PTW1"
+  #       },
+  #       {
+  #         cidr_block   = "31.94.66.14/32"
+  #         display_name = "Cloudshell"
+  #       },
+  #       {
+  #         cidr_block   = "35.214.39.113/32"
+  #         display_name = "F&T VPN"
+  #       }
+  #     ]
+  #   }
+  #   monitoring_config = {
+  #     advanced_datapath_observability_config = {
+  #       enable_metrics = false
+  #       enable_relay   = false
+  #     }
+  #     enable_components = ["SYSTEM_COMPONENTS"]
+  #   }
+  #   network_policy = {
+  #     enabled  = false
+  #     provider = "PROVIDER_UNSPECIFIED"
+  #   }
+  #   networking_mode = "VPC_NATIVE"
+  #   node_pool_defaults = {
+  #     node_config_defaults = {
+  #       logging_variant = "DEFAULT"
+  #     }
+  #   }
+  #   notification_config = {
+  #     pubsub = {
+  #       enabled = false
+  #     }
+  #   }
+  #   pod_security_policy_config = {
+  #     enabled = false
+  #   }
+  #   private_cluster_config = {
+  #     enable_private_nodes   = true
+  #     master_ipv4_cidr_block = "10.0.0.0/28"
+  #     master_global_access_config = {
+  #       enabled = false
+  #     }
+  #   }
+  #   protect_config = {
+  #     workload_config = {
+  #       audit_mode = "DISABLED"
+  #     }
+  #   }
+  #   release_channel = {
+  #     channel = "REGULAR"
+  #   }
+  #   security_posture_config = {
+  #     mode               = "BASIC"
+  #     vulnerability_mode = "VULNERABILITY_DISABLED"
+  #   }
+  #   service_external_ips_config = {
+  #     enabled = false
+  #   }
+  #   vertical_pod_autoscaling = {
+  #     enabled = false
+  #   }
+  #   workload_identity_config = {
+  #     workload_pool = "coral-hed.svc.id.goog"
+  #   }
+  #   node_pools = {
+  #     prd = {
+  #       machine_type       = "e2-standard-4" #"e2-standard-8"
+  #       disk_size_gb       = 50
+  #       disk_type          = "pd-balanced"
+  #       image_type         = "COS_CONTAINERD"
+  #       auto_repair        = true
+  #       auto_upgrade       = true
+  #       min_node_count     = 1
+  #       max_node_count     = 8
+  #       initial_node_count = 1 #7
+  #       max_pods_per_node  = 64
+  #       location_policy    = "ANY"
+  #       max_surge          = 1
+  #       max_unavailable    = 0
+  #       preemptible        = false
+  #       spot               = false
+  #       labels = {
+  #         "TF_used_by"  = "k8s-coral-prd"
+  #         "TF_used_for" = "gke"
+  #       }
+  #       tags = ["gke-node"]
+  #       metadata = {
+  #         "disable-legacy-endpoints" = "true"
+  #       }
+  #       node_taints = []
+  #       gpu_type    = null
+  #       shielded_instance_config = {
+  #         enable_secure_boot          = false
+  #         enable_integrity_monitoring = true
+  #       }
+  #       workload_metadata_config = {
+  #         mode = "GKE_METADATA"
+  #       }
+  #     }
+  #   }
+  # },
+  # stg = {
+  #   name                     = "k8s-coral-stg"
+  #   location                 = "europe-west2-a"
+  #   network                  = "projects/coral-hed/global/networks/coral-network"
+  #   subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
+  #   initial_node_count       = 1
+  #   remove_default_node_pool = true
+  #   node_config = {
+  #     disk_size_gb    = 50
+  #     disk_type       = "pd-standard"
+  #     image_type      = "COS_CONTAINERD"
+  #     logging_variant = "DEFAULT"
+  #     machine_type    = "e2-standard-4"
+  #     metadata = {
+  #       disable-legacy-endpoints = "true"
+  #     }
+  #     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+  #     service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
+  #     shielded_instance_config = {
+  #       enable_integrity_monitoring = true
+  #     }
+  #     workload_metadata_config = {
+  #       mode = "GKE_METADATA"
+  #     }
+  #     labels = {
+  #       TF_used_by  = "k8s-coral-stg"
+  #       TF_used_for = "gke"
+  #     }
+  #     tags = ["gke-node"]
+  #   }
+  #   ip_allocation_policy = {
+  #     cluster_secondary_range_name  = "pod-ranges"
+  #     services_secondary_range_name = "services-range"
+  #     stack_type                    = "IPV4"
+  #     pod_cidr_overprovision_config = {
+  #       disabled = false
+  #     }
+  #     additional_pod_ranges_config = {
+  #       pod_range_names = []
+  #     }
+  #   }
+  #   addons_config = {
+  #     dns_cache_config = {
+  #       enabled = true
+  #     }
+  #     gce_persistent_disk_csi_driver_config = {
+  #       enabled = true
+  #     }
+  #     horizontal_pod_autoscaling = {
+  #       disabled = false
+  #     }
+  #     http_load_balancing = {
+  #       disabled = false
+  #     }
+  #     network_policy_config = {
+  #       disabled = true
+  #     }
+  #   }
+  #   cluster_autoscaling = {
+  #     autoscaling_profile = "BALANCED"
+  #   }
+  #   cluster_telemetry = {
+  #     type = "ENABLED"
+  #   }
+  #   database_encryption = {
+  #     state    = "DECRYPTED"
+  #     key_name = ""
+  #   }
+  #   default_max_pods_per_node = 8
+  #   default_snat_status = {
+  #     disabled = false
+  #   }
+  #   description           = "Generated by Terraform"
+  #   enable_shielded_nodes = true
+  #   logging_config = {
+  #     enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  #   }
+  #   maintenance_policy = {
+  #     recurring_window = {
+  #       end_time   = "2025-05-11T07:00:00Z"
+  #       recurrence = "FREQ=WEEKLY;BYDAY=FR"
+  #       start_time = "2025-05-10T19:00:00Z"
+  #     }
+  #   }
+  #   master_auth = {
+  #     client_certificate_config = {
+  #       issue_client_certificate = false
+  #     }
+  #   }
+  #   master_authorized_networks_config = {
+  #     cidr_blocks = [
+  #       {
+  #         cidr_block   = "31.94.20.141/32"
+  #         display_name = "PTW"
+  #       },
+  #       {
+  #         cidr_block   = "80.177.36.11/32"
+  #         display_name = "SMH"
+  #       },
+  #       {
+  #         cidr_block   = "35.214.39.113/32"
+  #         display_name = "F&T VPN"
+  #       },
+  #       {
+  #         cidr_block   = "31.94.39.13/32"
+  #         display_name = "F&T Office"
+  #       }
+  #     ]
+  #   }
+  #   monitoring_config = {
+  #     advanced_datapath_observability_config = {
+  #       enable_metrics = false
+  #       enable_relay   = false
+  #     }
+  #     enable_components = ["SYSTEM_COMPONENTS"]
+  #   }
+  #   network_policy = {
+  #     enabled  = false
+  #     provider = "PROVIDER_UNSPECIFIED"
+  #   }
+  #   networking_mode = "VPC_NATIVE"
+  #   node_pool_defaults = {
+  #     node_config_defaults = {
+  #       logging_variant = "DEFAULT"
+  #     }
+  #   }
+  #   notification_config = {
+  #     pubsub = {
+  #       enabled = false
+  #     }
+  #   }
+  #   pod_security_policy_config = {
+  #     enabled = false
+  #   }
+  #   private_cluster_config = {
+  #     enable_private_nodes   = true
+  #     master_ipv4_cidr_block = "172.16.0.0/28"
+  #     master_global_access_config = {
+  #       enabled = false
+  #     }
+  #   }
+  #   protect_config = {
+  #     workload_config = {
+  #       audit_mode = "DISABLED"
+  #     }
+  #   }
+  #   release_channel = {
+  #     channel = "REGULAR"
+  #   }
+  #   security_posture_config = {
+  #     mode               = "BASIC"
+  #     vulnerability_mode = "VULNERABILITY_DISABLED"
+  #   }
+  #   service_external_ips_config = {
+  #     enabled = false
+  #   }
+  #   vertical_pod_autoscaling = {
+  #     enabled = false
+  #   }
+  #   workload_identity_config = {
+  #     workload_pool = "coral-hed.svc.id.goog"
+  #   }
+  #   node_pools = {
+  #     stg = {
+  #       machine_type       = "e2-standard-4"
+  #       disk_size_gb       = 50
+  #       disk_type          = "pd-standard"
+  #       image_type         = "COS_CONTAINERD"
+  #       auto_repair        = true
+  #       auto_upgrade       = true
+  #       min_node_count     = 1
+  #       max_node_count     = 3
+  #       initial_node_count = 1
+  #       max_pods_per_node  = 8
+  #       location_policy    = "ANY"
+  #       max_surge          = 1
+  #       max_unavailable    = 0
+  #       preemptible        = true
+  #       spot               = false
+  #       labels = {
+  #         "TF_used_by"  = "k8s-coral-stg"
+  #         "TF_used_for" = "gke"
+  #       }
+  #       tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
+  #       metadata = {
+  #         "disable-legacy-endpoints" = "true"
+  #       }
+  #       node_taints = []
+  #       gpu_type    = null
+  #       shielded_instance_config = {
+  #         enable_secure_boot          = false
+  #         enable_integrity_monitoring = true
+  #       }
+  #       workload_metadata_config = {
+  #         mode = "GKE_METADATA"
+  #       }
+  #     }
+  #   }
+  # }
 }
 
 snapshot_policies = {
