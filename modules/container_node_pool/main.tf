@@ -25,6 +25,12 @@ resource "google_container_node_pool" "node_pool" {
     max_unavailable = each.value.max_unavailable
   }
 
+  network_config {
+    enable_private_nodes = each.value.enable_private_nodes
+    pod_ipv4_cidr_block  = each.value.pod_ipv4_cidr_block
+    pod_range            = each.value.pod_range
+  }
+
   node_config {
     machine_type = each.value.machine_type
     disk_size_gb = each.value.disk_size_gb

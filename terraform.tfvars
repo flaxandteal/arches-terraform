@@ -510,6 +510,11 @@ clusters = {
       provider = "PROVIDER_UNSPECIFIED"
     }
     networking_mode = "VPC_NATIVE"
+    network_config = {
+      enable_private_nodes = true
+      pod_ipv4_cidr_block  = "10.196.0.0/14"
+      pod_range            = "gke-coral-cluster-pods-f3c8dd1b"
+    }
     node_pool_defaults = {
       node_config_defaults = {
         logging_variant = "DEFAULT"
@@ -769,6 +774,12 @@ clusters = {
   #       }
   #     }
   #   }
+  # }
+
+  # network_config {
+  #   enable_private_nodes = true
+  #   pod_ipv4_cidr_block  = "192.168.64.0/20"
+  #   pod_range            = "pod-ranges"
   # }
 }
 
