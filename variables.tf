@@ -164,8 +164,8 @@ variable "clusters" {
   type = map(object({
     name                     = string
     location                 = string
-    node_version             = string
-    min_master_version       = string
+    node_version             = optional(string)
+    min_master_version       = optional(string)
     network                  = string
     subnetwork               = string
     initial_node_count       = number
