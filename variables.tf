@@ -160,12 +160,12 @@ variable "kms_key_rings" {
 }
 
 variable "clusters" {
-  description = "Map of GKE cluster configurations for different environments"
+  description = "Map of GKE cluster configurations"
   type = map(object({
     name                     = string
     location                 = string
-    node_version             = optional(string)
-    min_master_version       = optional(string)
+    node_version             = string
+    min_master_version       = string
     network                  = string
     subnetwork               = string
     initial_node_count       = number
@@ -219,9 +219,6 @@ variable "clusters" {
     cluster_autoscaling = object({
       autoscaling_profile = string
     })
-    cluster_telemetry = object({
-      type = string
-    })
     database_encryption = object({
       state    = string
       key_name = string
@@ -265,7 +262,6 @@ variable "clusters" {
       provider = string
     })
     networking_mode = string
-
     node_pool_defaults = object({
       node_config_defaults = object({
         logging_variant = string

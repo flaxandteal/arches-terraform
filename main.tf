@@ -122,10 +122,7 @@ module "kms_key_ring" {
 module "container_cluster" {
   source = "./modules/container_cluster"
   depends_on = [
-    module.compute_subnetwork,
-    module.compute_router, # Routers (esp. with NAT) should exist before clusters that might use them.
-    google_project_service.container_api,
-    module.kms_key_ring # If database_encryption.key_name is used
+    google_project_service.container_api
   ]
 
   for_each = var.clusters
@@ -134,58 +131,54 @@ module "container_cluster" {
   location                 = each.value.location
   network                  = each.value.network
   subnetwork               = each.value.subnetwork
-  min_master_version       = lookup(each.value, "min_master_version", var.gke_version)
+  min_master_version       = each.value.min_master_version
   remove_default_node_pool = each.value.remove_default_node_pool
   ip_allocation_policy     = each.value.ip_allocation_policy
   addons_config            = each.value.addons_config
   cluster_autoscaling      = each.value.cluster_autoscaling
-  # cluster_telemetry                 = each.value.cluster_telemetry
-  database_encryption               = each.value.database_encryption
-  default_max_pods_per_node         = each.value.default_max_pods_per_node
-  default_snat_status               = each.value.default_snat_status
-  description                       = each.value.description
-  enable_shielded_nodes             = each.value.enable_shielded_nodes
-  logging_config                    = each.value.logging_config
-  maintenance_policy                = each.value.maintenance_policy
-  master_auth                       = each.value.master_auth
+  database_encryption      = each.value.database_encryption
+  default_max_pods_per_node = each.value.default_max_pods_per_node
+  default_snat_status      = each.value.default_snat_status
+  description              = each.value.description
+  enable_shielded_nodes    = each.value.enable_shielded_nodes
+  logging_config           = each.value.logging_config
+  maintenance_policy       = each.value.maintenance_policy
+  master_auth              = each.value.master_auth
   master_authorized_networks_config = each.value.master_authorized_networks_config
-  monitoring_config                 = each.value.monitoring_config
-  network_policy                    = each.value.network_policy
-  networking_mode                   = each.value.networking_mode
-  node_pool_defaults                = each.value.node_pool_defaults
-  notification_config               = each.value.notification_config
-  pod_security_policy_config        = each.value.pod_security_policy_config
-  private_cluster_config            = each.value.private_cluster_config
-  protect_config                    = each.value.protect_config
-  release_channel                   = each.value.release_channel
-  security_posture_config           = each.value.security_posture_config
-  service_external_ips_config       = each.value.service_external_ips_config
-  vertical_pod_autoscaling          = each.value.vertical_pod_autoscaling
-  workload_identity_config          = each.value.workload_identity_config
-
-  # depends_on_container_api = [google_project_service.container_api]
+  monitoring_config        = each.value.monitoring_config
+  network_policy           = each.value.network_policy
+  networking_mode          = each.value.networking_mode
+  node_pool_defaults       = each.value.node_pool_defaults
+  notification_config      = each.value.notification_config
+  pod_security_policy_config = each.value.pod_security_policy_config
+  private_cluster_config    = each.value.private_cluster_config
+  protect_config           = each.value.protect_config
+  release_channel          = each.value.release_channel
+  security_posture_config  = each.value.security_posture_config
+  service_external_ips_config = each.value.service_external_ips_config
+  vertical_pod_autoscaling = each.value.vertical_pod_autoscaling
+  workload_identity_config = each.value.workload_identity_config
 }
 
+# Node pools module
 module "node_pools" {
   source = "./modules/container_node_pool"
   depends_on = [
     module.container_cluster,
-    module.service_accounts # Because node_config.service_account is passed
+    google_project_service.container_api
   ]
 
   for_each        = var.clusters
-  cluster_name    = module.container_cluster[each.key].cluster_name # Use output from cluster module
+  cluster_name    = module.container_cluster[each.key].name
   location        = each.value.location
-  node_version    = lookup(each.value, "node_version", var.gke_version)
+  node_version    = each.value.node_version
   service_account = each.value.node_config.service_account
   oauth_scopes    = each.value.node_config.oauth_scopes
   workload_pool   = each.value.workload_identity_config.workload_pool
   network         = each.value.network
-
-  subnetwork           = each.value.subnetwork
-  default_network_tags = ["gke-cluster"]
-
-  node_pools = each.value.node_pools
+  subnetwork      = each.value.subnetwork
+  default_network_tags = ["gke-node"]
+  node_pools      = each.value.node_pools
 }
 
 # Enable the container API
