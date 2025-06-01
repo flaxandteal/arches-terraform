@@ -82,7 +82,6 @@ variable "node_pools" {
     }))
     network_config = object({
       enable_private_nodes = bool
-      pod_ipv4_cidr_block  = string
       pod_range            = string
     })
     gpu_type = object({

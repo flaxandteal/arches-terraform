@@ -562,7 +562,6 @@ clusters = {
         }
         network_config = {
           enable_private_nodes = true
-          pod_ipv4_cidr_block  = "10.196.0.0/14"
           pod_range            = "gke-coral-cluster-pods-f3c8dd1b"
         }
         tags        = ["gke-node"]
