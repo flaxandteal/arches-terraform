@@ -425,19 +425,19 @@ kms_key_rings = {
 clusters = {
   clusters = {
     prd = {
-      name                     = "k8s-coral-prd"
-      location                 = "europe-west2-a"
-      network                  = "projects/coral-hed/global/networks/coral-network-prd"
-      subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
-      initial_node_count       = 0
-      remove_default_node_pool = true
-      min_master_version       = "1.32.4-gke.1106006"
-      node_version             = "1.32.4-gke.1106006"
-      release_channel          = { channel = "REGULAR" }
-      enable_shielded_nodes    = true
-      networking_mode          = "VPC_NATIVE"
+      name                      = "k8s-coral-prd"
+      location                  = "europe-west2-a"
+      network                   = "projects/coral-hed/global/networks/coral-network-prd"
+      subnetwork                = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+      initial_node_count        = 0
+      remove_default_node_pool  = true
+      min_master_version        = "1.32.4-gke.1106006"
+      node_version              = "1.32.4-gke.1106006"
+      release_channel           = { channel = "REGULAR" }
+      enable_shielded_nodes     = true
+      networking_mode           = "VPC_NATIVE"
       default_max_pods_per_node = 8
-      default_snat_status      = { disabled = false }
+      default_snat_status       = { disabled = false }
 
       ip_allocation_policy = {
         cluster_secondary_range_name  = "pod-ranges"
@@ -448,8 +448,8 @@ clusters = {
       }
 
       private_cluster_config = {
-        enable_private_nodes   = true
-        master_ipv4_cidr_block = "10.0.0.0/28"
+        enable_private_nodes        = true
+        master_ipv4_cidr_block      = "10.0.0.0/28"
         master_global_access_config = { enabled = false }
       }
 
@@ -473,9 +473,9 @@ clusters = {
       addons_config = {
         dns_cache_config                      = { enabled = true }
         gce_persistent_disk_csi_driver_config = { enabled = true }
-        horizontal_pod_autoscaling           = { disabled = false }
-        http_load_balancing                  = { disabled = false }
-        network_policy_config                = { disabled = true }
+        horizontal_pod_autoscaling            = { disabled = false }
+        http_load_balancing                   = { disabled = false }
+        network_policy_config                 = { disabled = true }
       }
 
       cluster_autoscaling = {
@@ -592,10 +592,10 @@ clusters = {
             "TF_used_by"  = "k8s-coral-prd"
             "TF_used_for" = "gke"
           }
-          tags = ["gke-node"]
-          metadata = { "disable-legacy-endpoints" = "true" }
+          tags        = ["gke-node"]
+          metadata    = { "disable-legacy-endpoints" = "true" }
           node_taints = []
-          gpu_type = null
+          gpu_type    = null
           shielded_instance_config = {
             enable_secure_boot          = false
             enable_integrity_monitoring = true
