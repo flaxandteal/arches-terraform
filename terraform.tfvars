@@ -461,9 +461,9 @@ clusters = {
       services_secondary_range_name = "services-range"
       stack_type                    = "IPV4"
       pod_cidr_overprovision_config = { disabled = false }
-      additional_pod_ranges_config = {
-        pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
-      }
+      # additional_pod_ranges_config = {
+      #   pod_range_names = ["gke-coral-cluster-pods-f3c8dd1b"]
+      # }
     }
     addons_config = {
       dns_cache_config                      = { enabled = true }
