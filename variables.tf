@@ -265,7 +265,7 @@ variable "clusters" {
       provider = string
     })
     networking_mode = string
-    
+
     node_pool_defaults = object({
       node_config_defaults = object({
         logging_variant = string
