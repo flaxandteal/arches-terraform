@@ -509,9 +509,9 @@ clusters = {
     }
     maintenance_policy = {
       recurring_window = {
-        end_time   = "2025-05-11T07:00:00Z"
+        start_time = "19:00"
+        end_time   = "07:00"
         recurrence = "FREQ=WEEKLY;BYDAY=FR"
-        start_time = "2025-05-10T19:00:00Z"
       }
     }
     master_auth = {
@@ -526,7 +526,7 @@ clusters = {
           display_name = "F&T VPN"
         },
         {
-          cidr_block   = "31.94.6.67/32"
+          cidr_block   = "80.177.36.11/32"
           display_name = "PTW1"
         },
         {
@@ -566,7 +566,7 @@ clusters = {
     }
     private_cluster_config = {
       enable_private_nodes   = true
-      master_ipv4_cidr_block = "172.16.0.0/28"
+      master_ipv4_cidr_block = "10.0.0.0/28"
       master_global_access_config = {
         enabled = false
       }
@@ -613,7 +613,7 @@ clusters = {
           "TF_used_by"  = "k8s-coral-prd"
           "TF_used_for" = "gke"
         }
-        tags = ["gke-k8s-coral-prd-np-tf-cejctx"]
+        tags = ["gke-node"]
         metadata = {
           "disable-legacy-endpoints" = "true"
         }
@@ -657,7 +657,7 @@ clusters = {
         TF_used_by  = "k8s-coral-stg"
         TF_used_for = "gke"
       }
-      tags = ["gke-k8s-coral-stg-np-tf-cejctx"]
+      tags = ["gke-node"]
     }
     ip_allocation_policy = {
       cluster_secondary_range_name  = "pod-ranges"
@@ -708,9 +708,9 @@ clusters = {
     }
     maintenance_policy = {
       recurring_window = {
-        end_time   = "2025-05-25T23:00:00Z"
+        start_time = "23:00"
+        end_time   = "00:00"
         recurrence = "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
-        start_time = "2025-05-25T19:00:00Z"
       }
     }
     master_auth = {
@@ -725,12 +725,16 @@ clusters = {
           display_name = "PTW"
         },
         {
-          cidr_block   = "31.94.6.67/32"
+          cidr_block   = "80.177.36.11/32"
           display_name = "SMH"
         },
         {
           cidr_block   = "35.214.39.113/32"
           display_name = "F&T VPN"
+        },
+        {
+          cidr_block   = "31.94.39.13/32"
+          display_name = "F&T Office"
         }
       ]
     }
