@@ -200,12 +200,12 @@ variable "clusters" {
       # })
     })
     addons_config = object({
-      dns_cache_config = object({
+      dns_cache_config = optional(object({
         enabled = bool
-      })
-      gce_persistent_disk_csi_driver_config = object({
+      }))
+      gce_persistent_disk_csi_driver_config = optional(object({
         enabled = bool
-      })
+      }))
       horizontal_pod_autoscaling = object({
         disabled = bool
       })
