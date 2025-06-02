@@ -192,9 +192,10 @@ variable "pod_security_policy_config" {
 variable "private_cluster_config" {
   description = "Private cluster configuration"
   type = object({
-    enable_private_endpoint = optional(bool)
-    enable_private_nodes    = bool
-    master_ipv4_cidr_block  = string
+    enable_private_endpoint     = optional(bool)
+    enable_private_nodes        = bool
+    private_endpoint_subnetwork = optional(string) # Add this line
+    master_ipv4_cidr_block      = string
     master_global_access_config = object({
       enabled = bool
     })
