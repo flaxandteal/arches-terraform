@@ -34,9 +34,9 @@ variable "ip_allocation_policy" {
     cluster_secondary_range_name  = string
     services_secondary_range_name = string
     stack_type                    = string
-    pod_cidr_overprovision_config = object({
+    pod_cidr_overprovision_config = optional(object({
       disabled = bool
-    })
+    }))
     # additional_pod_ranges_config = object({
     #   pod_range_names = list(string)
     # })
@@ -46,12 +46,12 @@ variable "ip_allocation_policy" {
 variable "addons_config" {
   description = "Addons configuration for the cluster"
   type = object({
-    dns_cache_config = object({
+    dns_cache_config = optional(object({
       enabled = bool
-    })
-    gce_persistent_disk_csi_driver_config = object({
+    }))
+    gce_persistent_disk_csi_driver_config = optional(object({
       enabled = bool
-    })
+    }))
     horizontal_pod_autoscaling = object({
       disabled = bool
     })
@@ -66,9 +66,9 @@ variable "addons_config" {
 
 variable "cluster_autoscaling" {
   description = "Cluster autoscaling configuration"
-  type = object({
+  type = optional(object({
     autoscaling_profile = string
-  })
+  }))
 }
 
 variable "database_encryption" {
@@ -164,11 +164,11 @@ variable "networking_mode" {
 
 variable "node_pool_defaults" {
   description = "Node pool defaults configuration"
-  type = object({
+  type = optional(object({
     node_config_defaults = object({
       logging_variant = string
     })
-  })
+  }))
 }
 
 variable "notification_config" {

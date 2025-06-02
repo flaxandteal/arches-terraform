@@ -21,8 +21,11 @@ resource "google_container_cluster" "cluster" {
     cluster_secondary_range_name  = var.ip_allocation_policy.cluster_secondary_range_name
     services_secondary_range_name = var.ip_allocation_policy.services_secondary_range_name
     stack_type                    = var.ip_allocation_policy.stack_type
-    pod_cidr_overprovision_config {
-      disabled = var.ip_allocation_policy.pod_cidr_overprovision_config.disabled
+    dynamic "pod_cidr_overprovision_config" {
+      for_each = var.ip_allocation_policy.pod_cidr_overprovision_config != null ? [var.ip_allocation_policy.pod_cidr_overprovision_config] : []
+      content {
+        disabled = pod_cidr_overprovision_config.value.disabled
+      }
     }
     # dynamic "additional_pod_ranges_config" {
     #   for_each = length(var.ip_allocation_policy.additional_pod_ranges_config.pod_range_names) > 0 ? [var.ip_allocation_policy.additional_pod_ranges_config] : []
@@ -32,21 +35,24 @@ resource "google_container_cluster" "cluster" {
     # }
   }
 
-  addons_config {
-    dns_cache_config {
-      enabled = var.addons_config.dns_cache_config.enabled
-    }
-    gce_persistent_disk_csi_driver_config {
-      enabled = var.addons_config.gce_persistent_disk_csi_driver_config.enabled
-    }
-    horizontal_pod_autoscaling {
-      disabled = var.addons_config.horizontal_pod_autoscaling.disabled
-    }
-    http_load_balancing {
-      disabled = var.addons_config.http_load_balancing.disabled
-    }
-    network_policy_config {
-      disabled = var.addons_config.network_policy_config.disabled
+  dynamic "addons_config" {
+    for_each = var.addons_config != null ? [var.addons_config] : []
+    content {
+      dynamic "dns_cache_config" {
+        for_each = addons_config.value.dns_cache_config != null ? [addons_config.value.dns_cache_config] : []
+        content {
+          enabled = dns_cache_config.value.enabled
+        }
+      }
+      dynamic "gce_persistent_disk_csi_driver_config" {
+        for_each = addons_config.value.gce_persistent_disk_csi_driver_config != null ? [addons_config.value.gce_persistent_disk_csi_driver_config] : []
+        content {
+          enabled = gce_persistent_disk_csi_driver_config.value.enabled
+        }
+      }
+      horizontal_pod_autoscaling { disabled = addons_config.value.horizontal_pod_autoscaling.disabled }
+      http_load_balancing { disabled = addons_config.value.http_load_balancing.disabled }
+      network_policy_config { disabled = addons_config.value.network_policy_config.disabled }
     }
   }
 
