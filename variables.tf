@@ -308,7 +308,7 @@ variable "clusters" {
       enable_private_endpoint     = optional(bool)
       enable_private_nodes        = bool
       private_endpoint_subnetwork = optional(string) # Add this line
-      master_ipv4_cidr_block      = string
+      master_ipv4_cidr_block      = optional(string)
       master_global_access_config = object({
         enabled = bool
       })
