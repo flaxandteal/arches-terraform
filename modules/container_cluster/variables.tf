@@ -66,9 +66,10 @@ variable "addons_config" {
 
 variable "cluster_autoscaling" {
   description = "Cluster autoscaling configuration"
-  type = optional(object({
+  type = object({
     autoscaling_profile = string
-  }))
+  })
+  default = null
 }
 
 variable "database_encryption" {
@@ -164,11 +165,12 @@ variable "networking_mode" {
 
 variable "node_pool_defaults" {
   description = "Node pool defaults configuration"
-  type = optional(object({
+  type = object({
     node_config_defaults = object({
       logging_variant = string
     })
-  }))
+  })
+  default = null
 }
 
 variable "notification_config" {
