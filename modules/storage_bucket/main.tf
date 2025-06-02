@@ -39,6 +39,14 @@ resource "google_storage_bucket" "bucket" {
       log_object_prefix = logging.value.log_object_prefix
     }
   }
+
+  # Add this dynamic block for soft_delete_policy
+  dynamic "soft_delete_policy" {
+    for_each = var.soft_delete_policy != null ? [var.soft_delete_policy] : []
+    content {
+      retention_duration_seconds = soft_delete_policy.value.retention_duration_seconds
+    }
+  }
 }
 #sji todo
 # resource "google_storage_bucket_iam_binding" "bucket_iam" {

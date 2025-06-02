@@ -59,6 +59,7 @@ module "storage_bucket" {
   uniform_bucket_level_access = each.value.uniform_bucket_level_access
   cors                        = each.value.cors
   encryption                  = each.value.encryption
+  soft_delete_policy          = each.value.soft_delete_policy
   logging                     = each.value.logging
 }
 

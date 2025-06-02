@@ -65,6 +65,14 @@ variable "logging" {
   })
   default = null
 }
+
+variable "soft_delete_policy" {
+  description = "The bucket's soft delete policy, which defines the period of time that soft-deleted objects will be retained, and cannot be permanently deleted."
+  type = optional(object({
+    retention_duration_seconds = number
+  }))
+  default = null
+}
 #sji todo
 # variable "bucket_iam_bindings" {
 #   description = "List of IAM bindings for storage buckets"
