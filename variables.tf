@@ -123,6 +123,9 @@ variable "buckets" {
       log_bucket        = string
       log_object_prefix = string
     }))
+    soft_delete_policy = optional(object({
+      retention_duration_seconds = number
+    }))
   }))
 }
 

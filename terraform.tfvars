@@ -258,6 +258,9 @@ buckets = {
     encryption                  = null
     cors                        = []
     logging                     = null
+    soft_delete_policy = {
+      retention_duration_seconds = 604800 # 7 days
+    }
   },
   artifacts_eu = {
     name                        = "eu-artifacts-crl-hed-appspot-com"
@@ -269,6 +272,9 @@ buckets = {
     encryption                  = null
     cors                        = []
     logging                     = null
+    soft_delete_policy = {
+      retention_duration_seconds = 604800 # 7 days
+    }
   }
 }
 
