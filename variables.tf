@@ -216,22 +216,34 @@ variable "clusters" {
         disabled = bool
       })
     })
-    cluster_autoscaling = object({
+    cluster_autoscaling = optional(object({
       autoscaling_profile = string
-    })
-    cluster_telemetry = object({
+    })) # If not provided, this will be null. Module needs dynamic block.
+
+    # cluster_telemetry is passed to the module, but the module currently
+    # doesn't use it in the google_container_cluster resource.
+    # Making it optional here. If you intend to use it, the module's main.tf
+    # would need a `cluster_telemetry` block.
+    cluster_telemetry = optional(object({
       type = string
-    })
-    database_encryption = object({
+    })) # If not provided, this will be null.
+
+    database_encryption = optional(object({
       state    = string
       key_name = string
+    }), {
+      # Default to DECRYPTED if not specified
+      state    = "DECRYPTED"
+      key_name = ""
     })
+
     default_max_pods_per_node = number
     default_snat_status = object({
       disabled = bool
     })
     description           = string
-    enable_shielded_nodes = bool
+    enable_shielded_nodes = optional(bool, true) # Default to true if not specified
+
     logging_config = object({
       enable_components = list(string)
     })
@@ -242,10 +254,14 @@ variable "clusters" {
         start_time = string
       })
     })
-    master_auth = object({
+
+    master_auth = optional(object({
       client_certificate_config = object({
         issue_client_certificate = bool
       })
+    }), {
+      # Default client_certificate_config if not specified
+      client_certificate_config = { issue_client_certificate = false }
     })
     master_authorized_networks_config = object({
       cidr_blocks = list(object({
@@ -266,19 +282,25 @@ variable "clusters" {
     })
     networking_mode = string
 
-    node_pool_defaults = object({
+    node_pool_defaults = optional(object({
       node_config_defaults = object({
         logging_variant = string
       })
-    })
+    })) # If not provided, this will be null. Module needs dynamic block.
+
     notification_config = object({
       pubsub = object({
         enabled = bool
       })
     })
-    pod_security_policy_config = object({
+
+    # PodSecurityPolicy is deprecated. Defaulting to disabled.
+    pod_security_policy_config = optional(object({
       enabled = bool
+    }), {
+      enabled = false
     })
+
     private_cluster_config = object({
       enable_private_nodes   = bool
       master_ipv4_cidr_block = string
@@ -298,8 +320,11 @@ variable "clusters" {
       mode               = string
       vulnerability_mode = string
     })
-    service_external_ips_config = object({
+
+    service_external_ips_config = optional(object({
       enabled = bool
+    }), {
+      enabled = false # Default to disabled if not specified
     })
     vertical_pod_autoscaling = object({
       enabled = bool
