@@ -637,7 +637,7 @@ clusters = {
     }
     private_cluster_config = {
       enable_private_nodes        = true
-      enable_private_endpoint     = true                                                                   # Enable the private endpoint
+      enable_private_endpoint     = false                                                                  # Disable the private endpoint
       private_endpoint_subnetwork = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork" # Corrected to stg subnetwork
       # master_ipv4_cidr_block      = "172.16.0.0/28" # Remove this line
       master_global_access_config = {
