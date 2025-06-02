@@ -231,7 +231,7 @@ variable "clusters" {
     database_encryption = optional(object({
       state    = string
       key_name = string
-    }), {
+      }), {
       # Default to DECRYPTED if not specified
       state    = "DECRYPTED"
       key_name = ""
@@ -259,7 +259,7 @@ variable "clusters" {
       client_certificate_config = object({
         issue_client_certificate = bool
       })
-    }), {
+      }), {
       # Default client_certificate_config if not specified
       client_certificate_config = { issue_client_certificate = false }
     })
@@ -297,7 +297,7 @@ variable "clusters" {
     # PodSecurityPolicy is deprecated. Defaulting to disabled.
     pod_security_policy_config = optional(object({
       enabled = bool
-    }), {
+      }), {
       enabled = false
     })
 
@@ -323,7 +323,7 @@ variable "clusters" {
 
     service_external_ips_config = optional(object({
       enabled = bool
-    }), {
+      }), {
       enabled = false # Default to disabled if not specified
     })
     vertical_pod_autoscaling = object({
