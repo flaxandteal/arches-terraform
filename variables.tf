@@ -191,10 +191,10 @@ variable "clusters" {
     ip_allocation_policy = object({
       cluster_secondary_range_name  = string
       services_secondary_range_name = string
-      stack_type                    = string
-      pod_cidr_overprovision_config = object({
+      stack_type                    = optional(string)
+      pod_cidr_overprovision_config = optional(object({
         disabled = bool
-      })
+      }))
       # additional_pod_ranges_config = object({
       #   pod_range_names = list(string)
       # })
@@ -278,7 +278,7 @@ variable "clusters" {
     })
     network_policy = object({
       enabled  = bool
-      provider = string
+      provider = optional(string)
     })
     networking_mode = string
 
