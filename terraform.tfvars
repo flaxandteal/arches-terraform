@@ -494,10 +494,9 @@ clusters = {
       }
       enable_components = ["SYSTEM_COMPONENTS"]
     }
-    # network_policy = {
-    #   enabled = true
-    #   #provider = "PROVIDER_UNSPECIFIED"
-    # }
+    network_policy = {
+      enabled = true
+    }
     networking_mode = "VPC_NATIVE"
 
     notification_config = {
@@ -589,6 +588,11 @@ clusters = {
       cluster_secondary_range_name  = "pod-ranges"
       services_secondary_range_name = "services-range"
     }
+    addons_config = {
+      horizontal_pod_autoscaling = { disabled = false }
+      http_load_balancing        = { disabled = false }
+      network_policy_config      = { disabled = false }
+    }
     # cluster_autoscaling       = { autoscaling_profile = "BALANCED" }
     default_max_pods_per_node = 8
     default_snat_status       = { disabled = false }
@@ -618,9 +622,9 @@ clusters = {
       }
       enable_components = ["SYSTEM_COMPONENTS"]
     }
-    # network_policy = {
-    #   enabled = true
-    # }
+    network_policy = {
+      enabled = true
+    }
     networking_mode = "VPC_NATIVE"
     notification_config = {
       pubsub = { enabled = false }
