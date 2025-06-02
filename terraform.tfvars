@@ -584,7 +584,7 @@ clusters = {
     location                 = "europe-west2-a"
     network                  = "projects/coral-hed/global/networks/coral-network"
     subnetwork               = "projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
-    initial_node_count       = 1
+    initial_node_count       = 0
     remove_default_node_pool = true
     node_config = {
       disk_size_gb    = 50
@@ -592,17 +592,13 @@ clusters = {
       image_type      = "COS_CONTAINERD"
       logging_variant = "DEFAULT"
       machine_type    = "e2-standard-4"
-      metadata = {
-        disable-legacy-endpoints = "true"
-      }
+      metadata        = { disable-legacy-endpoints = "true" }
       oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
       service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
       shielded_instance_config = {
         enable_integrity_monitoring = true
       }
-      workload_metadata_config = {
-        mode = "GKE_METADATA"
-      }
+      workload_metadata_config = { mode = "GKE_METADATA" }
       labels = {
         TF_used_by  = "k8s-coral-stg"
         TF_used_for = "gke"
@@ -677,7 +673,7 @@ clusters = {
     notification_config = {
       pubsub = { enabled = false }
     }
-    pod_security_policy_config = { enabled = false }
+    #pod_security_policy_config = { enabled = false }
     private_cluster_config = {
       enable_private_nodes    = true
       enable_private_endpoint = false
