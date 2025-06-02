@@ -578,7 +578,7 @@ clusters = {
         workload_metadata_config = { mode = "GKE_METADATA" }
       }
     }
-  },
+  }#,
   # stg = {
   #   name                     = "k8s-coral-stg"
   #   location                 = "europe-west2-a"
@@ -615,13 +615,6 @@ clusters = {
   #     # additional_pod_ranges_config = {
   #     #   pod_range_names = []
   #     # }
-  #   }
-  #   addons_config = {
-  #     # dns_cache_config                      = { enabled = true }
-  #     # gce_persistent_disk_csi_driver_config = { enabled = true }
-  #     horizontal_pod_autoscaling = { disabled = false }
-  #     http_load_balancing        = { disabled = false }
-  #     network_policy_config      = { disabled = false }
   #   }
   #   # cluster_autoscaling       = { autoscaling_profile = "BALANCED" }
   #   # cluster_telemetry         = { type = "ENABLED" }
