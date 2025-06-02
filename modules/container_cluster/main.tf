@@ -56,8 +56,11 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
-  cluster_autoscaling {
-    autoscaling_profile = var.cluster_autoscaling.autoscaling_profile
+  dynamic "cluster_autoscaling" {
+    for_each = var.cluster_autoscaling != null ? [var.cluster_autoscaling] : []
+    content {
+      autoscaling_profile = cluster_autoscaling.value.autoscaling_profile
+    }
   }
 
   database_encryption {
@@ -117,9 +120,12 @@ resource "google_container_cluster" "cluster" {
 
   networking_mode = var.networking_mode
 
-  node_pool_defaults {
-    node_config_defaults {
-      logging_variant = var.node_pool_defaults.node_config_defaults.logging_variant
+  dynamic "node_pool_defaults" {
+    for_each = var.node_pool_defaults != null ? [var.node_pool_defaults] : []
+    content {
+      node_config_defaults {
+        logging_variant = node_pool_defaults.value.node_config_defaults.logging_variant
+      }
     }
   }
 
