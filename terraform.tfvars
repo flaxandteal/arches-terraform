@@ -578,7 +578,7 @@ clusters = {
         workload_metadata_config = { mode = "GKE_METADATA" }
       }
     }
-  }#,
+  } #,
   # stg = {
   #   name                     = "k8s-coral-stg"
   #   location                 = "europe-west2-a"
