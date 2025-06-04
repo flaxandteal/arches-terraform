@@ -1,4 +1,4 @@
-name: Terraform & Flux Bootstrap
+name: Flux Bootstrap
 
 on:
   workflow_dispatch:
