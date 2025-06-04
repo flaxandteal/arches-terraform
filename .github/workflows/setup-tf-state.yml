@@ -5,7 +5,6 @@ name: Setup Terraform
 
 on:
   workflow_dispatch:  # Manual trigger for initial setup
-#todo! backup state bucket somewhere using bootstrap account and schedule  it sji 
 jobs:
   setup-service-account:
     runs-on: ubuntu-latest
