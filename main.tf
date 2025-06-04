@@ -189,10 +189,16 @@ module "node_pools" {
   node_pools = each.value.node_pools
 }
 
-# Enable the container API
+# Enable necessary APIs for the project
 resource "google_project_service" "container_api" {
   project = var.project_id
   service = "container.googleapis.com"
+}
+
+resource "google_project_service" "cloudresourcemanager_api" {
+  project            = var.project_id
+  service            = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_project_service" "compute_api" {
@@ -204,6 +210,12 @@ resource "google_project_service" "compute_api" {
 resource "google_project_service" "kms_api" {
   project            = var.project_id
   service            = "cloudkms.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "kms_api" {
+  project            = var.project_id
+  service            = "keymanagement.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -222,6 +234,12 @@ resource "google_project_service" "artifactregistry_api" {
 resource "google_project_service" "storage_api" {
   project            = var.project_id
   service            = "storage.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "storage_api" {
+  project            = var.project_id
+  service            = "kubernetesengine.googleapis.com"
   disable_on_destroy = false
 }
 

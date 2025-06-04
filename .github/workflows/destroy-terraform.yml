@@ -31,10 +31,10 @@ jobs:
       - name: Terraform Destroy
         uses: ./.github/actions/terraform/destroy
 
-      - name: Disable IAM API
-        run: |
-          gcloud services disable iam.googleapis.com
-          gcloud services disable cloudresourcemanager.googleapis.com
-          gcloud services disable artifactregistry.googleapis.com
-          gcloud services disable compute.googleapis.com
-          gcloud services disable keymanagement.googleapis.com
+      # - name: Disable IAM API
+      #   run: |
+      #     gcloud services disable iam.googleapis.com
+      #     gcloud services disable cloudresourcemanager.googleapis.com
+      #     gcloud services disable artifactregistry.googleapis.com
+      #     gcloud services disable compute.googleapis.com
+      #     gcloud services disable keymanagement.googleapis.com
