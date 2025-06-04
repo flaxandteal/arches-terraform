@@ -213,12 +213,6 @@ resource "google_project_service" "kms_api" {
   disable_on_destroy = false
 }
 
-resource "google_project_service" "kms_api" {
-  project            = var.project_id
-  service            = "keymanagement.googleapis.com"
-  disable_on_destroy = false
-}
-
 resource "google_project_service" "iam_api" {
   project            = var.project_id
   service            = "iam.googleapis.com"
@@ -234,12 +228,6 @@ resource "google_project_service" "artifactregistry_api" {
 resource "google_project_service" "storage_api" {
   project            = var.project_id
   service            = "storage.googleapis.com"
-  disable_on_destroy = false
-}
-
-resource "google_project_service" "storage_api" {
-  project            = var.project_id
-  service            = "kubernetesengine.googleapis.com"
   disable_on_destroy = false
 }
 
