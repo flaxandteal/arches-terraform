@@ -1,0 +1,44 @@
+# To bootstrap Flux, the person running the command must have cluster admin rights for the target Kubernetes cluster. It is also required that the person running the command to have pull and push rights for the Google Cloud Source repository.
+# https://fluxcd.io/flux/installation/bootstrap/google-cloud-source/
+name: Flux Bootstrap
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "*.tf*"
+  #     - "*.tfvars"
+  #     - "*.terraform-version"
+  #     - ".github/workflows/install-flux.yml"
+
+  #this should run after terraform apply if successful todo sji
+
+jobs:
+  install-flux:
+    name: Install Flux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_BOOTSTRAP_SA }}' 
+         
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authenticate to GKE
+        run: |
+          gcloud container clusters get-credentials your-gke-cluster-name --region=your-region
+
+      - name: Bootstrap Flux CLI
+        uses: ./.github/actions/flux/bootstrap
