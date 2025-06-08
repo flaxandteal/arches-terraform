@@ -368,8 +368,8 @@ service_accounts = {
 
 routers = {
   prd = {
-    name    = "coral-network-router-prd"
-    network = "coral-network-prd"
+    name       = "coral-network-router-prd"
+    network    = "coral-network-prd"
     subnetwork = "coral-subnetwork-prd"
     nat = {
       name                               = "coral-network-router-prd-nat"
@@ -378,8 +378,8 @@ routers = {
     }
   },
   stg = {
-    name    = "coral-network-router"
-    network = "coral-network"
+    name       = "coral-network-router"
+    network    = "coral-network"
     subnetwork = "coral-subnetwork"
     nat = {
       name                               = "coral-network-router-nat"
