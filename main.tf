@@ -105,6 +105,8 @@ module "compute_router" {
   name       = each.value.name
   network    = each.value.network
   region     = var.region
+
+  nat        = each.value.nat
 }
 
 module "kms_key_ring" {

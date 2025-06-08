@@ -142,11 +142,16 @@ variable "service_accounts" {
 }
 
 variable "routers" {
-  description = "Map of compute routers"
+  description = "Map of compute routers with NAT configuration"
   type = map(object({
     name       = string
     network    = string
     subnetwork = string
+    nat = object({
+      name                               = string
+      nat_ip_allocate_option             = string
+      source_subnetwork_ip_ranges_to_nat = string
+    })
   }))
 }
 

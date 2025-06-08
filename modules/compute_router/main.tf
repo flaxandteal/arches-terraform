@@ -13,4 +13,9 @@ resource "google_compute_router_nat" "nat" {
   name                               = var.nat.name
   nat_ip_allocate_option             = var.nat.nat_ip_allocate_option
   source_subnetwork_ip_ranges_to_nat = var.nat.source_subnetwork_ip_ranges_to_nat
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
 }

@@ -45,21 +45,6 @@ ROLES=(
   "roles/resourcemanager.projectIamAdmin" # to set IAM policies
 )
 #sji tidy!
-#"roles/iam.serviceAccountKeyViewer" # to view service account keys - sji remove? not strictly needed
-#"roles/iam.roleadmin" # to manage IAM roles  (Optional, but often used if custom roles are needed)
-  # "roles/iam.serviceAccountUser" # to use the servexitice account
-  # "roles/iam.serviceAccountTokenCreator" # to create tokens
-  # "roles/iam.securityAdmin" # to manage IAM policies (Optional, but needed if the service account must set IAM policies on other resources)
-  # "roles/iam.serviceAccountDelegator" # to delegate service account permissions
-  # "roles/iam.serviceAccountViewer" # to view service accounts
-  # "roles/iam.serviceAccountKeyViewer" # to view service account keys
-  # "roles/iam.serviceAccountTokenCreator" # to create tokens
-  # "roles/iam.serviceAccountAdmin" # to manage service accounts  
-  # "roles/iam.serviceAccountKeyAdmin" # to manage service account keys
-  # "roles/iam.serviceAccountUser" # to use the service account
-  # "roles/iam.serviceAccountTokenCreator" # to create tokens sji maybe!
-  # "roles/iam.serviceAccountDelegator" # to delegate service account permissions
-  # "roles/iam.serviceAccountViewer" # to view service accounts
 
 # Check if gcloud is installed
 if ! command -v gcloud &> /dev/null; then
