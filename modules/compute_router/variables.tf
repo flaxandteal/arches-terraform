@@ -19,6 +19,7 @@ variable "region" {
 }
 
 variable "nat" {
+  description = "Optional Cloud NAT configuration"
   type = object({
     name                               = string
     nat_ip_allocate_option             = string

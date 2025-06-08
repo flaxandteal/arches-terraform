@@ -106,7 +106,7 @@ module "compute_router" {
   network    = each.value.network
   region     = var.region
 
-  nat = each.value.nat
+  nat = try(each.value.nat, null)
 }
 
 module "kms_key_ring" {
