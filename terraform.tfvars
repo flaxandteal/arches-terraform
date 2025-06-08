@@ -368,21 +368,19 @@ service_accounts = {
 
 routers = {
   prd = {
-    name       = "coral-network-router-prd"
-    network    = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network-prd"
-    subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork-prd"
+    name    = "coral-network-router-prd"
+    network = "coral-network-prd"
     nat = {
-      name                               = "coral-network-router-prd-Nat"
+      name                               = "coral-network-router-prd-nat"
       nat_ip_allocate_option             = "AUTO_ONLY"
       source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
     }
   },
   stg = {
-    name       = "coral-network-router"
-    network    = "https://www.googleapis.com/compute/v1/projects/coral-hed/global/networks/coral-network"
-    subnetwork = "https://www.googleapis.com/compute/v1/projects/coral-hed/regions/europe-west2/subnetworks/coral-subnetwork"
+    name    = "coral-network-router"
+    network = "coral-network"
     nat = {
-      name                               = "coral-network-router-Nat"
+      name                               = "coral-network-router-nat"
       nat_ip_allocate_option             = "AUTO_ONLY"
       source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
     }

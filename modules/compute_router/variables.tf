@@ -18,6 +18,12 @@ variable "region" {
   type        = string
 }
 
+variable "subnetwork" {
+  description = "The subnetwork for the NAT"
+  type        = string
+  default     = null
+}
+
 variable "nat" {
   description = "Optional Cloud NAT configuration"
   type = object({

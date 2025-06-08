@@ -99,14 +99,12 @@ module "compute_subnetwork" {
 
 module "compute_router" {
   for_each   = var.routers
-  depends_on = [module.compute_subnetwork, google_project_service.compute_api]
   source     = "./modules/compute_router"
   project_id = var.project_id
   name       = each.value.name
   network    = each.value.network
-  region     = var.region
-
-  nat = try(each.value.nat, null)
+  region     = "europe-west2"
+  nat        = each.value.nat
 }
 
 module "kms_key_ring" {
