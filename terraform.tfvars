@@ -441,7 +441,7 @@ clusters = {
       disk_type       = "pd-balanced"
       image_type      = "COS_CONTAINERD"
       logging_variant = "DEFAULT"
-      machine_type    = "e2-standard-4"
+      machine_type    = "e2-standard-8"
       metadata        = { disable-legacy-endpoints = "true" }
       oauth_scopes = [
         "https://www.googleapis.com/auth/devstorage.read_only",
@@ -586,7 +586,7 @@ clusters = {
       disk_type       = "pd-standard"
       image_type      = "COS_CONTAINERD"
       logging_variant = "DEFAULT"
-      machine_type    = "e2-standard-4"
+      machine_type    = "e2-standard-8"
       metadata        = { disable-legacy-endpoints = "true" }
       oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
       service_account = "coral-arches-k8s-coral-stg@coral-hed.iam.gserviceaccount.com"
@@ -673,7 +673,7 @@ clusters = {
     node_pools = {
       stg = {
         name               = "stg"
-        machine_type       = "e2-standard-4"
+        machine_type       = "e2-standard-8"
         disk_size_gb       = 50
         disk_type          = "pd-standard"
         image_type         = "COS_CONTAINERD"
