@@ -26,7 +26,6 @@ resource "google_compute_subnetwork" "subnetwork" {
   # }
   lifecycle {
     ignore_changes = [
-      secondary_ip_ranges,
       private_ip_google_access,
       private_ipv6_google_access,
       purpose,
