@@ -47,12 +47,4 @@ resource "google_storage_bucket" "bucket" {
       retention_duration_seconds = soft_delete_policy.value.retention_duration_seconds
     }
   }
-}
-#sji todo
-# resource "google_storage_bucket_iam_binding" "bucket_iam" {
-#   for_each = { for binding in var.bucket_iam_bindings : "${binding.bucket_name}-${binding.role}" => binding }
-
-#   bucket  = each.value.bucket_name
-#   role    = each.value.role
-#   members = each.value.members
-# }
+} 

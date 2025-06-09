@@ -73,13 +73,3 @@ variable "soft_delete_policy" {
   })
   default = null
 }
-#sji todo
-# variable "bucket_iam_bindings" {
-#   description = "List of IAM bindings for storage buckets"
-#   type = list(object({
-#     bucket_name = string
-#     role        = string
-#     members     = list(string)
-#   }))
-#   default = []
-# }
