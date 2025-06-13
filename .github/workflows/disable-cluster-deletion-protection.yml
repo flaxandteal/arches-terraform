@@ -12,6 +12,7 @@ on:
           - prod
           - stg
           - both
+
 jobs:
   disable-protection:
     runs-on: ubuntu-latest
@@ -20,6 +21,8 @@ jobs:
       PROD_CLUSTER_LOCATION: europe-west2-a
       STG_CLUSTER_NAME: k8s-coral-stg
       STG_CLUSTER_LOCATION: europe-west2-a
+      TARGET_CLUSTER: ${{ github.event.inputs.target_cluster }}
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -36,7 +39,6 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      
       - name: Disable Deletion Protection
         run: |
           disable_protection() {
@@ -48,7 +50,7 @@ jobs:
               --no-deletion-protection
           }
 
-          case "${{ github.event.inputs.target_cluster }}" in
+          case "$TARGET_CLUSTER" in
             prod)
               disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
               ;;
@@ -57,10 +59,4 @@ jobs:
               ;;
             both)
               disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
-              ;;
-            *)
-              echo "Invalid cluster selection: ${{ github.event.inputs.target_cluster }}"
-              exit 1
-              ;;
-          esac
+              disable_protec_
