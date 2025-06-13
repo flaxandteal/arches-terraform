@@ -1,5 +1,5 @@
 name: Disable GKE Deletion Protection
-
+#sji finish later todo
 on:
   push:
     branches:
@@ -45,7 +45,7 @@ jobs:
           echo "Listing GKE clusters for project ${{ secrets.GCP_PROJECT_ID }}"
           gcloud container clusters list --project ${{ secrets.GCP_PROJECT_ID }}
 
-          TARGET_CLUSTER="${{ github.event.inputs.target_cluster }}"
+          TARGET_CLUSTER="both"
           PROD_CLUSTER_NAME="${PROD_CLUSTER_NAME}"
           PROD_CLUSTER_LOCATION="${PROD_CLUSTER_ZONE}"
           STG_CLUSTER_NAME="${STG_CLUSTER_NAME}"
