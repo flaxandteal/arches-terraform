@@ -45,31 +45,14 @@ jobs:
       - name: Get Terraform Version
         uses: ./.github/actions/terraform/version
 
-      - name: Terraform Apply
-        uses: ./.github/actions/terraform/apply
+      - name: Terraform Quality Check
+        uses: ./.github/actions/terraform/quality
+        with:
+          terraform_version: ${{ steps.tf-version.outputs.version }}
+
+      - name: Terraform Build
+        uses: ./.github/actions/terraform/build
         with:
           terraform_version: ${{ steps.tf-version.outputs.version }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account: ${{ secrets.TF_SA }}
-            
-  render-terraform-docs:      
-    name: Terraform Docs
-    needs: terraform-deploy
-    runs-on: ubuntu-latest
-    # Run only on pull request merges to main
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.base_ref == 'refs/heads/main'
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  
-      
-      # Authenticate to GCP
-      - name: Authenticate with GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.TF_SA }}'  # Key from script
-
-      - name: Terraform Docs
-        uses: ./.github/actions/terraform/docs
-
+          service_account: ${{ secrets.TF_SA }}            
