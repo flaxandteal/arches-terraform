@@ -3,7 +3,7 @@ common_labels = {
   environment = "production"
 }
 
-gke_version = "1.32.3-gke.1927009"
+gke_version = "1.32.4-gke.1236007"
 
 project_id = "coral-hed"
 location   = "europe-west2"
