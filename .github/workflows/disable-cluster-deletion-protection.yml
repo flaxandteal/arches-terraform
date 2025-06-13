@@ -46,7 +46,7 @@ jobs:
             local CLUSTER_LOCATION=$2
             echo "Disabling deletion protection for cluster: $CLUSTER_NAME in $CLUSTER_LOCATION"
             gcloud container clusters update "$CLUSTER_NAME" \
-              --zone "$CLUSTER_LOCATION" \
+              --region "$CLUSTER_LOCATION" \
               --no-deletion-protection
           }
 
