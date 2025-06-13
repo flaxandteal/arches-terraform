@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target_cluster:
-        description: "Which cluster to modify? ('prod' or 'stg' or 'both')"
+        description: "Which cluster to modify? ('prod', 'stg', or 'both')"
         required: true
         default: "stg"
         type: choice
@@ -18,53 +18,48 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROD_CLUSTER_NAME: k8s-coral-prd
-      PROD_CLUSTER_LOCATION: europe-west2-a
+      PROD_CLUSTER_ZONE: europe-west2-a
       STG_CLUSTER_NAME: k8s-coral-stg
-      STG_CLUSTER_LOCATION: europe-west2-a
-      TARGET_CLUSTER: ${{ github.event.inputs.target_cluster }}
-
+      STG_CLUSTER_ZONE: europe-west2-a
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Authenticate with GCP
-        id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.TF_SA }}' 
+          credentials_json: '${{ secrets.TF_SA }}'
           export_environment_variables: true
 
-      - name: Set up Google Cloud
+      - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Disable Deletion Protection
         run: |
-            disable_protection() {
+          disable_protection() {
             local CLUSTER_NAME=$1
             local CLUSTER_ZONE=$2
             echo "Disabling deletion protection for cluster: $CLUSTER_NAME in zone $CLUSTER_ZONE"
             gcloud container clusters update "$CLUSTER_NAME" \
-                --zone "$CLUSTER_ZONE" \
-                --no-deletion-protection
-            }
+              --zone "$CLUSTER_ZONE" \
+              --no-deletion-protection
+          }
 
-            TARGET_CLUSTER="${{ github.event.inputs.target_cluster }}"
-
-            case "$TARGET_CLUSTER" in
+          case "${{ github.event.inputs.target_cluster }}" in
             prod)
-                disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
-                ;;
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
+              ;;
             stg)
-                disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
-                ;;
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              ;;
             both)
-                disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
-                disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
-                ;;
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              ;;
             *)
-                echo "Invalid cluster selection: $TARGET_CLUSTER"
-                exit 1
-                ;;
-            esac
+              echo "Invalid input: ${{ github.event.inputs.target_cluster }}"
+              exit 1
+              ;;
+          esac
