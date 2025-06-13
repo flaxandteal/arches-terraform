@@ -11,7 +11,7 @@ on:
       target_cluster:
         description: "Which cluster to modify? ('prod', 'stg', or 'both')"
         required: true
-        default: "stg"
+        default: "both"
         type: choice
         options:
           - prod
@@ -23,9 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROD_CLUSTER_NAME: k8s-coral-prd
-      PROD_CLUSTER_ZONE: europe-west2
+      PROD_CLUSTER_ZONE: europe-west2-a
       STG_CLUSTER_NAME: k8s-coral-stg
-      STG_CLUSTER_ZONE: europe-west2
+      STG_CLUSTER_ZONE: europe-west2-a
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
