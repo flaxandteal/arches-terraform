@@ -33,6 +33,7 @@ runs:
       run: terraform init -backend-config=backend.hcl -upgrade 
       shell: bash
  
+    # Import existing KMS key rings 
     - name: Import existing KMS key rings
       uses: ./.github/actions/terraform/gcp/import-kms-keyrings
       with:
@@ -40,16 +41,14 @@ runs:
         project_id: ${{ inputs.project_id }}
         location: europe-west2
 
-    - name: Terraform Validate
-      run: terraform validate
-      shell: bash
- 
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan
-      shell: bash
-  
-    - name: Upload Plan
-      uses: actions/upload-artifact@v4
+    # download plan
+    - name: Download Plan
+      uses: actions/download-artifact@v4
       with:
         name: tfplan
-        path: tfplan
+        path: .
+
+    # Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      shell: bash
