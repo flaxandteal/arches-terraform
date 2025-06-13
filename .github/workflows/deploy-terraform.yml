@@ -6,9 +6,6 @@ name: Terraform Deployment
 #         - completed
 on:
   workflow_dispatch: #change based on env todo sji
-  push:
-    branches:
-      - dev
 
 permissions:
   contents: write
