@@ -1,0 +1,29 @@
+name: Disable GKE Deletion Protection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  disable-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}' 
+          export_environment_variables: true
+          
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Disable Deletion Protection
+        run: |
+          gcloud container clusters update ${{ secrets.GKE_CLUSTER_NAME }} \
+            --region ${{ secrets.GKE_CLUSTER_REGION }} \
+            --no-deletion-protection
