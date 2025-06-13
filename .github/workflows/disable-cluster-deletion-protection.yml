@@ -1,16 +1,12 @@
 name: Disable GKE Deletion Protection
 
 on:
-  push:
-    branches:
-    - main
-    - dev
   workflow_dispatch:
     inputs:
       target_cluster:
         description: "Which cluster to modify? ('prod', 'stg', or 'both')"
         required: true
-        default: "both"
+        default: "stg"
         type: choice
         options:
           - prod
@@ -59,4 +55,30 @@ jobs:
               gcloud container clusters update "$CLUSTER_NAME" \
                 --zone "$CLUSTER_LOCATION" \
                 --no-deletion-protection
-            elif gcloud container clusters describe "$CLUSTER_NAME" --region "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2
+            elif gcloud container clusters describe "$CLUSTER_NAME" --region "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
+              echo "Cluster $CLUSTER_NAME is regional, using --region"
+              gcloud container clusters update "$CLUSTER_NAME" \
+                --region "$CLUSTER_LOCATION" \
+                --no-deletion-protection
+            else
+              echo "Error: Cluster $CLUSTER_NAME not found in zone or region $CLUSTER_LOCATION"
+              exit 1
+            fi
+          }
+
+          case "${{ github.event.inputs.target_cluster }}" in
+            prod)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
+              ;;
+            stg)
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              ;;
+            both)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              ;;
+            *)
+              echo "Invalid input: ${{ github.event.inputs.target_cluster }}"
+              exit 1
+              ;;
+          esac
