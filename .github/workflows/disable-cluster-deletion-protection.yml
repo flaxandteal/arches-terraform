@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROD_CLUSTER_NAME: k8s-coral-prd
-      PROD_CLUSTER_ZONE: europe-west2-a
+      PROD_CLUSTER_ZONE: europe-west2
       STG_CLUSTER_NAME: k8s-coral-stg
-      STG_CLUSTER_ZONE: europe-west2-a
+      STG_CLUSTER_ZONE: europe-west2
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -38,12 +38,13 @@ jobs:
 
       - name: Disable Deletion Protection
         run: |
+          set -x  # Enable debug logging
           disable_protection() {
             local CLUSTER_NAME=$1
             local CLUSTER_ZONE=$2
             echo "Disabling deletion protection for cluster: $CLUSTER_NAME in zone $CLUSTER_ZONE"
             gcloud container clusters update "$CLUSTER_NAME" \
-              --region "$CLUSTER_ZONE" \
+              --zone "$CLUSTER_ZONE" \
               --no-deletion-protection
           }
 
