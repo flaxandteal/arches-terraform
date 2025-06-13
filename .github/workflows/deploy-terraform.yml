@@ -57,7 +57,7 @@ jobs:
     needs: terraform-deploy
     runs-on: ubuntu-latest
     # Run only on pull request merges to main
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.base_ref == 'refs/heads/main'
+    #if github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.base_ref == 'refs/heads/main'
     steps:
       - name: Check out code
         uses: actions/checkout@v4
