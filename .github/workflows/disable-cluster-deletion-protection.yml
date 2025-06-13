@@ -2,13 +2,24 @@ name: Disable GKE Deletion Protection
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - dev
-
+    inputs:
+      target_cluster:
+        description: "Which cluster to modify? ('prod' or 'stg' or 'both')"
+        required: true
+        default: "stg"
+        type: choice
+        options:
+          - prod
+          - stg
+          - both
 jobs:
   disable-protection:
     runs-on: ubuntu-latest
+    env:
+      PROD_CLUSTER_NAME: k8s-coral-prd
+      PROD_CLUSTER_LOCATION: europe-west2-a
+      STG_CLUSTER_NAME: k8s-coral-stg
+      STG_CLUSTER_LOCATION: europe-west2-a
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -25,8 +36,31 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+      
       - name: Disable Deletion Protection
         run: |
-          gcloud container clusters update ${{ secrets.GKE_CLUSTER_NAME }} \
-            --region ${{ secrets.GKE_CLUSTER_REGION }} \
-            --no-deletion-protection
+          disable_protection() {
+            local CLUSTER_NAME=$1
+            local CLUSTER_LOCATION=$2
+            echo "Disabling deletion protection for cluster: $CLUSTER_NAME in $CLUSTER_LOCATION"
+            gcloud container clusters update "$CLUSTER_NAME" \
+              --zone "$CLUSTER_LOCATION" \
+              --no-deletion-protection
+          }
+
+          case "${{ github.event.inputs.target_cluster }}" in
+            prod)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+              ;;
+            stg)
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+              ;;
+            both)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+              ;;
+            *)
+              echo "Invalid cluster selection: ${{ github.event.inputs.target_cluster }}"
+              exit 1
+              ;;
+          esac
