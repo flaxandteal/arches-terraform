@@ -1,6 +1,11 @@
 name: Disable GKE Deletion Protection
 
 on:
+  push:
+    branches:
+    - main
+    - prod
+    - stg
   workflow_dispatch:
     inputs:
       target_cluster:
