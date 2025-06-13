@@ -611,10 +611,11 @@ clusters = {
       }
     }
     addons_config = {
-      horizontal_pod_autoscaling = { disabled = false }
-      http_load_balancing        = { disabled = true }
-      network_policy_config      = { disabled = false }
-      dns_cache_config           = { enabled = true }
+      horizontal_pod_autoscaling            = { disabled = false }
+      http_load_balancing                   = { disabled = true }
+      network_policy_config                 = { disabled = false }
+      dns_cache_config                      = { enabled = true }
+      gce_persistent_disk_csi_driver_config = { enabled = false }
     }
     # cluster_autoscaling       = { autoscaling_profile = "BALANCED" }
     default_max_pods_per_node = 8
@@ -632,6 +633,7 @@ clusters = {
     }
     master_authorized_networks_config = {
       cidr_blocks = [
+        { cidr_block = "31.94.36.131/32", display_name = "Donegall St" },
         { cidr_block = "31.94.20.141/32", display_name = "PTW" },
         { cidr_block = "80.177.36.11/32", display_name = "SMH" },
         { cidr_block = "35.214.39.113/32", display_name = "F&T VPN" },
@@ -684,7 +686,7 @@ clusters = {
         auto_upgrade       = true
         min_node_count     = 1
         max_node_count     = 3
-        initial_node_count = 1
+        initial_node_count = 0
         max_pods_per_node  = 8
         location_policy    = "ANY"
         max_surge          = 1
