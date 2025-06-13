@@ -36,31 +36,23 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+      - name: Verify Cluster Configuration
+        run: |
+          set -x
+          echo "Listing GKE clusters for project ${{ secrets.GCP_PROJECT_ID }}"
+          gcloud container clusters list --project ${{ secrets.GCP_PROJECT_ID }}
+
       - name: Disable Deletion Protection
         run: |
           set -x  # Enable debug logging
           disable_protection() {
             local CLUSTER_NAME=$1
-            local CLUSTER_ZONE=$2
-            echo "Disabling deletion protection for cluster: $CLUSTER_NAME in zone $CLUSTER_ZONE"
-            gcloud container clusters update "$CLUSTER_NAME" \
-              --zone "$CLUSTER_ZONE" \
-              --no-deletion-protection
-          }
-
-          case "${{ github.event.inputs.target_cluster }}" in
-            prod)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
-              ;;
-            stg)
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
-              ;;
-            both)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
-              ;;
-            *)
-              echo "Invalid input: ${{ github.event.inputs.target_cluster }}"
-              exit 1
-              ;;
-          esac
+            local CLUSTER_LOCATION=$2
+            echo "Checking if $CLUSTER_NAME is in zone or region: $CLUSTER_LOCATION"
+            # Check if location is a zone or region
+            if gcloud container clusters describe "$CLUSTER_NAME" --zone "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
+              echo "Cluster $CLUSTER_NAME is zonal, using --zone"
+              gcloud container clusters update "$CLUSTER_NAME" \
+                --zone "$CLUSTER_LOCATION" \
+                --no-deletion-protection
+            elif gcloud container clusters describe "$CLUSTER_NAME" --region "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2
