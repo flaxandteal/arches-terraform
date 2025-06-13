@@ -23,7 +23,7 @@ resource "google_compute_router_nat" "this" {
   }
 
   log_config {
-    enable = true
+    enable = false
     filter = "ERRORS_ONLY"
   }
 }
