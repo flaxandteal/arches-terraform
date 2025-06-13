@@ -1,3 +1,13 @@
+# Terraform
+
+## Build Environment (Assuming Setup already done)
+Run the following GitHub actions on the correct branch:
+1) Terraform Test and Plan
+        Check the plan!
+2) Terraform Deployment
+
+Terraform Destroy can be used to destroy the infrastructure completely.
+
 # Setup Environment
 
 ## Prerequisites

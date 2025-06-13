@@ -347,8 +347,11 @@ service_accounts = {
     account_id      = "coral-flux-prd"
     display_name    = "Coral Production Flux Service Account"
     description     = "Service account for Flux in production"
-    allow_iam_roles = false
-    roles           = ["container.developer", "cloudkms.cryptoKeyEncrypterDecrypter", "iam.serviceAccountTokenCreator"]
+    allow_iam_roles = true
+    roles           = [
+        "container.developer", 
+        "cloudkms.cryptoKeyEncrypterDecrypter", 
+        "iam.serviceAccountTokenCreator"]
   }
   "gl_ci_prd" = {
     account_id      = "coral-gl-ci-prd"
