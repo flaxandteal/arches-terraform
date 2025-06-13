@@ -41,12 +41,13 @@ runs:
         project_id: ${{ inputs.project_id }}
         location: europe-west2
 
-    # download plan
-    - name: Download Plan
-      uses: actions/download-artifact@v4
-      with:
-        name: tfplan
-        path: .
+    - name: Terraform Validate
+      run: terraform validate
+      shell: bash
+ 
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+      shell: bash
 
     # Apply
     - name: Terraform Apply
