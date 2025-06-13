@@ -4,8 +4,7 @@ on:
   push:
     branches:
     - main
-    - prod
-    - stg
+    - dev
   workflow_dispatch:
     inputs:
       target_cluster:
