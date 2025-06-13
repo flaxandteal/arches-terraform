@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: Terraform Test and Plan
 # on:
 #   workflow_run:
 #       workflows: ["Security Scan"]
