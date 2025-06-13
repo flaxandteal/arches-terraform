@@ -41,22 +41,30 @@ jobs:
 
       - name: Disable Deletion Protection
         run: |
-          disable_protection() {
+            disable_protection() {
             local CLUSTER_NAME=$1
-            local CLUSTER_LOCATION=$2
-            echo "Disabling deletion protection for cluster: $CLUSTER_NAME in $CLUSTER_LOCATION"
+            local CLUSTER_ZONE=$2
+            echo "Disabling deletion protection for cluster: $CLUSTER_NAME in zone $CLUSTER_ZONE"
             gcloud container clusters update "$CLUSTER_NAME" \
-              --region "$CLUSTER_LOCATION" \
-              --no-deletion-protection
-          }
+                --zone "$CLUSTER_ZONE" \
+                --no-deletion-protection
+            }
 
-          case "$TARGET_CLUSTER" in
+            TARGET_CLUSTER="${{ github.event.inputs.target_cluster }}"
+
+            case "$TARGET_CLUSTER" in
             prod)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
-              ;;
+                disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+                ;;
             stg)
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
-              ;;
+                disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+                ;;
             both)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
-              disable_protec_
+                disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+                disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+                ;;
+            *)
+                echo "Invalid cluster selection: $TARGET_CLUSTER"
+                exit 1
+                ;;
+            esac
