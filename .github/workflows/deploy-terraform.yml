@@ -45,6 +45,18 @@ jobs:
       - name: Get Terraform Version
         uses: ./.github/actions/terraform/version
 
+      - name: Terraform Quality Check
+        uses: ./.github/actions/terraform/quality
+        with:
+          terraform_version: ${{ steps.tf-version.outputs.version }}
+
+      - name: Terraform Build
+        uses: ./.github/actions/terraform/build
+        with:
+          terraform_version: ${{ steps.tf-version.outputs.version }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account: ${{ secrets.TF_SA }}           
+          
       - name: Terraform Apply
         uses: ./.github/actions/terraform/apply
         with:
