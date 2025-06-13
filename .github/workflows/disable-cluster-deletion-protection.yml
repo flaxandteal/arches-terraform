@@ -45,14 +45,16 @@ jobs:
           echo "Listing GKE clusters for project ${{ secrets.GCP_PROJECT_ID }}"
           gcloud container clusters list --project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Disable Deletion Protection
-        run: |
-          set -x  # Enable debug logging
+          TARGET_CLUSTER="${{ github.event.inputs.target_cluster }}"
+          PROD_CLUSTER_NAME="${PROD_CLUSTER_NAME}"
+          PROD_CLUSTER_LOCATION="${PROD_CLUSTER_ZONE}"
+          STG_CLUSTER_NAME="${STG_CLUSTER_NAME}"
+          STG_CLUSTER_LOCATION="${STG_CLUSTER_ZONE}"
+
           disable_protection() {
             local CLUSTER_NAME=$1
             local CLUSTER_LOCATION=$2
             echo "Checking if $CLUSTER_NAME is in zone or region: $CLUSTER_LOCATION"
-            # Check if location is a zone or region
             if gcloud container clusters describe "$CLUSTER_NAME" --zone "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
               echo "Cluster $CLUSTER_NAME is zonal, using --zone"
               gcloud container clusters update "$CLUSTER_NAME" \
@@ -69,19 +71,19 @@ jobs:
             fi
           }
 
-          case "${{ github.event.inputs.target_cluster }}" in
+          case "$TARGET_CLUSTER" in
             prod)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
               ;;
             stg)
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
               ;;
             both)
-              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_ZONE"
-              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_ZONE"
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
               ;;
             *)
-              echo "Invalid input: ${{ github.event.inputs.target_cluster }}"
+              echo "Invalid input: $TARGET_CLUSTER"
               exit 1
               ;;
           esac
