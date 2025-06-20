@@ -57,12 +57,12 @@ jobs:
             echo "Checking if $CLUSTER_NAME is in zone or region: $CLUSTER_LOCATION"
             if gcloud container clusters describe "$CLUSTER_NAME" --zone "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
               echo "Cluster $CLUSTER_NAME is zonal, using --zone"
-              gcloud container clusters update "$CLUSTER_NAME" \
+              gcloud beta container clusters update "$CLUSTER_NAME" \
                 --zone "$CLUSTER_LOCATION" \
                 --deletion-protection=false
             elif gcloud container clusters describe "$CLUSTER_NAME" --region "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
               echo "Cluster $CLUSTER_NAME is regional, using --region"
-              gcloud container clusters update "$CLUSTER_NAME" \
+              gcloud beta container clusters update "$CLUSTER_NAME" \
                 --region "$CLUSTER_LOCATION" \
                 --deletion-protection=false
             else
