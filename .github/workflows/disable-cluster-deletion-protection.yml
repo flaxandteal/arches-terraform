@@ -39,6 +39,9 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+      - name: Install gcloud beta component
+        run: gcloud components install beta --quiet
+
       - name: Verify Cluster Configuration
         run: |
           set -x
