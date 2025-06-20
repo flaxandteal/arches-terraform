@@ -1,9 +1,7 @@
-name: Disable GKE Deletion Protection
+ name: Disable GKE Deletion Protection
 #sji finish later todo
+#nope gcp does not allow this in this way - must use terraform or do it manually
 on:
-  push:
-    branches:
-      - dev
   workflow_dispatch:
     inputs:
       target_cluster:
