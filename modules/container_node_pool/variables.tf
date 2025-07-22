@@ -44,21 +44,19 @@ variable "default_network_tags" {
   default     = []
 }
 
-variable "depends_on_container_api" {
-  description = "Dependency on the container API enablement"
-  type        = any
-  default     = []
-}
-
-variable "depends_on_container_resources" {
-  description = "Dependency on the GKE cluster resources"
-  type        = any
-  default     = []
-}
+# variable "network_config" {
+#   description = "Network configuration for the node pool"
+#   type = object({
+#     enable_private_nodes = bool
+#     pod_ipv4_cidr_block  = string
+#     pod_range            = string
+#   })
+# }
 
 variable "node_pools" {
   description = "Map of node pool configurations"
   type = map(object({
+    name               = string
     machine_type       = string
     disk_size_gb       = number
     disk_type          = string
@@ -82,6 +80,10 @@ variable "node_pools" {
       value  = string
       effect = string
     }))
+    network_config = object({
+      enable_private_nodes = bool
+      pod_range            = string
+    })
     gpu_type = object({
       type  = string
       count = number

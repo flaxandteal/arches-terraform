@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_tflint
+        # args:
+        #   - --args=--config=.tflint.hcl
+  # - repo: https://github.com/terraform-docs/terraform-docs
+  #   rev: "<VERSION, TAG, OR SHA TO USE>"             # e.g. "v0.11.2"
+  #   hooks:
+  #     - id: terraform-docs-go
+  #       args: ["ARGS", "TO PASS", "INCLUDING PATH"]  # e.g. ["--output-file", "README.md", "./mymodule/path"]

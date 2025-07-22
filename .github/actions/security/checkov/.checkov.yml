@@ -10,7 +10,7 @@
 #   - CKV_GCP_66: Default service account usage (if legacy workflows require it).
 
 skip_check:
-  - CKV_GCP_30        # GCS bucket should have uniform bucket-level access enabled
+  #- CKV_GCP_30        # GCS bucket should have uniform bucket-level access enabled
   # Optional additional skips (uncomment if needed):
   # - CKV_GCP_18      # Ensure Compute Engine instances do not have public IP
   # - CKV_GCP_66      # Avoid default service account for GKE/Compute Engine

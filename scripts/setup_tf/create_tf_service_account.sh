@@ -1,4 +1,3 @@
-#sji todo! duplicate files sort it!
 #!/bin/bash
 
 # Exit on error
@@ -94,8 +93,8 @@ echo "Setting GOOGLE_APPLICATION_CREDENTIALS to ${TF_KEY_FILE}..."
 export GOOGLE_APPLICATION_CREDENTIALS="${TF_KEY_FILE}"
 
 # Create required secrets
-chmod +x scripts/tasks/add_github_secret.sh
-scripts/tasks/add_github_secret.sh ${TF_SA_SECRET} ${TF_KEY_FILE}
+chmod +x scripts/add_github_secret.sh
+scripts/add_github_secret.sh ${TF_SA_SECRET} ${TF_KEY_FILE}
 
 # Check if the secret was added successfully
 if [ $? -ne 0 ]; then

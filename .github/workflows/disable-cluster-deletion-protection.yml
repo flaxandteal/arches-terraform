@@ -1,0 +1,90 @@
+ name: Disable GKE Deletion Protection
+#sji finish later todo
+#nope gcp does not allow this in this way - must use terraform or do it manually
+on:
+  workflow_dispatch:
+    inputs:
+      target_cluster:
+        description: "Which cluster to modify? ('prod', 'stg', or 'both')"
+        required: true
+        default: "stg"
+        type: choice
+        options:
+          - prod
+          - stg
+          - both
+
+jobs:
+  disable-protection:
+    runs-on: ubuntu-latest
+    env:
+      PROD_CLUSTER_NAME: k8s-coral-prd
+      PROD_CLUSTER_ZONE: europe-west2-a
+      STG_CLUSTER_NAME: k8s-coral-stg
+      STG_CLUSTER_ZONE: europe-west2-a
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}'
+          export_environment_variables: true
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Install gcloud beta component
+        run: gcloud components install beta --quiet
+
+      - name: Verify Cluster Configuration
+        run: |
+          set -x
+          echo "Listing GKE clusters for project ${{ secrets.GCP_PROJECT_ID }}"
+          gcloud container clusters list --project ${{ secrets.GCP_PROJECT_ID }}
+
+          TARGET_CLUSTER="both"
+          PROD_CLUSTER_NAME="${PROD_CLUSTER_NAME}"
+          PROD_CLUSTER_LOCATION="${PROD_CLUSTER_ZONE}"
+          STG_CLUSTER_NAME="${STG_CLUSTER_NAME}"
+          STG_CLUSTER_LOCATION="${STG_CLUSTER_ZONE}"
+
+          disable_protection() {
+            local CLUSTER_NAME=$1
+            local CLUSTER_LOCATION=$2
+            echo "Checking if $CLUSTER_NAME is in zone or region: $CLUSTER_LOCATION"
+            if gcloud container clusters describe "$CLUSTER_NAME" --zone "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
+              echo "Cluster $CLUSTER_NAME is zonal, using --zone"
+              gcloud beta container clusters update "$CLUSTER_NAME" \
+                --zone "$CLUSTER_LOCATION" \
+                --no-enable-deletion-protection
+            elif gcloud container clusters describe "$CLUSTER_NAME" --region "$CLUSTER_LOCATION" --project ${{ secrets.GCP_PROJECT_ID }} >/dev/null 2>&1; then
+              echo "Cluster $CLUSTER_NAME is regional, using --region"
+              gcloud beta container clusters update "$CLUSTER_NAME" \
+                --region "$CLUSTER_LOCATION" \
+                --no-enable-deletion-protection
+            else
+              echo "Error: Cluster $CLUSTER_NAME not found in zone or region $CLUSTER_LOCATION"
+              exit 1
+            fi
+          }
+
+          case "$TARGET_CLUSTER" in
+            prod)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+              ;;
+            stg)
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+              ;;
+            both)
+              disable_protection "$PROD_CLUSTER_NAME" "$PROD_CLUSTER_LOCATION"
+              disable_protection "$STG_CLUSTER_NAME" "$STG_CLUSTER_LOCATION"
+              ;;
+            *)
+              echo "Invalid input: $TARGET_CLUSTER"
+              exit 1
+              ;;
+          esac

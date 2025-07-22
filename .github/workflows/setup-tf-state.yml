@@ -5,7 +5,6 @@ name: Setup Terraform
 
 on:
   workflow_dispatch:  # Manual trigger for initial setup
-#todo! backup state bucket somewhere using bootstrap account and schedule  it sji 
 jobs:
   setup-service-account:
     runs-on: ubuntu-latest
@@ -13,6 +12,8 @@ jobs:
       # Checkout repo
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Authenticate GitHub CLI
         run: |
@@ -26,13 +27,12 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
           
-      - name: Enable IAM API # sji todo - hmmm - probs need elsewhere
+      - name: Enable IAM API # sji todo - hmmm - move to terraform modules?
         run: |
           gcloud services enable iam.googleapis.com
           gcloud services enable cloudresourcemanager.googleapis.com
           gcloud services enable artifactregistry.googleapis.com
           gcloud services enable compute.googleapis.com
-          gcloud services enable keymanagement.googleapis.com
           gcloud services enable container.googleapis.com 
           gcloud services enable compute.googleapis.com
           sleep 60  # Wait 60 seconds for propagation

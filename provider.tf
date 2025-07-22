@@ -4,7 +4,7 @@ provider "google" {
 }
 
 terraform {
-  required_version = ">= 1.5.0, < 2.0.0" # sji todo
+  required_version = ">= 1.5.0, < 2.0.0"
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -16,8 +16,8 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "crl-state-store"
-    #prefix = "crl-state-store" #sji todo
-    #prefix = "terraform/state/${var.environment}"
+    bucket = "coral-hed-state-store"
+    # backend "gcs" {} # Partial configuration using backend.hcl
+    #prefix = "terraform/state/${var.environment}" sji todo
   }
 }

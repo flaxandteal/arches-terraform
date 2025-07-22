@@ -1,10 +1,6 @@
-#sji keys removed following
-# data "google_project" "project" {
-#   project_id = var.project_id
-# }
-
 module "artifact_registry" {
   for_each               = var.repositories
+  depends_on             = [google_project_service.artifactregistry_api]
   source                 = "./modules/artifact_registry"
   project_id             = var.project_id
   repository_id          = each.value.repository_id
@@ -17,6 +13,7 @@ module "artifact_registry" {
 
 module "compute_address" {
   for_each     = var.addresses
+  depends_on   = [google_project_service.compute_api]
   source       = "./modules/compute_address"
   project_id   = var.project_id
   region       = var.region
@@ -28,8 +25,8 @@ module "compute_address" {
 }
 
 module "compute_firewall" {
-  depends_on         = [module.compute_subnetwork]
   for_each           = var.firewalls
+  depends_on         = [module.compute_network, google_project_service.compute_api]
   source             = "./modules/compute_firewall"
   project_id         = var.project_id
   name               = each.value.name
@@ -45,7 +42,9 @@ module "compute_firewall" {
 
 module "storage_bucket" {
   for_each                    = var.buckets
+  depends_on                  = [google_project_service.storage_api, module.kms_key_ring] # Added kms_key_ring in case any bucket uses KMS
   source                      = "./modules/storage_bucket"
+  common_labels               = var.common_labels
   project_id                  = var.project_id
   name                        = each.value.name
   location                    = each.value.location
@@ -55,11 +54,13 @@ module "storage_bucket" {
   uniform_bucket_level_access = each.value.uniform_bucket_level_access
   cors                        = each.value.cors
   encryption                  = each.value.encryption
+  soft_delete_policy          = each.value.soft_delete_policy
   logging                     = each.value.logging
 }
 
 module "service_accounts" {
   source           = "./modules/service_account"
+  depends_on       = [google_project_service.iam_api]
   project_id       = var.project_id
   service_accounts = var.service_accounts
 }
@@ -67,6 +68,7 @@ module "service_accounts" {
 module "compute_network" {
   for_each                                  = var.networks
   source                                    = "./modules/compute_network"
+  depends_on                                = [google_project_service.compute_api]
   project_id                                = var.project_id
   name                                      = each.value.name
   auto_create_subnetworks                   = each.value.auto_create_subnetworks
@@ -76,14 +78,14 @@ module "compute_network" {
 
 module "compute_subnetwork" {
   for_each                   = var.subnetworks
+  depends_on                 = [module.compute_network, google_project_service.compute_api]
   source                     = "./modules/compute_subnetwork"
   project_id                 = var.project_id
   name                       = each.value.name
   region                     = var.region
-  network                    = each.value.network
+  network                    = module.compute_network[each.value.network].network_self_link
   ip_cidr_range              = each.value.ip_cidr_range
   private_ip_google_access   = each.value.private_ip_google_access
-  depends_on                 = [module.compute_network]
   private_ipv6_google_access = each.value.private_ipv6_google_access
   purpose                    = each.value.purpose
   stack_type                 = each.value.stack_type
@@ -96,15 +98,14 @@ module "compute_router" {
   project_id = var.project_id
   name       = each.value.name
   network    = each.value.network
-  subnetwork = each.value.subnetwork
-  region     = var.region
-  depends_on = [module.compute_subnetwork]
+  region     = "europe-west2"
+  nat        = each.value.nat
 }
 
 module "kms_key_ring" {
   for_each         = var.kms_key_rings
-  depends_on       = [module.service_accounts]
   source           = "./modules/kms"
+  depends_on       = [google_project_service.kms_api, module.service_accounts]
   project_id       = var.project_id
   name             = each.value.name
   location         = each.value.location
@@ -115,8 +116,13 @@ module "kms_key_ring" {
 
 # Root module to manage GKE clusters and node pools for multiple environments
 module "container_cluster" {
-  source     = "./modules/container_cluster"
-  depends_on = [module.compute_subnetwork, module.compute_network, module.compute_router]
+  source = "./modules/container_cluster"
+  depends_on = [
+    module.compute_subnetwork,
+    module.compute_router, # Routers (esp. with NAT) should exist before clusters that might use them.
+    google_project_service.container_api,
+    module.kms_key_ring # If database_encryption.key_name is used
+  ]
 
   for_each = var.clusters
 
@@ -124,12 +130,12 @@ module "container_cluster" {
   location                 = each.value.location
   network                  = each.value.network
   subnetwork               = each.value.subnetwork
-  min_master_version       = each.value.min_master_version
+  min_master_version       = lookup(each.value, "min_master_version", var.gke_version)
   remove_default_node_pool = each.value.remove_default_node_pool
   ip_allocation_policy     = each.value.ip_allocation_policy
   addons_config            = each.value.addons_config
   cluster_autoscaling      = each.value.cluster_autoscaling
-  # cluster_telemetry                 = each.value.cluster_telemetry
+  #cluster_telemetry                 = each.value.cluster_telemetry
   database_encryption               = each.value.database_encryption
   default_max_pods_per_node         = each.value.default_max_pods_per_node
   default_snat_status               = each.value.default_snat_status
@@ -153,39 +159,77 @@ module "container_cluster" {
   vertical_pod_autoscaling          = each.value.vertical_pod_autoscaling
   workload_identity_config          = each.value.workload_identity_config
 
-  depends_on_container_api = [google_project_service.container_api]
+  # depends_on_container_api = [google_project_service.container_api]
 }
 
-module "gke_node_pools" {
+module "node_pools" {
   source = "./modules/container_node_pool"
+  depends_on = [
+    module.container_cluster,
+    module.service_accounts # Because node_config.service_account is passed
+  ]
 
-  for_each = var.clusters
+  for_each        = var.clusters
+  cluster_name    = module.container_cluster[each.key].cluster_name # Use output from cluster module
+  location        = each.value.location
+  node_version    = lookup(each.value, "node_version", var.gke_version)
+  service_account = each.value.node_config.service_account
+  oauth_scopes    = each.value.node_config.oauth_scopes
+  workload_pool   = each.value.workload_identity_config.workload_pool
+  network         = each.value.network
 
-  cluster_name         = each.value.name
-  location             = each.value.location
-  node_version         = each.value.node_version
-  service_account      = each.value.node_config.service_account
-  oauth_scopes         = each.value.node_config.oauth_scopes
-  workload_pool        = each.value.workload_identity_config.workload_pool
-  network              = each.value.network
   subnetwork           = each.value.subnetwork
   default_network_tags = ["gke-cluster"]
-
-  depends_on_container_api       = [google_project_service.container_api]
-  depends_on_container_resources = [module.container_cluster[each.key]]
 
   node_pools = each.value.node_pools
 }
 
-# Enable the container API
+# Enable necessary APIs for the project
 resource "google_project_service" "container_api" {
   project = var.project_id
   service = "container.googleapis.com"
 }
 
+resource "google_project_service" "cloudresourcemanager_api" {
+  project            = var.project_id
+  service            = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "compute_api" {
+  project            = var.project_id
+  service            = "compute.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "kms_api" {
+  project            = var.project_id
+  service            = "cloudkms.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "iam_api" {
+  project            = var.project_id
+  service            = "iam.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "artifactregistry_api" {
+  project            = var.project_id
+  service            = "artifactregistry.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "storage_api" {
+  project            = var.project_id
+  service            = "storage.googleapis.com"
+  disable_on_destroy = false
+}
+
 module "snapshot_policy" {
-  source   = "./modules/compute_resource_policy"
-  for_each = var.snapshot_policies
+  source     = "./modules/compute_resource_policy"
+  for_each   = var.snapshot_policies
+  depends_on = [google_project_service.compute_api]
 
   project_id               = var.project_id
   region                   = var.region

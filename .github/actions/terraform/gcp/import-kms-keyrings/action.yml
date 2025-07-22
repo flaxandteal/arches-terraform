@@ -9,7 +9,10 @@ inputs:
     description: "KMS location (e.g. europe-west2)"
     required: false
     default: "europe-west2"
-
+  service_account:
+    description: Service account to use
+    required: true
+    
 runs:
   using: "composite"
   steps:

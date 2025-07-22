@@ -1,3 +1,13 @@
+variable "common_labels" {
+  description = "Common labels to apply to resources"
+  type        = map(string)
+}
+
+variable "gke_version" {
+  description = "GKE version to use for clusters"
+  type        = string
+}
+
 variable "project_id" {
   description = "The project ID to deploy resources"
   type        = string
@@ -113,6 +123,9 @@ variable "buckets" {
       log_bucket        = string
       log_object_prefix = string
     }))
+    soft_delete_policy = optional(object({
+      retention_duration_seconds = number
+    }))
   }))
 }
 
@@ -129,11 +142,16 @@ variable "service_accounts" {
 }
 
 variable "routers" {
-  description = "Map of compute routers"
+  description = "Map of compute routers with NAT configuration"
   type = map(object({
     name       = string
     network    = string
     subnetwork = string
+    nat = object({
+      name                               = string
+      nat_ip_allocate_option             = string
+      source_subnetwork_ip_ranges_to_nat = string
+    })
   }))
 }
 
@@ -154,8 +172,8 @@ variable "clusters" {
   type = map(object({
     name                     = string
     location                 = string
-    node_version             = string
-    min_master_version       = string
+    node_version             = optional(string)
+    min_master_version       = optional(string)
     network                  = string
     subnetwork               = string
     initial_node_count       = number
@@ -181,21 +199,21 @@ variable "clusters" {
     ip_allocation_policy = object({
       cluster_secondary_range_name  = string
       services_secondary_range_name = string
-      stack_type                    = string
-      pod_cidr_overprovision_config = object({
+      stack_type                    = optional(string)
+      pod_cidr_overprovision_config = optional(object({
         disabled = bool
-      })
+      }))
       additional_pod_ranges_config = object({
         pod_range_names = list(string)
       })
     })
     addons_config = object({
-      dns_cache_config = object({
+      dns_cache_config = optional(object({
         enabled = bool
-      })
-      gce_persistent_disk_csi_driver_config = object({
+      }))
+      gce_persistent_disk_csi_driver_config = optional(object({
         enabled = bool
-      })
+      }))
       horizontal_pod_autoscaling = object({
         disabled = bool
       })
@@ -206,22 +224,34 @@ variable "clusters" {
         disabled = bool
       })
     })
-    cluster_autoscaling = object({
+    cluster_autoscaling = optional(object({
       autoscaling_profile = string
-    })
-    cluster_telemetry = object({
+    })) # If not provided, this will be null. Module needs dynamic block.
+
+    # cluster_telemetry is passed to the module, but the module currently
+    # doesn't use it in the google_container_cluster resource.
+    # Making it optional here. If you intend to use it, the module's main.tf
+    # would need a `cluster_telemetry` block.
+    cluster_telemetry = optional(object({
       type = string
-    })
-    database_encryption = object({
+    })) # If not provided, this will be null.
+
+    database_encryption = optional(object({
       state    = string
       key_name = string
+      }), {
+      # Default to DECRYPTED if not specified
+      state    = "DECRYPTED"
+      key_name = ""
     })
+
     default_max_pods_per_node = number
     default_snat_status = object({
       disabled = bool
     })
     description           = string
-    enable_shielded_nodes = bool
+    enable_shielded_nodes = optional(bool, true) # Default to true if not specified
+
     logging_config = object({
       enable_components = list(string)
     })
@@ -232,10 +262,14 @@ variable "clusters" {
         start_time = string
       })
     })
-    master_auth = object({
+
+    master_auth = optional(object({
       client_certificate_config = object({
         issue_client_certificate = bool
       })
+      }), {
+      # Default client_certificate_config if not specified
+      client_certificate_config = { issue_client_certificate = false }
     })
     master_authorized_networks_config = object({
       cidr_blocks = list(object({
@@ -252,25 +286,34 @@ variable "clusters" {
     })
     network_policy = object({
       enabled  = bool
-      provider = string
+      provider = optional(string)
     })
     networking_mode = string
-    node_pool_defaults = object({
+
+    node_pool_defaults = optional(object({
       node_config_defaults = object({
         logging_variant = string
       })
-    })
+    })) # If not provided, this will be null. Module needs dynamic block.
+
     notification_config = object({
       pubsub = object({
         enabled = bool
       })
     })
-    pod_security_policy_config = object({
+
+    # PodSecurityPolicy is deprecated. Defaulting to disabled.
+    pod_security_policy_config = optional(object({
       enabled = bool
+      }), {
+      enabled = false
     })
+
     private_cluster_config = object({
-      enable_private_nodes   = bool
-      master_ipv4_cidr_block = string
+      enable_private_endpoint     = optional(bool)
+      enable_private_nodes        = bool
+      private_endpoint_subnetwork = optional(string) # Add this line
+      master_ipv4_cidr_block      = optional(string)
       master_global_access_config = object({
         enabled = bool
       })
@@ -287,8 +330,11 @@ variable "clusters" {
       mode               = string
       vulnerability_mode = string
     })
-    service_external_ips_config = object({
+
+    service_external_ips_config = optional(object({
       enabled = bool
+      }), {
+      enabled = false # Default to disabled if not specified
     })
     vertical_pod_autoscaling = object({
       enabled = bool
@@ -297,6 +343,7 @@ variable "clusters" {
       workload_pool = string
     })
     node_pools = map(object({
+      name               = string
       machine_type       = string
       disk_size_gb       = number
       disk_type          = string
@@ -330,6 +377,10 @@ variable "clusters" {
       })
       workload_metadata_config = object({
         mode = string
+      })
+      network_config = object({
+        enable_private_nodes = bool
+        pod_range            = string
       })
     }))
   }))
@@ -374,4 +425,3 @@ variable "snapshot_policies" {
     error_message = "Each snapshot policy must specify exactly one of daily_schedule, hourly_schedule, or weekly_schedule."
   }
 }
-

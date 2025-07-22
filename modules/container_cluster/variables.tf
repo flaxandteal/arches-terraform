@@ -34,24 +34,24 @@ variable "ip_allocation_policy" {
     cluster_secondary_range_name  = string
     services_secondary_range_name = string
     stack_type                    = string
-    pod_cidr_overprovision_config = object({
+    pod_cidr_overprovision_config = optional(object({
       disabled = bool
-    })
-    additional_pod_ranges_config = object({
-      pod_range_names = list(string)
-    })
+    }))
+    # additional_pod_ranges_config = object({
+    #   pod_range_names = list(string)
+    # })
   })
 }
 
 variable "addons_config" {
   description = "Addons configuration for the cluster"
   type = object({
-    dns_cache_config = object({
+    dns_cache_config = optional(object({
       enabled = bool
-    })
-    gce_persistent_disk_csi_driver_config = object({
+    }))
+    gce_persistent_disk_csi_driver_config = optional(object({
       enabled = bool
-    })
+    }))
     horizontal_pod_autoscaling = object({
       disabled = bool
     })
@@ -69,6 +69,7 @@ variable "cluster_autoscaling" {
   type = object({
     autoscaling_profile = string
   })
+  default = null
 }
 
 variable "database_encryption" {
@@ -169,6 +170,7 @@ variable "node_pool_defaults" {
       logging_variant = string
     })
   })
+  default = null
 }
 
 variable "notification_config" {
@@ -190,8 +192,10 @@ variable "pod_security_policy_config" {
 variable "private_cluster_config" {
   description = "Private cluster configuration"
   type = object({
-    enable_private_nodes   = bool
-    master_ipv4_cidr_block = string
+    enable_private_endpoint     = optional(bool)
+    enable_private_nodes        = bool
+    private_endpoint_subnetwork = optional(string) # Add this line
+    master_ipv4_cidr_block      = optional(string)
     master_global_access_config = object({
       enabled = bool
     })

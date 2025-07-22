@@ -1,13 +1,8 @@
 name: Terraform Drift Detection
 
-on:
-  push:
-    branches:
-      - '**'  # Run on push to any branch
-
 #  schedule:
 #    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
-
+on:
   workflow_dispatch:  # Allow manual trigger
 
 env:

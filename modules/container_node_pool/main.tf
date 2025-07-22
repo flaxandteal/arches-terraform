@@ -3,7 +3,7 @@ resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
   provider           = google-beta
-  name               = "${each.key}-pool"
+  name               = each.value.name
   cluster            = var.cluster_name
   location           = var.location
   initial_node_count = each.value.initial_node_count
@@ -23,6 +23,11 @@ resource "google_container_node_pool" "node_pool" {
   upgrade_settings {
     max_surge       = each.value.max_surge
     max_unavailable = each.value.max_unavailable
+  }
+
+  network_config {
+    enable_private_nodes = each.value.network_config.enable_private_nodes
+    pod_range            = each.value.network_config.pod_range
   }
 
   node_config {
@@ -74,5 +79,5 @@ resource "google_container_node_pool" "node_pool" {
     ignore_changes = [initial_node_count]
   }
 
-  depends_on = [var.depends_on_container_api, var.depends_on_container_resources]
+  #depends_on = [var.depends_on_container_api, var.depends_on_container_resources]
 }

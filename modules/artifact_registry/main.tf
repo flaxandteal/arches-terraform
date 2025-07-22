@@ -6,4 +6,7 @@ resource "google_artifact_registry_repository" "repository" {
   format                 = var.format
   mode                   = var.mode
   cleanup_policy_dry_run = var.cleanup_policy_dry_run
+
+  #security
+  #kms_key_name = "projects/my-project/locations/global/keyRings/my-key-ring/cryptoKeys/my-key" sji todo
 }

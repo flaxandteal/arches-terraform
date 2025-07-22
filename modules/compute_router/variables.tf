@@ -13,11 +13,23 @@ variable "network" {
   type        = string
 }
 
-variable "subnetwork" {
-  type = string
-}
-
 variable "region" {
   description = "The region for the Router"
   type        = string
+}
+
+variable "subnetwork" {
+  description = "The subnetwork for the NAT"
+  type        = string
+  default     = null
+}
+
+variable "nat" {
+  description = "Optional Cloud NAT configuration"
+  type = object({
+    name                               = string
+    nat_ip_allocate_option             = string
+    source_subnetwork_ip_ranges_to_nat = string
+  })
+  default = null
 }

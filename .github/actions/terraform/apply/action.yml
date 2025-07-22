@@ -33,6 +33,7 @@ runs:
       run: terraform init -backend-config=backend.hcl -upgrade 
       shell: bash
  
+    # Import existing KMS key rings 
     - name: Import existing KMS key rings
       uses: ./.github/actions/terraform/gcp/import-kms-keyrings
       with:
@@ -48,3 +49,7 @@ runs:
       run: terraform plan -out=tfplan
       shell: bash
 
+    # Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      shell: bash

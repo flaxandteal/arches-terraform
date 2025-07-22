@@ -9,7 +9,7 @@ resource "google_container_cluster" "cluster" {
   min_master_version       = var.min_master_version
   remove_default_node_pool = var.remove_default_node_pool
 
-  deletion_protection = false
+  deletion_protection = true
 
   # Empty node_pool block to ensure default pool is removed
   node_pool {
@@ -21,34 +21,46 @@ resource "google_container_cluster" "cluster" {
     cluster_secondary_range_name  = var.ip_allocation_policy.cluster_secondary_range_name
     services_secondary_range_name = var.ip_allocation_policy.services_secondary_range_name
     stack_type                    = var.ip_allocation_policy.stack_type
-    pod_cidr_overprovision_config {
-      disabled = var.ip_allocation_policy.pod_cidr_overprovision_config.disabled
+    dynamic "pod_cidr_overprovision_config" {
+      for_each = var.ip_allocation_policy.pod_cidr_overprovision_config != null ? [var.ip_allocation_policy.pod_cidr_overprovision_config] : []
+      content {
+        disabled = pod_cidr_overprovision_config.value.disabled
+      }
     }
-    additional_pod_ranges_config {
-      pod_range_names = var.ip_allocation_policy.additional_pod_ranges_config.pod_range_names
+    # dynamic "additional_pod_ranges_config" {
+    #   for_each = length(var.ip_allocation_policy.additional_pod_ranges_config.pod_range_names) > 0 ? [var.ip_allocation_policy.additional_pod_ranges_config] : []
+    #   content {
+    #     pod_range_names = additional_pod_ranges_config.value.pod_range_names
+    #   }
+    # }
+  }
+
+  dynamic "addons_config" {
+    for_each = var.addons_config != null ? [var.addons_config] : []
+    content {
+      dynamic "dns_cache_config" {
+        for_each = addons_config.value.dns_cache_config != null ? [addons_config.value.dns_cache_config] : []
+        content {
+          enabled = dns_cache_config.value.enabled
+        }
+      }
+      dynamic "gce_persistent_disk_csi_driver_config" {
+        for_each = addons_config.value.gce_persistent_disk_csi_driver_config != null ? [addons_config.value.gce_persistent_disk_csi_driver_config] : []
+        content {
+          enabled = gce_persistent_disk_csi_driver_config.value.enabled
+        }
+      }
+      horizontal_pod_autoscaling { disabled = addons_config.value.horizontal_pod_autoscaling.disabled }
+      http_load_balancing { disabled = addons_config.value.http_load_balancing.disabled }
+      network_policy_config { disabled = addons_config.value.network_policy_config.disabled }
     }
   }
 
-  addons_config {
-    dns_cache_config {
-      enabled = var.addons_config.dns_cache_config.enabled
+  dynamic "cluster_autoscaling" {
+    for_each = var.cluster_autoscaling != null ? [var.cluster_autoscaling] : []
+    content {
+      autoscaling_profile = cluster_autoscaling.value.autoscaling_profile
     }
-    gce_persistent_disk_csi_driver_config {
-      enabled = var.addons_config.gce_persistent_disk_csi_driver_config.enabled
-    }
-    horizontal_pod_autoscaling {
-      disabled = var.addons_config.horizontal_pod_autoscaling.disabled
-    }
-    http_load_balancing {
-      disabled = var.addons_config.http_load_balancing.disabled
-    }
-    network_policy_config {
-      disabled = var.addons_config.network_policy_config.disabled
-    }
-  }
-
-  cluster_autoscaling {
-    autoscaling_profile = var.cluster_autoscaling.autoscaling_profile
   }
 
   database_encryption {
@@ -108,9 +120,12 @@ resource "google_container_cluster" "cluster" {
 
   networking_mode = var.networking_mode
 
-  node_pool_defaults {
-    node_config_defaults {
-      logging_variant = var.node_pool_defaults.node_config_defaults.logging_variant
+  dynamic "node_pool_defaults" {
+    for_each = var.node_pool_defaults != null ? [var.node_pool_defaults] : []
+    content {
+      node_config_defaults {
+        logging_variant = node_pool_defaults.value.node_config_defaults.logging_variant
+      }
     }
   }
 
@@ -125,8 +140,10 @@ resource "google_container_cluster" "cluster" {
   }
 
   private_cluster_config {
-    enable_private_nodes   = var.private_cluster_config.enable_private_nodes
-    master_ipv4_cidr_block = var.private_cluster_config.master_ipv4_cidr_block
+    enable_private_endpoint     = var.private_cluster_config.enable_private_endpoint
+    enable_private_nodes        = var.private_cluster_config.enable_private_nodes
+    private_endpoint_subnetwork = var.private_cluster_config.private_endpoint_subnetwork
+    master_ipv4_cidr_block      = var.private_cluster_config.master_ipv4_cidr_block
     master_global_access_config {
       enabled = var.private_cluster_config.master_global_access_config.enabled
     }
@@ -159,5 +176,5 @@ resource "google_container_cluster" "cluster" {
     workload_pool = var.workload_identity_config.workload_pool
   }
 
-  depends_on = [var.depends_on_container_api]
+  #depends_on = [var.depends_on_container_api]
 }

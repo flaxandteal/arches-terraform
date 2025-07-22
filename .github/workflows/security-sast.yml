@@ -3,7 +3,7 @@ name: Security Scanning
 on:
   push:
     branches: 
-      - '**' 
+      - main'
       #sji todo - turn on!
   #schedule:
   #  - cron: '0 2 * * *'  # Nightly at 2 AM UTC
@@ -17,16 +17,41 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GOOGLE_CREDENTIALS: ${{ secrets.TF_SA }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
+      - name: Authenticate with GCP
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.TF_SA }}' 
+          export_environment_variables: true
+                    
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: SAST Scan using tfsec
-        uses: ./.github/actions/security/tfsec
+      - name: SAST Scan using trivy
+        uses: ./.github/actions/security/trivy
 
       - name: SAST Scan using Checkov
-        uses: ./.github/actions/security/checkov
+        uses: ./.github/actions/security/checkov        
+
+        #sji continue-on-error: true not suitable long term - maybe send alerts to something like this: 
+  #         - name: Notify Rocket.Chat
+  # if failure()  # only send on failure, remove this line to always send
+  # run: |
+  #   curl -X POST -H 'Content-Type: application/json' \
+  #     -d '{
+  #           "text": "🚨 GitHub Action failed: {{ github.workflow }} > {{ github.job }}\nCommit: {{ github.sha }}\n<{{ github.server_url }}/{{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+  #         }' \
+  #     {{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+  # only on scans of main branch
+
+
