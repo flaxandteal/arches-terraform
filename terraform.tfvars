@@ -295,6 +295,12 @@ service_accounts = {
       "stackdriver.resourceMetadata.writer",
       "storage.objectViewer"
     ]
+    workload_identity_bindings = [
+      {
+        namespace       = "flux-system"
+        service_account = "kustomize-controller"
+      }
+    ]
   }
   "arches_k8s_stg" = {
     account_id      = "coral-arches-k8s-coral-stg"
@@ -310,6 +316,12 @@ service_accounts = {
       "storage.objectViewer",
       "container.clusterAdmin",
       "compute.viewer"
+    ]
+    workload_identity_bindings = [
+      {
+        namespace       = "flux-system"
+        service_account = "kustomize-controller"
+      }
     ]
   }
   "arches_uat_prd" = {
