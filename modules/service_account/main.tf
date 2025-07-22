@@ -12,10 +12,10 @@ locals {
     for sa_key, sa in var.service_accounts :
     [
       for binding in lookup(sa, "workload_identity_bindings", []) : {
-        gsa_key              = sa_key
-        gsa_email            = "${sa.account_id}@${var.project_id}.iam.gserviceaccount.com"
-        k8s_namespace        = binding.namespace
-        k8s_service_account  = binding.service_account
+        gsa_key             = sa_key
+        gsa_email           = "${sa.account_id}@${var.project_id}.iam.gserviceaccount.com"
+        k8s_namespace       = binding.namespace
+        k8s_service_account = binding.service_account
       }
     ]
   ])
